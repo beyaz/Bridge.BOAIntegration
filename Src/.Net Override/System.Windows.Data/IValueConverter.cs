@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 
 namespace System.Windows.Data
 {
@@ -11,5 +9,4 @@ namespace System.Windows.Data
         object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture);
         #endregion
     }
-    
 }

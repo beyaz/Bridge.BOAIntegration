@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration", "Src\Bridge.BOAIntegration.csproj", "{501100EC-6824-494B-89ED-8EC8ED9873D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "test\Bridge.CustomUIMarkup.Test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
