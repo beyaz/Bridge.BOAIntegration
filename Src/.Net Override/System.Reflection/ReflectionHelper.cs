@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using System.Reflection;
 
-namespace System.ComponentModel
+namespace System.Reflection
 {
     public class ReflectionHelper
     {

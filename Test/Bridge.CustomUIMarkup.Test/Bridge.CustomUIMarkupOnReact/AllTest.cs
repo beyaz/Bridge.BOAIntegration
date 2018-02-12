@@ -4,7 +4,7 @@ using Bridge.Html5;
 using Bridge.jQuery2;
 using Bridge.QUnit;
 
-namespace Bridge.CustomUIMarkupOnReact
+namespace Bridge.BOAIntegration
 {
     [ObjectLiteral]
     class Component_1_Prop
@@ -36,7 +36,7 @@ namespace Bridge.CustomUIMarkupOnReact
         #region Public Methods
         public static void Register()
         {
-            QUnit.QUnit.Test(nameof(CustomUIMarkupOnReact) + "->" + nameof(ShouldRenderSimpleOneDivInnerHTML), ShouldRenderSimpleOneDivInnerHTML);
+            QUnit.QUnit.Test(nameof(BOAIntegration) + "->" + nameof(ShouldRenderSimpleOneDivInnerHTML), ShouldRenderSimpleOneDivInnerHTML);
         }
         #endregion
 

@@ -38,18 +38,17 @@
   <ItemGroup>
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
-    <Compile Include="Bridge.CustomUIMarkupOnReact\Extensions.cs" />
-    <Compile Include="Bridge.CustomUIMarkupOnReact\External.cs" />
-    <Compile Include="Bridge.CustomUIMarkupOnReact\RaactUIBuilder.cs" />
+    <Compile Include="Bridge.BOAIntegration\External.cs" />
+    <Compile Include="Bridge.BOAIntegration\RaactUIBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System.cs" />
-    <Compile Include="System.Reflection\ReflectionHelper.cs" />
-    <Compile Include="System.Text.Tokenizers\Tokenizer.cs" />
-    <Compile Include="System.Windows.Data\BindingInfo.cs" />
-    <Compile Include="System.Windows.Data\BindingMode.cs" />
-    <Compile Include="System.Windows.Data\HTMLBindingInfo.cs" />
-    <Compile Include="System.Windows.Data\IValueConverter.cs" />
-    <Compile Include="System.Windows\PropertyPath.cs" />
+    <Compile Include=".Net Override\System\MissingMemberException.cs" />
+    <Compile Include=".Net Override\System.Reflection\ReflectionHelper.cs" />
+    <Compile Include=".Net Override\System.Text.Tokenizers\Tokenizer.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\HTMLBindingInfo.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
+    <Compile Include=".Net Override\System.Windows\PropertyPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />

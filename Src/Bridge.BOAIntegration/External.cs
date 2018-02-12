@@ -1,6 +1,6 @@
 ﻿using Bridge.Html5;
 
-namespace Bridge.CustomUIMarkupOnReact
+namespace Bridge.BOAIntegration
 {
     [External]
     [Name("React.Component")]

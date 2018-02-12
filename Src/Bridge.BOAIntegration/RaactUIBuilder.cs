@@ -3,7 +3,7 @@ using System.Windows.Data;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
-namespace Bridge.CustomUIMarkupOnReact
+namespace Bridge.BOAIntegration
 {
     public class RaactUIBuilder
     {

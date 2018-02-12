@@ -4,11 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bridge;
+using Bridge.Html5;
 
 namespace System
 {
      static class Extensions
-    {/// <summary>
+    {
+        public static string GetInnerText(this Element node)
+        {
+            if (node.NodeType == NodeType.Text)
+            {
+                return node["textContent"].As<string>();
+            }
+
+            return node["innerHTML"].As<string>();
+        }
+
+
+
+        /// <summary>
         ///     Removes value from end of str
         /// </summary>
         public static string RemoveFromEnd(this string data, string value)
