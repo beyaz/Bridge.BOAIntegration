@@ -1,0 +1,78 @@
+{
+	"GlobalKeys":
+	{
+		"$(SolutionDir)":"D:\\github\\Bridge.CustomUIMarkup\\"
+	},
+	"Tasks":
+	[	
+		{
+			"FullClassName": "WhiteStone.Tasks.CopyFiles",
+      "Keys": {
+        "Source": "$(SolutionDir)Src\\bin\\Debug\\bridge\\jquery-2.2.4.js| bridge.js | bridge.meta.js | bridge.console.js | Bridge.CustomUIMarkup.js | Bridge.CustomUIMarkup.meta.js | newtonsoft.json.js",
+        "Target": "$(SolutionDir)bin\\js\\"
+      }
+		}
+		,
+		{
+			"FullClassName": "WhiteStone.Tasks.CopyDirectory",
+			"Keys":
+			{
+				"Source" : "$(SolutionDir)Src\\Lib\\",
+				"Target" : "$(SolutionDir)bin\\Lib\\"
+			}			
+		}
+		,
+		{
+			"FullClassName": "WhiteStone.Tasks.CopyFile",
+			"Keys":
+			{	
+				"Source" : "$(SolutionDir)Src\\bin\\Debug\\Bridge.CustomUIMarkup.dll",
+				"Target" : "$(SolutionDir)bin\\Bridge.CustomUIMarkup.dll"
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	]
+}
