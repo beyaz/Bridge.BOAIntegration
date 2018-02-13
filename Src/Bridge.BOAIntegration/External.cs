@@ -33,7 +33,7 @@ namespace BOA.One.Office.CardGeneral.DebitCard
         }
 
         
-        extern void setState(object state);
+        
 
         public void getExternalResponseCodesCommandRespond(GenericResponse<ExternalResponseCodeContract[]> response)
         {
@@ -132,7 +132,7 @@ namespace Bridge.BOAIntegration
            
 
         }
-
+        protected extern void setState(object state);
         public string GetMessage(string groupName, string propertyName)
         {
             return NodeModules.getMessage().Call(null, groupName, propertyName).As<string>();
