@@ -43,7 +43,7 @@ namespace Bridge.BOAIntegration
         #region Methods
         static dynamic BuildUI(string xmlUI, dynamic prop)
         {
-            var builder = new RaactUIBuilder
+            var builder = new ReactUIBuilder
             {
                 ComponentClassFinder = tag =>
                 {

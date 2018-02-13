@@ -5,7 +5,7 @@ using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
-    public class RaactUIBuilder
+    public class ReactUIBuilder
     {
         #region Constants
         const string Comma = ",";

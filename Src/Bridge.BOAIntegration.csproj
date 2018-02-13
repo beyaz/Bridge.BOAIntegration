@@ -39,7 +39,8 @@
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
     <Compile Include="Bridge.BOAIntegration\External.cs" />
-    <Compile Include="Bridge.BOAIntegration\RaactUIBuilder.cs" />
+    <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
+    <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include=".Net Override\System\MissingMemberException.cs" />
     <Compile Include=".Net Override\System.Reflection\ReflectionHelper.cs" />
@@ -70,11 +71,16 @@
       <HintPath>$(SolutionDir)packages\Bridge.Newtonsoft.Json.1.5.0\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="kaldım.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetDir)Bridge\bridge.js"      	"D:\BOA\One\wwwroot\"
+copy /y "$(TargetDir)Bridge\bridge.meta.js"     "D:\BOA\One\wwwroot\"
+
+copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
+copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets" Condition="Exists('$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
