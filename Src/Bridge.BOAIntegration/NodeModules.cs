@@ -18,6 +18,12 @@ namespace Bridge.BOAIntegration
             return FindByExportKey(nameof(getMessage)).As<Function>();
         }
 
+        public static Function BDialogHelper()
+        {
+            return FindByExportKey(nameof(BDialogHelper)).As<Function>();
+        }
+        
+
 
         internal static object FindByExportKey(string exportKey)
         {

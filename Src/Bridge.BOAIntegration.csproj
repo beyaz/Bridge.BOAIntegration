@@ -38,7 +38,22 @@
   <ItemGroup>
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
-    <Compile Include="Bridge.BOAIntegration\External.cs" />
+    <Compile Include="BOA.Common.Types\ApplicationSide.cs" />
+    <Compile Include="BOA.Common.Types\BOAMessageBase.cs" />
+    <Compile Include="BOA.Common.Types\ContractBase.cs" />
+    <Compile Include="BOA.Common.Types\GenericResponse.cs" />
+    <Compile Include="BOA.Common.Types\ProxyRequest.cs" />
+    <Compile Include="BOA.Common.Types\RequestBase.cs" />
+    <Compile Include="BOA.Common.Types\ResponseBase.cs" />
+    <Compile Include="BOA.Common.Types\Result.cs" />
+    <Compile Include="BOA.Common.Types\Severity.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListView.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\ExternalResponseCodeContract.cs" />
+    <Compile Include="BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs" />
+    <Compile Include="Bridge.BOAIntegration\BasePage.cs" />
+    <Compile Include="Bridge.BOAIntegration\BrowsePage.cs" />
+    <Compile Include="Bridge.BOAIntegration\ReactApi.cs" />
+    <Compile Include="Bridge.BOAIntegration\GridColumnInfo.cs" />
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
