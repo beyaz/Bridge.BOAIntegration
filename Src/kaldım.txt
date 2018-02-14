@@ -122,11 +122,11 @@
 				for(var p in prototypes)
 				{
 					subClass.prototype[p] = prototypes[p];
-				}				
+				}
 			}
 			
 			InheritBridgeClassFromTypeScriptClass( Bridge.BOAIntegration.BrowsePage, b_framework_1.BrowsePage );
-			InheritBridgeClassFromTypeScriptClass( BOA.One.Office.CardGeneral.DebitCard.CardTransactionListView , Bridge.BOAIntegration.BrowsePage );
+			InheritBridgeClassFromTypeScriptClass( BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View , Bridge.BOAIntegration.BrowsePage );
 		}
 
 		/**
@@ -411,7 +411,7 @@
 								 */
 
 							}, {
-								key: "getExternalResponseCodesCommand",
+								key: "getExternalResponseCodesCommand_2",
 								value: function getExternalResponseCodesCommand() {
 									b_form_manager_1.BFormManager.clearStatusMessage();
 									var proxyRequest = {
@@ -467,8 +467,8 @@
 								// METHODS ////////////////////////////////////////////////////////////////////////////////////////////
 
 							}, {
-								key: "proxyDidRespond",
-								value: function proxyDidRespond(proxyResponse) {
+								key: "proxyDidRespond_4",
+								value: function proxyDidRespond_4(proxyResponse) {
 									var key = proxyResponse.key,
 									response = proxyResponse.response;
 
@@ -688,7 +688,7 @@
 
 					return CardTransactionList;
 				}
-				( BOA.One.Office.CardGeneral.DebitCard.CardTransactionListView);
+				( BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View);
 
 				exports.default = b_framework_1.BrowsePageComposer(CardTransactionList);
 				//# sourceMappingURL=card-transaction-list.jsx.map
