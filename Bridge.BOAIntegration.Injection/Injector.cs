@@ -12,10 +12,14 @@ namespace Bridge.BOAIntegration.Injection
         {
             injectInfo.JSData = File.ReadAllText(injectInfo.SourceJsFilePath);
 
-            injectInfo.Code = @"
+            injectInfo.InitializerJSCode = @"
 // --- Injected Code --->
-var window = Window;
-if (!window['Bridge']) {
+
+if (!window['Bridge']) 
+{    
+    window.React = React; 
+    
+
 	var IncludeJs = function IncludeJs(url) 
 	{
 		$.ajax({
@@ -29,7 +33,10 @@ if (!window['Bridge']) {
 	IncludeJs('bridge.meta.js');
 
 	if (!Bridge.$BOAIntegration) {
-		Bridge.$BOAIntegration = {};
+		Bridge.$BOAIntegration = 
+        {
+            $_extends: _extends        
+        };
 	}
 
 	Bridge.$BOAIntegration.BrowsePageInTypeScript = b_framework_1.BrowsePage;
@@ -60,6 +67,9 @@ if (!window['Bridge']) {
 ";
 
             InjectInitializerPart(injectInfo);
+
+            injectInfo.JSData = injectInfo.JSDataInjectedVersion;
+
             InjectInheritancePart(injectInfo);
 
             File.WriteAllText(injectInfo.SourceJsFilePath, injectInfo.JSDataInjectedVersion);
@@ -91,7 +101,7 @@ if (!window['Bridge']) {
 
             var injectLocationIndex = FindInjectLocationIndex(lines);
 
-            lines.Insert(injectLocationIndex, injectInfo.Code);
+            lines.Insert(injectLocationIndex, injectInfo.InitializerJSCode);
 
             injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
         }

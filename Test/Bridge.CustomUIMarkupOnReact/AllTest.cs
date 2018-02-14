@@ -54,10 +54,7 @@ namespace Bridge.BOAIntegration
 
                     return null;
                 },
-                OnPropsEvaluated = (componentClass, componentProp) =>
-                {
-                    
-                }
+                OnPropsEvaluated = (componentClass, componentProp) => componentProp
             };
 
             var element = builder.Build(xmlUI, prop);

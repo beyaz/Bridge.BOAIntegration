@@ -1,12 +1,97 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BOA.Common.Types;
 using BOA.Types.CardGeneral.DebitCard;
+using Bridge;
 using Bridge.BOAIntegration;
 
 namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
 {
     public class View : BrowsePage
     {
+        public ReactElement render()
+        {
+            var pageParams = Script.Write<object>("this.state.pageParams");
+            var context = Script.Write<object>("this.state.context");
+            var me = Script.Write<object>("this");
+
+            var prop = Script.Write<object>("this.state");
+
+
+            var reactUiBuilder = new ReactUIBuilder
+            {
+                ComponentClassFinder = NodeModules.FindComponent,
+                OnPropsEvaluated     = (componentClass, componentProp) =>
+                {
+
+                    componentProp["pageParams"] = pageParams;
+                    componentProp["context"] = context;
+                    componentProp["snapshot"] = prop["snapshot"];
+
+                    var snapKey = componentProp["key"].As<string>();
+
+                    componentProp["snapKey"] = snapKey;
+
+                    var previousSnap =  prop["dynamicProps"][snapKey];
+
+                    componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
+
+                    return componentProp;
+                }
+            };
+
+            var ui = @"
+<BGridSection>
+
+    <BGridRow>
+        <BAccountComponent  
+                accountNumber    = '{windowRequest.searchContract.accountNumber}' 
+                isVisibleBalance = 'false' 
+                isVisibleIBAN    = 'false' />
+    </BGridRow>
+
+     <BGridRow>
+        <BInputMask  
+                type = 'CreditCard' 
+                hintText    = 'TODO:KartNumber' />
+    </BGridRow>
+
+    <BGridRow>
+        <BDateTimePicker  />
+    </BGridRow>
+
+    <BGridRow>
+        <BDateTimePicker  />
+    </BGridRow>
+
+  
+
+</BGridSection>";
+
+
+
+            /*
+             *
+             *   <BGridRow>
+        <BComboBox
+            labelText='commm' 
+            dataSource='{externalResponseCodeList}'
+            defaultValue= '{windowRequest.searchContract.externalResponseCodes}'
+            displayLabelSeperator=','
+            multiSelect='true'
+            multiColumn='true'
+            isAllOptionIncluded='true'
+            valueMemberPath='externalResponseCode'
+            displayMemberPath = 'description'
+        />
+
+    </BGridRow>
+             */
+
+
+            return reactUiBuilder.Build(ui, prop);
+        }
+
         #region Constructors
         public View(object props) : base(props)
         {

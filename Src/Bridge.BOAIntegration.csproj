@@ -96,7 +96,9 @@
 copy /y "$(TargetDir)Bridge\bridge.meta.js"     "D:\BOA\One\wwwroot\"
 
 copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
-copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"</PostBuildEvent>
+copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"
+
+start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets" Condition="Exists('$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

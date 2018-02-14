@@ -13,7 +13,7 @@ namespace Bridge.BOAIntegration
 
         #region Public Properties
         public Func<string, object> ComponentClassFinder { get; set; }
-        public Action<object, object> OnPropsEvaluated { get; set; }
+        public Func<object, object,object> OnPropsEvaluated { get; set; }
         #endregion
 
         #region Public Methods
@@ -25,43 +25,7 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Methods
-        /// <summary>
-        ///     var nodeModuleCache  = __webpack_require__.c;
-        /// </summary>
-        internal object FindInNodeModuleCache(object nodeModuleCache, string nodeTagName)
-        {
-            var i = -1;
-
-            while (true)
-            {
-                i++;
-                dynamic module = nodeModuleCache[i.ToString()];
-
-                if (module == null)
-                {
-                    return null;
-                }
-
-                var exports = module.exports;
-                if (exports == null)
-                {
-                    continue;
-                }
-
-                var defaultt = exports["default"];
-                if (defaultt == null)
-                {
-                    continue;
-                }
-
-                string name = defaultt["name"].As<string>();
-
-                if (nodeTagName.ToUpper() == name.ToUpper())
-                {
-                    return defaultt;
-                }
-            }
-        }
+      
 
         static Element GetRootNode(string xmlString)
         {
@@ -90,6 +54,10 @@ namespace Bridge.BOAIntegration
             for (var i = 0; i < len; i++)
             {
                 var childElement = BuildNodes(childNodes[i].As<Element>(), prop, nodeLocation + Comma + i);
+                if (childElement==null)
+                {
+                    continue;
+                }
                 childElements.Push(childElement);
             }
 
@@ -105,6 +73,11 @@ namespace Bridge.BOAIntegration
 
                 if (bindingInfo == null)
                 {
+                    if (string.IsNullOrWhiteSpace( innerText))
+                    {
+                        return null;
+                    }
+
                     return innerText.As<ReactElement>();
                 }
 
@@ -155,7 +128,7 @@ namespace Bridge.BOAIntegration
 
             elementProps["key"] = nodeLocation;
 
-            OnPropsEvaluated?.Invoke(componentConstructor, elementProps);
+            elementProps = OnPropsEvaluated?.Invoke(componentConstructor, elementProps);
 
             return elementProps;
         }
