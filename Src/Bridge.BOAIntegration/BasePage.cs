@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BOA.One.Office.CardGeneral.DebitCard;
 
 namespace Bridge.BOAIntegration
 {
@@ -42,7 +41,7 @@ namespace Bridge.BOAIntegration
             #endregion
 
             #region Properties
-            CardTransactionListView View
+            BasePage View
             {
                 get { return _view; }
             }

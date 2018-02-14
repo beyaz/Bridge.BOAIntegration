@@ -47,7 +47,8 @@
     <Compile Include="BOA.Common.Types\ResponseBase.cs" />
     <Compile Include="BOA.Common.Types\Result.cs" />
     <Compile Include="BOA.Common.Types\Severity.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListView.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\View.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\ViewState.cs" />
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\ExternalResponseCodeContract.cs" />
     <Compile Include="BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs" />
     <Compile Include="Bridge.BOAIntegration\BasePage.cs" />

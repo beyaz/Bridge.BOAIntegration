@@ -1,24 +1,14 @@
 ﻿using System.Threading.Tasks;
 using BOA.Common.Types;
 using BOA.Types.CardGeneral.DebitCard;
-using Bridge;
 using Bridge.BOAIntegration;
 
-namespace BOA.One.Office.CardGeneral.DebitCard
+namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
 {
-    [ObjectLiteral]
-    public class CardTransactionListViewState
-    {
-        #region Public Properties
-        [Name("externalResponseCodeList")]
-        public ExternalResponseCodeContract[] ExternalResponseCodeList { get; set; }
-        #endregion
-    }
-
-    public class CardTransactionListView : BrowsePage
+    public class View : BrowsePage
     {
         #region Constructors
-        public CardTransactionListView(object props) : base(props)
+        public View(object props) : base(props)
         {
         }
         #endregion
@@ -40,7 +30,7 @@ namespace BOA.One.Office.CardGeneral.DebitCard
             };
         }
 
-        public void SetState(CardTransactionListViewState state)
+        public void SetState(ViewState state)
         {
             base.SetState(state);
         }
@@ -69,7 +59,7 @@ namespace BOA.One.Office.CardGeneral.DebitCard
                 return;
             }
 
-            SetState(new CardTransactionListViewState
+            SetState(new ViewState
             {
                 ExternalResponseCodeList = response.Value
             });
