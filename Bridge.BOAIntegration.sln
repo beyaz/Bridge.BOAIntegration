@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration", "Sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Injection", "Bridge.BOAIntegration.Injection\Bridge.BOAIntegration.Injection.csproj", "{D49450AE-D57F-4E98-8EFF-193FFD4BA4FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Injection.Test", "Bridge.BOAIntegration.Injection.Test\Bridge.BOAIntegration.Injection.Test.csproj", "{FFB0334F-E662-4BB9-B641-FF78E1107767}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D49450AE-D57F-4E98-8EFF-193FFD4BA4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D49450AE-D57F-4E98-8EFF-193FFD4BA4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D49450AE-D57F-4E98-8EFF-193FFD4BA4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D49450AE-D57F-4E98-8EFF-193FFD4BA4FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB0334F-E662-4BB9-B641-FF78E1107767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB0334F-E662-4BB9-B641-FF78E1107767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB0334F-E662-4BB9-B641-FF78E1107767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB0334F-E662-4BB9-B641-FF78E1107767}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
