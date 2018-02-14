@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Bridge.BOAIntegration.Injection
@@ -7,6 +8,63 @@ namespace Bridge.BOAIntegration.Injection
     class Injector
     {
         #region Public Methods
+        public void Inject(InjectInfo injectInfo)
+        {
+            injectInfo.JSData = File.ReadAllText(injectInfo.SourceJsFilePath);
+
+            injectInfo.Code = @"
+// --- Injected Code --->
+var window = Window;
+if (!window['Bridge']) {
+	var IncludeJs = function IncludeJs(url) 
+	{
+		$.ajax({
+			url: url,
+			dataType: 'script',
+			async: false
+		});
+	};
+
+	IncludeJs('bridge.js');
+	IncludeJs('bridge.meta.js');
+
+	if (!Bridge.$BOAIntegration) {
+		Bridge.$BOAIntegration = {};
+	}
+
+	Bridge.$BOAIntegration.BrowsePageInTypeScript = b_framework_1.BrowsePage;
+
+	IncludeJs('Bridge.BOAIntegration.js');
+	IncludeJs('Bridge.BOAIntegration.meta.js');
+
+	Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
+			
+	var InheritBridgeClassFromTypeScriptClass = function(subClass,baseClass)
+	{
+		var  prototypes =  subClass.prototype;
+			
+		_inherits(subClass,baseClass);
+				
+		for(var p in prototypes)
+		{
+			subClass.prototype[p] = prototypes[p];
+		}
+	}
+			
+	InheritBridgeClassFromTypeScriptClass( Bridge.BOAIntegration.BrowsePage, b_framework_1.BrowsePage );
+	InheritBridgeClassFromTypeScriptClass( " + injectInfo.ViewTypeFullName + @" , Bridge.BOAIntegration.BrowsePage );
+}
+
+// <--- Injected Code ---
+
+";
+
+            InjectInitializerPart(injectInfo);
+            InjectInheritancePart(injectInfo);
+
+            File.WriteAllText(injectInfo.SourceJsFilePath, injectInfo.JSDataInjectedVersion);
+        }
+
         public void InjectInheritancePart(InjectInfo injectInfo)
         {
             var lines = Split(injectInfo.JSData);

@@ -7,6 +7,7 @@
         public string JSData                { get; set; }
         public string JSDataInjectedVersion { get; set; }
         public string ViewTypeFullName { get; set; }
+        public string SourceJsFilePath { get; set; }
         #endregion
     }
 }

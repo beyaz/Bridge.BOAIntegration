@@ -111,7 +111,7 @@
 			IncludeJs('Bridge.BOAIntegration.js');
 			IncludeJs('Bridge.BOAIntegration.meta.js');
 
-			 Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
+			Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
 			
 			var InheritBridgeClassFromTypeScriptClass = function(subClass,baseClass)
 			{
@@ -142,6 +142,7 @@
 				var _this = _possibleConstructorReturn(this, (CardTransactionList.__proto__ || Object.getPrototypeOf(CardTransactionList)).call(this, props));
 
 				_this.connect(_this, [card_transaction_list_1.default]);
+				
 						_this.state.columns = _this.getGridColumns();
 						_this.onCustomerSelect = _this.onCustomerSelect.bind(_this);
 						_this.onCustomerNotFound = _this.onCustomerNotFound.bind(_this);
