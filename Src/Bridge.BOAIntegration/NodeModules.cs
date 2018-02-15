@@ -9,8 +9,6 @@ namespace Bridge.BOAIntegration
         internal static object __webpack_require__ => Script.Write<object>("Bridge.BOAIntegration.$__webpack_require__");
 
         internal static Function _extend => Script.Write<Function>("Bridge.$BOAIntegration.$_extends");
-
-        
         #endregion
     }
 
@@ -70,31 +68,9 @@ namespace Bridge.BOAIntegration
             }
         }
 
-        static string FindComponentExportName(string nodeTagName)
-        {
-            if ("BINPUTMASK" == nodeTagName)
-            {
-                return "BInputMask";
-            }
-
-            if ("BDATETIMEPICKER" == nodeTagName)
-            {
-                return "BDateTimePicker";
-            }
-
-
-            if ("BCOMBOBOX" == nodeTagName)
-            {
-                return "BComboBox";
-            }
-
-            
-
-            return nodeTagName;
-        }
         internal static object FindComponent(string nodeTagName)
         {
-            var key = FindComponentExportName(nodeTagName);
+            var key = nodeTagName;
 
             var value = _cache[key];
             if (value != null)
@@ -113,7 +89,7 @@ namespace Bridge.BOAIntegration
 
                 if (module == null)
                 {
-                    if (i<2000)
+                    if (i < 2000)
                     {
                         continue;
                     }
@@ -127,35 +103,12 @@ namespace Bridge.BOAIntegration
                     continue;
                 }
 
-
                 var componentConstructor = exports[key];
-                if (componentConstructor.As<bool>())
+                if (componentConstructor != Script.Undefined)
                 {
                     _cache[key] = componentConstructor;
 
                     return componentConstructor;
-
-                }
-
-
-                // TODO: buraya gelmiyor olablir
-                var defaultt = exports["default"];
-                if (defaultt == null)
-                {
-                    continue;
-                }
-
-                string name = defaultt["name"].As<string>();
-                if (!name.As<bool>())
-                {
-                    continue;
-                }
-
-                if (key == name.ToUpper())
-                {
-                    _cache[key] = defaultt;
-
-                    return defaultt;
                 }
             }
         }

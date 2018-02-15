@@ -36,7 +36,7 @@ namespace Bridge.BOAIntegration
 
             try
             {
-                return jQuery.ParseHTML(xmlString.Trim())[0].As<Element>();
+                return jQuery.ParseXML(xmlString.Trim()).FirstChild.As<Element>();
             }
             catch (Exception e)
             {
@@ -135,9 +135,9 @@ namespace Bridge.BOAIntegration
 
         object GetComponentClassByTagName(string nodeTagName)
         {
-            if (nodeTagName == "DIV")
+            if (nodeTagName == "div")
             {
-                return nodeTagName.ToLower();
+                return nodeTagName;
             }
 
             if (ComponentClassFinder != null)

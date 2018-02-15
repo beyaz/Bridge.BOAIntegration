@@ -10,7 +10,14 @@ namespace Bridge.BOAIntegration.Injection
         #region Public Methods
         public void Inject(InjectInfo injectInfo)
         {
-            injectInfo.JSData = File.ReadAllText(injectInfo.SourceJsFilePath);
+            var allText = File.ReadAllText(injectInfo.SourceJsFilePath);
+
+            if (IsAlreadyInjected(allText))
+            {
+                return;
+            }
+
+            injectInfo.JSData = allText;
 
             injectInfo.InitializerJSCode = @"
 // --- Injected Code --->
@@ -128,6 +135,11 @@ if (!window['Bridge'])
             }
 
             throw new InvalidOperationException(nameof(FindInjectLocationIndex) + " not found.");
+        }
+
+        static bool IsAlreadyInjected(string allText)
+        {
+            return allText.Contains("Bridge.$BOAIntegration");
         }
 
         static List<string> Split(string injectInfoJsData)

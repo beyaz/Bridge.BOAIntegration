@@ -3,7 +3,7 @@ using Bridge;
 
 namespace BOA.One.Office.CardGeneral.DebitCard
 {
-    [External]
+    [ObjectLiteral]
     public class ExternalResponseCodeContract : ContractBase
     {
         public int    externalResponseCode { get; set; }
