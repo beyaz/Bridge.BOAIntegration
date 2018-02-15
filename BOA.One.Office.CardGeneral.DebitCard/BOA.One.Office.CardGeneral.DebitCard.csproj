@@ -40,6 +40,7 @@
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\ViewState.cs" />
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\ExternalResponseCodeContract.cs" />
     <Compile Include="BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs" />
+    <Compile Include="BOA.Types.CardGeneral.DebitCard\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

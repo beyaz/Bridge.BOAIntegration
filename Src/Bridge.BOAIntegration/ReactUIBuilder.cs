@@ -5,6 +5,11 @@ using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
+    public class ReactUIBuilderInput
+    {
+        public string xmlUi;
+        public object prop;
+    }
     public class ReactUIBuilder
     {
         #region Constants
@@ -12,21 +17,19 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Public Properties
-        public Func<string, object> ComponentClassFinder { get; set; }
-        public Func<object, object,object> OnPropsEvaluated { get; set; }
+        public Func<string, object>         ComponentClassFinder { get; set; }
+        public Func<object, object, object> OnPropsEvaluated     { get; set; }
         #endregion
 
         #region Public Methods
-        public ReactElement Build(string xmlUi, object prop)
+        public ReactElement Build(ReactUIBuilderInput input)
         {
-            var rootNode = GetRootNode(xmlUi);
-            return BuildNodes(rootNode, prop, "0");
+            var rootNode = GetRootNode(input.xmlUi);
+            return BuildNodes(rootNode, input.prop, "0");
         }
         #endregion
 
         #region Methods
-      
-
         static Element GetRootNode(string xmlString)
         {
             if (xmlString == null)
@@ -47,17 +50,18 @@ namespace Bridge.BOAIntegration
         object BuildChildNodes(Element node, object prop, string nodeLocation)
         {
             var childNodes = node.ChildNodes;
-            var len = childNodes.Length;
+            var len        = childNodes.Length;
 
             var childElements = new object[0];
 
             for (var i = 0; i < len; i++)
             {
                 var childElement = BuildNodes(childNodes[i].As<Element>(), prop, nodeLocation + Comma + i);
-                if (childElement==null)
+                if (childElement == null)
                 {
                     continue;
                 }
+
                 childElements.Push(childElement);
             }
 
@@ -68,12 +72,12 @@ namespace Bridge.BOAIntegration
         {
             if (node.NodeType == NodeType.Text)
             {
-                var innerText = node.GetInnerText();
+                var innerText   = node.GetInnerText();
                 var bindingInfo = BindingInfo.TryParseExpression(innerText);
 
                 if (bindingInfo == null)
                 {
-                    if (string.IsNullOrWhiteSpace( innerText))
+                    if (string.IsNullOrWhiteSpace(innerText))
                     {
                         return null;
                     }
@@ -100,7 +104,7 @@ namespace Bridge.BOAIntegration
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
         {
             var attributes = node.Attributes;
-            var len = attributes.Length;
+            var len        = attributes.Length;
 
             var elementProps = ObjectLiteral.Create<object>();
 
@@ -108,29 +112,44 @@ namespace Bridge.BOAIntegration
             {
                 var attribute = attributes[i];
 
-                var name = attribute.NodeName;
-                var value = attribute.NodeValue;
-                object valueAsObject = value;
+                var    name          = attribute.NodeName;
+                var    value         = attribute.NodeValue;
 
-                var bindingInfo = BindingInfo.TryParseExpression(value);
-
-                if (bindingInfo != null)
-                {
-                    var propertyPath = bindingInfo.SourcePath;
-
-                    propertyPath.Walk(prop);
-
-                    valueAsObject = propertyPath.GetPropertyValue();
-                }
-
-                elementProps[name] = valueAsObject;
+                elementProps[name] = EvaluateAttributeValue(value, prop);
             }
 
-            elementProps["key"] = nodeLocation;
+            if (elementProps[AttributeName.key] == Script.Undefined)
+            {
+                elementProps[AttributeName.key] = nodeLocation;
+            }
 
             elementProps = OnPropsEvaluated?.Invoke(componentConstructor, elementProps);
 
             return elementProps;
+        }
+
+        object EvaluateAttributeValue( string attributeValue, object prop)
+        {
+            var isMethod = attributeValue.StartsWith("this.");
+            if (isMethod)
+            {
+
+                
+            }
+
+            var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
+
+            if (bindingInfo != null)
+            {
+                var propertyPath = bindingInfo.SourcePath;
+
+                propertyPath.Walk(prop);
+
+                return propertyPath.GetPropertyValue();
+            }
+
+            return attributeValue;
+
         }
 
         object GetComponentClassByTagName(string nodeTagName)

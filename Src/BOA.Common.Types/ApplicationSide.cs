@@ -1,4 +1,6 @@
-﻿namespace BOA.Common.Types
+﻿using Bridge;
+
+namespace BOA.Common.Types
 {
     public enum ApplicationSide
     {
@@ -25,4 +27,21 @@
         FraudEngine              = 20,
         TransactionAuthorization = 21
     }
+
+    [External]
+    [ObjectLiteral]
+    public class ApplicationContext
+    {
+        [Name("user")]
+        public UserContract user { get; set; }
+    }
+
+
+    [External]
+    [ObjectLiteral]
+    public class UserContract
+    {
+
+    }
+    
 }

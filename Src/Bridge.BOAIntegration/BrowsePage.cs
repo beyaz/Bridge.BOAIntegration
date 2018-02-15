@@ -1,52 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using BOA.Common.Types;
+using BOA.Messaging;
 
 namespace Bridge.BOAIntegration
 {
     public class BrowsePage : BasePage
     {
-
-
-        protected ReactElement BuildUI(string xmlUI,object prop)
-        {
-            var pageParams = Script.Write<object>("this.state.pageParams");
-            var context    = Script.Write<object>("this.state.context");
-            var me         = Script.Write<object>("this");
-         
-
-            var reactUiBuilder = new ReactUIBuilder
-            {
-                ComponentClassFinder = NodeModules.FindComponent,
-                OnPropsEvaluated = (componentClass, componentProp) =>
-                {
-
-                    componentProp["pageParams"] = pageParams;
-                    componentProp["context"]    = context;
-                    componentProp["snapshot"]   = prop["snapshot"];
-
-                    if (componentProp["snapshot"]["state"] == Script.Undefined)
-                    {
-                        // TODO:  combo da böle bişey oluyo ? 
-                        componentProp["snapshot"]["state"] = ObjectLiteral.Create<object>();
-                    }
-                    var snapKey = componentProp["key"].As<string>();
-
-                    componentProp["snapKey"] = snapKey;
-
-                    var previousSnap = prop["dynamicProps"][snapKey];
-
-                    componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
-
-                    return componentProp;
-                }
-            };
-
-
-            return reactUiBuilder.Build(xmlUI, prop);
-        }
-
-
         #region Constructors
         [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         public BrowsePage(object props)
@@ -56,10 +16,20 @@ namespace Bridge.BOAIntegration
         }
         #endregion
 
+        #region Public Properties
+        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
+        public BState State { [Template("state")] get; }
+        #endregion
+
         #region Public Methods
-        public string GetMessage(string groupName, string propertyName)
+        public virtual string GetMessage(string groupName, string propertyName)
         {
-            return NodeModules.getMessage().Call(null, groupName, propertyName).As<string>();
+            return Helper.GetMessage(groupName, propertyName);
+        }
+
+        public void SetState<T>(T state) where T : BState
+        {
+            setState(state);
         }
 
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
@@ -68,13 +38,41 @@ namespace Bridge.BOAIntegration
         {
             var dialogHelper = NodeModules.BDialogHelper();
 
-            Script.Write(" dialogHelper.showError(this.state.context,message,results); ");
+            Script.Write("dialogHelper.showError(this.state.context,message,results); ");
         }
         #endregion
 
         #region Methods
-        [Name("setState")]
-        protected extern void SetState(object state);
+        protected ReactElement BuildUI(string xmlUI, object prop)
+        {
+            var reactUiBuilder = new ReactUIBuilder
+            {
+                ComponentClassFinder = NodeModules.FindComponent,
+                OnPropsEvaluated     = OnPropsEvaluated
+            };
+
+            return reactUiBuilder.Build(new ReactUIBuilderInput{ xmlUi =  xmlUI, prop = prop });
+        }
+
+        object OnPropsEvaluated(object componentClass, object componentProp)
+        {
+            var pageParams = State.PageParams;
+            var context    = State.Context;
+
+            var snapKey = componentProp[AttributeName.key].As<string>();
+
+            componentProp[AttributeName.snapKey]    = snapKey;
+            componentProp[AttributeName.pageParams] = pageParams;
+            componentProp[AttributeName.context]    = context;
+            componentProp[AttributeName.snapshot]   = State[AttributeName.snapshot][snapKey];
+            var previousSnap = State[AttributeName.dynamicProps][snapKey];
+
+            componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
+
+            return componentProp;
+        }
+
+        extern void setState(object state);
         #endregion
     }
 }
