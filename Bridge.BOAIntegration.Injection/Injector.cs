@@ -50,6 +50,8 @@ if (!window['Bridge'])
 
 	IncludeJs('Bridge.BOAIntegration.js');
 	IncludeJs('Bridge.BOAIntegration.meta.js');
+    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.js');
+    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.meta.js');
 
 	Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
 			

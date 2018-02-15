@@ -47,10 +47,6 @@
     <Compile Include="BOA.Common.Types\ResponseBase.cs" />
     <Compile Include="BOA.Common.Types\Result.cs" />
     <Compile Include="BOA.Common.Types\Severity.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\View.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\ViewState.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\ExternalResponseCodeContract.cs" />
-    <Compile Include="BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs" />
     <Compile Include="Bridge.BOAIntegration\BasePage.cs" />
     <Compile Include="Bridge.BOAIntegration\BrowsePage.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactApi.cs" />
@@ -96,9 +92,7 @@
 copy /y "$(TargetDir)Bridge\bridge.meta.js"     "D:\BOA\One\wwwroot\"
 
 copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
-copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"
-
-start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View"</PostBuildEvent>
+copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets" Condition="Exists('$(SolutionDir)packages\Bridge.Min.16.7.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

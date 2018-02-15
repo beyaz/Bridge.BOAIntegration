@@ -25,11 +25,10 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
     }
     public class View : BrowsePage
     {
+
+
         public ReactElement render() 
         {
-            var pageParams = Script.Write<object>("this.state.pageParams");
-            var context = Script.Write<object>("this.state.context");
-            var me = Script.Write<object>("this");
 
             var viewState = new ViewState
             {
@@ -59,37 +58,17 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
             prop = newProp;
 
 
-            var reactUiBuilder = new ReactUIBuilder
-            {
-                ComponentClassFinder = NodeModules.FindComponent,
-                OnPropsEvaluated     = (componentClass, componentProp) =>
-                {
-
-                    componentProp["pageParams"] = pageParams;
-                    componentProp["context"] = context;
-                    componentProp["snapshot"] = prop["snapshot"];
-
-                    if (componentProp["snapshot"]["state"] == Script.Undefined)
-                    {
-                        // TODO:  combo da böle bişey oluyo ? 
-                        componentProp["snapshot"]["state"] = ObjectLiteral.Create<object>();
-                    }
-                    var snapKey = componentProp["key"].As<string>();
-
-                    componentProp["snapKey"] = snapKey;
-
-                    var previousSnap =  prop["dynamicProps"][snapKey];
-
-                    componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
-
-                    return componentProp;
-                }
-            };
 
 
-            
 
-            var ui = @"
+
+
+
+
+
+
+
+            return BuildUI(@"
 <BGridSection>
 
     <BGridRow>
@@ -114,6 +93,7 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
     </BGridRow>
 
  <BGridRow>
+
         <BComboBox
             labelText='commm' 
             dataSource='{externalResponseCodeList}'
@@ -127,18 +107,10 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
             displayMemberPath = 'description'
         />
 
-    </BGridRow>
+    </BGridRow>  
 
-  
-
-</BGridSection>";
-
-
-
-           
-
-
-            return reactUiBuilder.Build(ui, prop);
+</BGridSection>
+", prop);
         }
 
         #region Constructors
