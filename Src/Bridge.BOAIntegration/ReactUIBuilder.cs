@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Data;
 using Bridge.Html5;
 using Bridge.jQuery2;
@@ -7,25 +8,45 @@ namespace Bridge.BOAIntegration
 {
     public class ReactUIBuilderInput
     {
-        public string xmlUi;
-        public object prop;
+        #region Public Properties
+        public object Caller { get; set; }
+        public object Prop   { get; set; }
+        public string XmlUI  { get; set; }
+        #endregion
     }
+
+    public delegate object ComponentClassFinder(string nodeTagName);
+
+    public class ReactUIBuilderData
+    {
+        #region Public Properties
+        public object CurrentComponentClass { get; internal set; }
+        public object CurrentComponentProp  { get; internal set; }
+        #endregion
+    }
+
     public class ReactUIBuilder
     {
         #region Constants
         const string Comma = ",";
         #endregion
 
+        #region Fields
+        readonly ReactUIBuilderData Data = new ReactUIBuilderData();
+        ReactUIBuilderInput         Input;
+        #endregion
+
         #region Public Properties
-        public Func<string, object>         ComponentClassFinder { get; set; }
-        public Func<object, object, object> OnPropsEvaluated     { get; set; }
+        public ComponentClassFinder             ComponentClassFinder { get; set; }
+        public Func<ReactUIBuilderData, object> OnPropsEvaluated     { get; set; }
         #endregion
 
         #region Public Methods
         public ReactElement Build(ReactUIBuilderInput input)
         {
-            var rootNode = GetRootNode(input.xmlUi);
-            return BuildNodes(rootNode, input.prop, "0");
+            Input = input;
+            var rootNode = GetRootNode(input.XmlUI);
+            return BuildNodes(rootNode, input.Prop, "0");
         }
         #endregion
 
@@ -101,40 +122,18 @@ namespace Bridge.BOAIntegration
             return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, prop, nodeLocation), BuildChildNodes(node, prop, nodeLocation));
         }
 
-        object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
-        {
-            var attributes = node.Attributes;
-            var len        = attributes.Length;
-
-            var elementProps = ObjectLiteral.Create<object>();
-
-            for (var i = 0; i < len; i++)
-            {
-                var attribute = attributes[i];
-
-                var    name          = attribute.NodeName;
-                var    value         = attribute.NodeValue;
-
-                elementProps[name] = EvaluateAttributeValue(value, prop);
-            }
-
-            if (elementProps[AttributeName.key] == Script.Undefined)
-            {
-                elementProps[AttributeName.key] = nodeLocation;
-            }
-
-            elementProps = OnPropsEvaluated?.Invoke(componentConstructor, elementProps);
-
-            return elementProps;
-        }
-
-        object EvaluateAttributeValue( string attributeValue, object prop)
+        object EvaluateAttributeValue(string attributeValue, object prop)
         {
             var isMethod = attributeValue.StartsWith("this.");
             if (isMethod)
             {
+                // ReSharper disable once UnusedVariable
+                var methodName = attributeValue.RemoveFromStart("this.").Trim();
 
-                
+                // ReSharper disable once UnusedVariable
+                var caller = Input.Caller;
+
+                return Script.Write<object>(@"function(){ return caller[methodName].apply(caller,arguments);  } ");
             }
 
             var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
@@ -149,7 +148,78 @@ namespace Bridge.BOAIntegration
             }
 
             return attributeValue;
+        }
 
+
+        void BDateTimePicker_onChange_Handler(DateTime? value,string bindingPath)
+        {
+            var caller = Input.Caller;
+            var propertyPath = new PropertyPath(bindingPath);
+            var state = caller[AttributeName.state];
+
+            propertyPath.Walk(state);
+
+            propertyPath.SetPropertyValue(value.As<object>());
+        }
+
+
+        object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
+        {
+            var me = this;
+
+            var attributes = node.Attributes;
+            var len        = attributes.Length;
+
+            var elementProps = ObjectLiteral.Create<object>();
+
+            for (var i = 0; i < len; i++)
+            {
+                var attribute = attributes[i];
+
+                var name  = attribute.NodeName;
+                var value = attribute.NodeValue.Trim();
+
+                elementProps[name] = EvaluateAttributeValue(value, prop);
+
+                var bindingInfo = BindingInfo.TryParseExpression(value);
+
+                if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
+                {
+                    // ReSharper disable once UnusedVariable
+                    var bindingPath = bindingInfo.SourcePath.Path;
+
+                    if (node.TagName == "BDateTimePicker")
+                    {
+                        var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
+                        {
+                            me.BDateTimePicker_onChange_Handler(value,bindingPath);
+                        }");
+                        elementProps["onChange"] = onChangeHandlerFunction;
+                    }
+                    else
+                    {
+                        // TODO: diğerleri için de yapılmalı bulamaz ise error fırlatmalı.
+                    }
+                    
+
+                  
+                }
+            }
+
+            if (elementProps[AttributeName.key] == Script.Undefined)
+            {
+                elementProps[AttributeName.key] = nodeLocation;
+            }
+
+            if (OnPropsEvaluated != null)
+            {
+                Data.CurrentComponentClass = componentConstructor;
+                Data.CurrentComponentProp  = elementProps;
+
+                elementProps = OnPropsEvaluated(Data);
+            }
+
+            return elementProps;
         }
 
         object GetComponentClassByTagName(string nodeTagName)

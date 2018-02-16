@@ -36,11 +36,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\BOA.Types.CardGeneral.DebitCard\CardTransaction\CardTransactionRequest.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\BOA.Types.CardGeneral.DebitCard\CardTransaction\CardTransactionRequest.designer.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.designer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\DebitTransactionContract.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\DebitTransactionContract.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\DebitTransactionContract.designer.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\DebitTransactionContract.designer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\DebitTransactionSearchContract.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\DebitTransactionSearchContract.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\DebitTransactionSearchResultContract.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\DebitTransactionSearchResultContract.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\ExternalResponseCodeContract.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\ExternalResponseCodeContract.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\ExternalResponseCodeContract.designer.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\ExternalResponseCodeContract.designer.cs</Link>
+    </Compile>
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\View.cs" />
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\ViewState.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\ExternalResponseCodeContract.cs" />
-    <Compile Include="BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.cs" />
-    <Compile Include="BOA.Types.CardGeneral.DebitCard\Message.cs" />
+    <Compile Include="BOA.Types.Kernel.DebitCard\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

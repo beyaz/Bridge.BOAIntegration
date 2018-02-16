@@ -1,4 +1,5 @@
-﻿using Bridge;
+﻿using BOA.Types.Kernel.DebitCard;
+using Bridge;
 using Bridge.BOAIntegration;
 
 namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList

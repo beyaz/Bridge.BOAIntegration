@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using Bridge.Html5;
 using Bridge.jQuery2;
 using Bridge.QUnit;
@@ -54,10 +53,10 @@ namespace Bridge.BOAIntegration
 
                     return null;
                 },
-                OnPropsEvaluated = (componentClass, componentProp) => componentProp
+                OnPropsEvaluated = (reactUIBuilderData) => reactUIBuilderData.CurrentComponentProp
             };
 
-            var element = builder.Build(xmlUI, prop);
+            var element = builder.Build(new ReactUIBuilderInput{ XmlUI  = xmlUI,Prop = prop});
             return element;
         }
 

@@ -26,7 +26,7 @@ namespace System.Windows
 
         #region Properties
         internal bool IsNotReadyToUpdate => !_pathLastNodeIsReachable;
-        Trigger LastTrigger => Triggers[Triggers.Count - 1];
+        Trigger       LastTrigger        => Triggers[Triggers.Count - 1];
         #endregion
 
         #region Public Methods
@@ -49,21 +49,11 @@ namespace System.Windows
                 throw new InvalidOperationException("PropertyPathProblem:" + Path);
             }
 
-            var lastTrigger = LastTrigger;
-            var instance = lastTrigger.Instance;
+            var lastTrigger  = LastTrigger;
+            var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
 
             return GetPropertyValue(instance, propertyName);
-        }
-
-        static object GetPropertyValue(object instance, string propertyName)
-        {
-            if (instance.GetType() == typeof(object))
-            {
-                return instance[propertyName];
-            }
-
-            return ReflectionHelper.GetPropertyValue(instance, propertyName);
         }
 
         public void Listen(object instance, Action onPropertyValueChanged)
@@ -87,8 +77,8 @@ namespace System.Windows
 
         public void SetPropertyValue(object value)
         {
-            var lastTrigger = LastTrigger;
-            var instance = lastTrigger.Instance;
+            var lastTrigger  = LastTrigger;
+            var instance     = lastTrigger.Instance;
             var propertyName = lastTrigger.PropertyName;
 
             var propertyType = ReflectionHelper.FindProperty(instance, propertyName)?.PropertyType;
@@ -97,7 +87,7 @@ namespace System.Windows
                 value = Cast.To(value, propertyType, CultureInfo.CurrentCulture);
             }
 
-            ReflectionHelper.SetPropertyValue(instance, propertyName, value);
+            SetPropertyValue(instance, propertyName, value);
         }
 
         public void Walk(object instance)
@@ -125,7 +115,7 @@ namespace System.Windows
                 {
                     Triggers.Add(new Trigger
                     {
-                        Instance = instance,
+                        Instance     = instance,
                         PropertyName = path
                     });
                     return;
@@ -135,7 +125,7 @@ namespace System.Windows
 
                 Triggers.Add(new Trigger
                 {
-                    Instance = instance,
+                    Instance     = instance,
                     PropertyName = propertyName
                 });
 
@@ -143,6 +133,27 @@ namespace System.Windows
 
                 path = path.Substring(firstDat + 1);
             }
+        }
+
+        static object GetPropertyValue(object instance, string propertyName)
+        {
+            if (instance.GetType() == typeof(object))
+            {
+                return instance[propertyName];
+            }
+
+            return ReflectionHelper.GetPropertyValue(instance, propertyName);
+        }
+
+        static void SetPropertyValue(object instance, string propertyName, object value)
+        {
+            if (instance.GetType() == typeof(object))
+            {
+                instance[propertyName] = value;
+                return;
+            }
+
+            ReflectionHelper.SetPropertyValue(instance, propertyName, value);
         }
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BOA.Common.Types;
 using BOA.Types.CardGeneral.DebitCard;
+using BOA.Types.Kernel.DebitCard;
 using Bridge;
 using Bridge.BOAIntegration;
 
@@ -40,8 +41,8 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
                 {
                     new ExternalResponseCodeContract
                     {
-                        externalResponseCode = 3,
-                        description          = "hh"
+                        ExternalResponseCode = 3,
+                        Description          = "hh"
                     }
                 },
                 externalResponseCodeListColumns = new[]
@@ -85,11 +86,12 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
      <BGridRow>
         <BInputMask  
                 type = 'CreditCard' 
-                hintText    = 'TODO:KartNumber' />
+                hintText    = 'TODO:KartNumber'                
+                />
     </BGridRow>
 
     <BGridRow>
-        <BDateTimePicker  />
+        <BDateTimePicker  value = '{windowRequest.searchContract.processTransactionTimeBegin}' />
     </BGridRow>
 
     <BGridRow>

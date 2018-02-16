@@ -51,11 +51,18 @@ namespace Bridge.BOAIntegration
                 OnPropsEvaluated     = OnPropsEvaluated
             };
 
-            return reactUiBuilder.Build(new ReactUIBuilderInput{ xmlUi =  xmlUI, prop = prop });
+            return reactUiBuilder.Build(new ReactUIBuilderInput
+            {
+                XmlUI  = xmlUI,
+                Prop   = prop,
+                Caller = this
+            });
         }
 
-        object OnPropsEvaluated(object componentClass, object componentProp)
+        object OnPropsEvaluated(ReactUIBuilderData data)
         {
+            var componentProp = data.CurrentComponentProp;
+
             var pageParams = State.PageParams;
             var context    = State.Context;
 
@@ -68,6 +75,11 @@ namespace Bridge.BOAIntegration
             var previousSnap = State[AttributeName.dynamicProps][snapKey];
 
             componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
+
+            // ReSharper disable once UnusedVariable
+            var me = this;
+
+            componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.snaps[ snapKey ] = r;  }");
 
             return componentProp;
         }
