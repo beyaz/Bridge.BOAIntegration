@@ -47,7 +47,7 @@
     <Compile Include="BOA.Common.Types\ResponseBase.cs" />
     <Compile Include="BOA.Common.Types\Result.cs" />
     <Compile Include="BOA.Common.Types\Severity.cs" />
-    <Compile Include="BOA.Messaging\Helper.cs" />
+    <Compile Include="BOA.Messaging\MessagingHelper.cs" />
     <Compile Include="Bridge.BOAIntegration\AttributeName.cs" />
     <Compile Include="Bridge.BOAIntegration\BState.cs" />
     <Compile Include="Bridge.BOAIntegration\BContext.cs" />

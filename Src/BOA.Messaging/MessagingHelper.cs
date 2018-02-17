@@ -3,7 +3,7 @@ using Bridge.BOAIntegration;
 
 namespace BOA.Messaging
 {
-    public static class Helper
+    public static class MessagingHelper
     {
         #region Public Methods
         public static string GetMessage(string groupName, string propertyName)

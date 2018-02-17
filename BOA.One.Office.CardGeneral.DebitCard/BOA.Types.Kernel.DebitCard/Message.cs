@@ -19,7 +19,7 @@
         #region Constructors
         public Label()
         {
-            CardNumber = Messaging.Helper.GetMessage("CardGeneral", "CardNumber");
+            CardNumber = Messaging.MessagingHelper.GetMessage("CardGeneral", "CardNumber");
         }
         #endregion
 

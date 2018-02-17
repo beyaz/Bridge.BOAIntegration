@@ -1,10 +1,22 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using BOA.Common.Types;
 
 namespace Bridge.BOAIntegration
 {
-    public class BasePage
+    public class BasePage: INotifyPropertyChanged
     {
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string prop)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+
         #region Events
         internal event Action<string, object> OnProxyDidRespond;
         #endregion
@@ -14,6 +26,20 @@ namespace Bridge.BOAIntegration
         {
             return ServiceCallExecuter.Call(proxyRequest, this).As<Task<TResponse>>();
         }
+
+
+        public Task<Response> ExecuteAsync<Request, Response>(Request request) where Request : RequestBase, new() where Response : ResponseBase
+        {
+            var proxyRequest = new ProxyRequest<Request>
+            {
+                RequestClass = request.GetType().FullName,
+                RequestBody = request,
+                Key =request.MethodName
+            };
+
+            return ServiceCallExecuter.Call(proxyRequest, this).As<Task<Response>>();
+        }
+
 
         [Name("proxyExecute")]
         public extern void ProxyExecute(object requestContainer);

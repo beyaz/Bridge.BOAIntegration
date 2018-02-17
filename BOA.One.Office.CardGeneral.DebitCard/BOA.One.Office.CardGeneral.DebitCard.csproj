@@ -42,6 +42,12 @@
     <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\BOA.Types.CardGeneral.DebitCard\CardTransaction\CardTransactionRequest.designer.cs">
       <Link>BOA.Types.CardGeneral.DebitCard\CardTransactionRequest.designer.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\BOA.Types.CardGeneral.DebitCard\Labels.cs">
+      <Link>BOA.Types.CardGeneral.DebitCard\Labels.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CardTransactionList\CardTransactionListScreen\Model.cs">
+      <Link>BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\Model.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\DebitTransactionContract.cs">
       <Link>BOA.Types.CardGeneral.DebitCard\DebitTransactionContract.cs</Link>
     </Compile>
@@ -60,8 +66,8 @@
     <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\ExternalResponseCodeContract.designer.cs">
       <Link>BOA.Types.CardGeneral.DebitCard\ExternalResponseCodeContract.designer.cs</Link>
     </Compile>
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\View.cs" />
-    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionList\ViewState.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\View.cs" />
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\ViewState.cs" />
     <Compile Include="BOA.Types.Kernel.DebitCard\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,6 +104,6 @@
     <PostBuildEvent>copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
 copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"
 
-start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View"</PostBuildEvent>
+start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen.View"</PostBuildEvent>
   </PropertyGroup>
 </Project>

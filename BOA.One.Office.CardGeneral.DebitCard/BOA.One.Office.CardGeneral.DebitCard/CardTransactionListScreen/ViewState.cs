@@ -2,7 +2,7 @@
 using Bridge;
 using Bridge.BOAIntegration;
 
-namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
+namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
 {
     [ObjectLiteral]
     public class ViewState:BState

@@ -1,14 +1,73 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BOA.Common.Types;
 using BOA.Types.CardGeneral.DebitCard;
 using BOA.Types.Kernel.DebitCard;
+using BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen;
 using Bridge;
 using Bridge.BOAIntegration;
 
-namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
+namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
 {
     public class View : BrowsePage
     {
+
+
+        async Task clearCommand()
+        {
+            await CleanExecute();
+        }
+
+        /// <summary>
+        ///     Cleans the execute.
+        /// </summary>
+        async Task CleanExecute()
+        {
+            var model = new Model
+            {
+                LabelWidth = 125,
+
+                SearchContract = new DebitTransactionSearchContract
+                {
+                    TransactionDateBegin        = DateTime.Today.AddDays(-10),
+                    TransactionDateEnd          = DateTime.Today,
+                    ProcessTransactionTimeBegin = "00:00",
+                    ProcessTransactionTimeEnd   = "23:59",
+                    ExternalResponseCodes       = new List<int>()
+                },
+                TransactionList               = new List<DebitTransactionSearchResultContract>(),
+                ExternalResponseCodes         = await GetExternalResponseCodes(),
+                SelectedExternalResponseCodes = new List<ContractBase>()
+            };
+
+            model.ExternalResponseCodes.ForEach(x => x.IsSelected = true);
+
+            Model = model;
+
+            SetState(new ViewState{ExternalResponseCodeList = model.ExternalResponseCodes.ToArray() });
+            
+        }
+
+
+        Model _model;
+
+        /// <summary>
+        ///     Gets or sets the model.
+        /// </summary>
+        public Model Model
+        {
+            get { return _model; }
+            set
+            {
+                if (_model != value)
+                {
+                    _model = value;
+                    OnPropertyChanged("Model");
+                }
+            }
+        }
 
         public Message Message { get; set; } = new Message();
 
@@ -119,33 +178,47 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionList
 ", prop);
         }
 
-        
+
         #endregion
 
         #region Methods
-        async Task getExternalResponseCodesCommand()
+
+
+        async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
         {
-            var proxyRequest = new ProxyRequest<CardTransactionRequest>
+            var response = await base.ExecuteAsync<RequestBase, GenericResponse<TResponseValueType>>(request);
+            if (response.Success)
             {
-                RequestClass = "BOA.Types.CardGeneral.DebitCard.CardTransactionRequest",
-                RequestBody = new CardTransactionRequest
-                {
-                    MethodName = "GetExternalResponseCodes"
-                },
-                Key = "GetExternalResponseCodes"
-            };
-
-            var response = await Execute<GenericResponse<ExternalResponseCodeContract[]>>(proxyRequest);
-
-            if (!response.Success)
-            {
-                ShowError(Message.ErrorOccurredWhileFetchingData, response.Results);
-                return;
+                return response.Value;
             }
 
+            throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
+        }
+
+
+
+        /// <summary>
+        ///     Gets the external response codes.
+        /// </summary>
+        async Task<List<ExternalResponseCodeContract>> GetExternalResponseCodes()
+        {
+            var request = new CardTransactionRequest
+            {
+                MethodName = "GetExternalResponseCodes"
+            };
+            var list = await ExecuteAsync<List<ExternalResponseCodeContract>>(request);
+
+            list.ForEach(x => x.Description = x.ExternalResponseCode.ToString().PadLeft(2, '0'));
+
+            return list;
+        }
+
+
+        async Task getExternalResponseCodesCommand()
+        {
             SetState(new ViewState
             {
-                ExternalResponseCodeList = response.Value
+                ExternalResponseCodeList = (await GetExternalResponseCodes()).ToArray()
             });
         }
         #endregion

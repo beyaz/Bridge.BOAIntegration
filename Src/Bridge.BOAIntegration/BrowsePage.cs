@@ -24,7 +24,7 @@ namespace Bridge.BOAIntegration
         #region Public Methods
         public virtual string GetMessage(string groupName, string propertyName)
         {
-            return Helper.GetMessage(groupName, propertyName);
+            return MessagingHelper.GetMessage(groupName, propertyName);
         }
 
         public void SetState<T>(T state) where T : BState
