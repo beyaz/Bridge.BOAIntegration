@@ -19,7 +19,7 @@ namespace Bridge.BOAIntegration.Injection
 
             injectInfo.JSData = allText;
 
-            injectInfo.InitializerJSCode = @"
+            injectInfo.JSCodeWillbeInject = @"
 // --- Injected Code --->
 
 if (!window['Bridge']) 
@@ -38,6 +38,7 @@ if (!window['Bridge'])
 
 	IncludeJs('bridge.js');
 	IncludeJs('bridge.meta.js');
+    IncludeJs('newtonsoft.json.js');
 
 	if (!Bridge.$BOAIntegration) {
 		Bridge.$BOAIntegration = 
@@ -65,6 +66,9 @@ if (!window['Bridge'])
 		{
 			subClass.prototype[p] = prototypes[p];
 		}
+
+        // for support bridge type system.
+		subClass.prototype['$getType'] = function(){  return subClass; }
 	}
 			
 	InheritBridgeClassFromTypeScriptClass( Bridge.BOAIntegration.BrowsePage, b_framework_1.BrowsePage );
@@ -77,6 +81,22 @@ if (!window['Bridge'])
 
             InjectInitializerPart(injectInfo);
 
+            injectInfo.JSData = injectInfo.JSDataInjectedVersion;
+
+
+
+            injectInfo.JSCodeWillbeInject = @"
+
+        // --- Injected Code --->
+		_this.constructor  				= _b_framework_1$Browse;
+		
+		// force to reinitialize Bridge.net type information
+		_this.constructor.$initMetaData = false;
+		// <--- Injected Code ---
+
+";
+
+            InjectConstructorPart(injectInfo);
             injectInfo.JSData = injectInfo.JSDataInjectedVersion;
 
             InjectInheritancePart(injectInfo);
@@ -110,21 +130,39 @@ if (!window['Bridge'])
 
             var injectLocationIndex = FindInjectLocationIndex(lines);
 
-            lines.Insert(injectLocationIndex, injectInfo.InitializerJSCode);
+            lines.Insert(injectLocationIndex, injectInfo.JSCodeWillbeInject);
 
             injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
         }
+
+        public virtual void InjectConstructorPart(InjectInfo injectInfo)
+        {
+            var lines = Split(injectInfo.JSData);
+
+            var injectLocationIndex = FindInjectLocationIndex(lines, "_this.connect");
+
+            lines.Insert(injectLocationIndex, injectInfo.JSCodeWillbeInject);
+
+            injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
+        }
+
+        
         #endregion
 
         #region Methods
         static int FindInjectLocationIndex(List<string> lines)
+        {
+            return FindInjectLocationIndex(lines, "__webpack_require__(");
+        }
+
+        static int FindInjectLocationIndex(List<string> lines,string lineContains)
         {
             var isFirstFunctionFound = false;
             for (var i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
 
-                if (line.Contains("__webpack_require__("))
+                if (line.Contains(lineContains))
                 {
                     isFirstFunctionFound = true;
                     continue;
@@ -138,6 +176,9 @@ if (!window['Bridge'])
 
             throw new InvalidOperationException(nameof(FindInjectLocationIndex) + " not found.");
         }
+
+
+        
 
         static bool IsAlreadyInjected(string allText)
         {

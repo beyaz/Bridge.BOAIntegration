@@ -94,8 +94,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetDir)Bridge\bridge.js"      	"D:\BOA\One\wwwroot\"
-copy /y "$(TargetDir)Bridge\bridge.meta.js"     "D:\BOA\One\wwwroot\"
+    <PostBuildEvent>copy /y "$(TargetDir)Bridge\bridge.js"      	           "D:\BOA\One\wwwroot\"
+copy /y "$(TargetDir)Bridge\bridge.meta.js"         "D:\BOA\One\wwwroot\"
+copy /y "$(TargetDir)Bridge\newtonsoft.json.js"  "D:\BOA\One\wwwroot\"
 
 copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
 copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"</PostBuildEvent>

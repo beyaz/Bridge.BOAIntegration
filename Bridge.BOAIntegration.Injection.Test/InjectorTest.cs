@@ -19,7 +19,7 @@ A
 B
 C",
 
-                InitializerJSCode = "X"
+                JSCodeWillbeInject = "X"
             };
 
             injector.InjectInitializerPart(injectInfo);

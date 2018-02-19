@@ -9,7 +9,7 @@ namespace Bridge.BOAIntegration
     class Component_1_Prop
     {
         #region Public Properties
-        public string name5 { get; set; }
+        public string Name5 { get; set; }
         #endregion
     }
 
@@ -25,7 +25,10 @@ namespace Bridge.BOAIntegration
         #region Public Methods
         public override ReactElement render()
         {
-            return ReactElement.Create("a", Props);
+            var prop = ObjectLiteral.Create<object>();
+            prop["href"] = Props.Name5;
+
+            return ReactElement.Create("a", prop);
         }
         #endregion
     }
@@ -46,7 +49,7 @@ namespace Bridge.BOAIntegration
             {
                 ComponentClassFinder = tag =>
                 {
-                    if (tag == nameof(Component_1).ToUpper())
+                    if (tag == nameof(Component_1))
                     {
                         return typeof(Component_1);
                     }
@@ -56,7 +59,7 @@ namespace Bridge.BOAIntegration
                 OnPropsEvaluated = (reactUIBuilderData) => reactUIBuilderData.CurrentComponentProp
             };
 
-            var element = builder.Build(new ReactUIBuilderInput{ XmlUI  = xmlUI,Prop = prop});
+            var element = builder.Build(new ReactUIBuilderInput{ XmlUI  = xmlUI,DataContext = prop});
             return element;
         }
 
@@ -67,6 +70,7 @@ namespace Bridge.BOAIntegration
                         "   <div x='{Inner.Name3}'>{Width3}</div>" +
                         "<Component_1 Name5='{Inner.Name3}' />" +
                         "</div>";
+
             dynamic prop = ObjectLiteral.Create<object>();
             prop.name   = "AbC";
             prop.Width3 = 45;
@@ -85,8 +89,8 @@ namespace Bridge.BOAIntegration
             var actual = container.Html();
 
             var expected = "<div width4=\"45\">" +
-                           "   <div>AbC</div>" +
-                           "   <div x=\"YYç\">45</div><a name5=\"YYç\"></a>" +
+                           "<div>AbC</div>" +
+                           "<div x=\"YYç\">45</div><a href=\"YYç\"></a>" +
                            "</div>";
 
             assert.Equal(actual, expected);

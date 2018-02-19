@@ -48,15 +48,26 @@ namespace Bridge.BOAIntegration
             var reactUiBuilder = new ReactUIBuilder
             {
                 ComponentClassFinder = NodeModules.FindComponent,
-                OnPropsEvaluated     = OnPropsEvaluated
+                OnPropsEvaluated     = OnPropsEvaluated,
+                OnBeforeStartToProcessAttribute = OnBeforeStartToProcessAttribute
             };
 
             return reactUiBuilder.Build(new ReactUIBuilderInput
             {
                 XmlUI  = xmlUI,
-                Prop   = prop,
+                DataContext   = prop,
                 Caller = this
             });
+        }
+
+        void OnBeforeStartToProcessAttribute(ReactUIBuilderData data)
+        {
+            MakeLowercaseFirstChar(data);
+        }
+
+         static void MakeLowercaseFirstChar(ReactUIBuilderData data)
+        {
+            data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
         }
 
         object OnPropsEvaluated(ReactUIBuilderData data)
@@ -81,10 +92,32 @@ namespace Bridge.BOAIntegration
 
             componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.snaps[ snapKey ] = r;  }");
 
+            if (data.CurrentComponentName == "BInputMask")
+            {
+                // TODO: bug fix value null olduğunda _isCorrectFormatText metodu patlıyor. düzeltileiblir
+                if (componentProp[AttributeName.value] == null)
+                {
+                    componentProp[AttributeName.value] = "";
+                }
+            }
+
+
+            if (data.CurrentComponentName == "BComboBox")
+            {
+                // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
+                if (componentProp[AttributeName.dataSource] == null)
+                {
+                    componentProp[AttributeName.dataSource] = new object[0];
+                }
+            }
+
+
+
             return componentProp;
         }
 
         extern void setState(object state);
+        protected extern void forceUpdate(); 
         #endregion
     }
 }

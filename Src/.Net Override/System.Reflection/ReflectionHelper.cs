@@ -106,10 +106,21 @@ namespace System.Reflection
                 return propertyInfo.GetValue(instance);
             }
 
-            
+            throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
+        }
+
+
+        public static object GetPropertyValue(object instance, string propertyName, BindingFlags flags)
+        {
+            var propertyInfo = FindProperty(instance, propertyName, flags);
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetValue(instance);
+            }
 
             throw new MissingMemberException(instance.GetType().FullName + "->" + propertyName);
         }
+
 
         public static object Invoke(object instance, string methodName)
         {
@@ -182,8 +193,6 @@ namespace System.Reflection
 
             if (propertyInfo == null)
             {
-                
-
                 throw new MissingMemberException(type.FullName + "->" + propertyName);
             }
 

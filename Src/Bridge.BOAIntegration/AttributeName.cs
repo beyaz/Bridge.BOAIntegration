@@ -11,6 +11,8 @@
         internal const string snapKey      = nameof(snapKey);
         internal const string snapshot     = nameof(snapshot);
         internal const string state        = nameof(state);
+        internal const string value        = nameof(value);
+        internal const string dataSource = nameof(dataSource); 
         #endregion
     }
 }

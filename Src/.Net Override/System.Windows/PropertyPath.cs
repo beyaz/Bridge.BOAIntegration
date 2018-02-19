@@ -142,7 +142,7 @@ namespace System.Windows
                 return instance[propertyName];
             }
 
-            return ReflectionHelper.GetPropertyValue(instance, propertyName);
+            return ReflectionHelper.GetPropertyValue(instance, propertyName,BindingFlags.Public|BindingFlags.Instance|BindingFlags.IgnoreCase);
         }
 
         static void SetPropertyValue(object instance, string propertyName, object value)

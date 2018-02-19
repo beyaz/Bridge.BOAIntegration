@@ -9,9 +9,9 @@ namespace Bridge.BOAIntegration
     public class ReactUIBuilderInput
     {
         #region Public Properties
-        public object Caller { get; set; }
-        public object Prop   { get; set; }
-        public string XmlUI  { get; set; }
+        public object Caller      { get; set; }
+        public object DataContext { get; set; }
+        public string XmlUI       { get; set; }
         #endregion
     }
 
@@ -20,8 +20,11 @@ namespace Bridge.BOAIntegration
     public class ReactUIBuilderData
     {
         #region Public Properties
+        public string CurrentAttributeName  { get; set; }
+        public string CurrentAttributeValue { get; set; }
         public object CurrentComponentClass { get; internal set; }
         public object CurrentComponentProp  { get; internal set; }
+        public string CurrentComponentName { get; set; }
         #endregion
     }
 
@@ -37,8 +40,10 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Public Properties
-        public ComponentClassFinder             ComponentClassFinder { get; set; }
-        public Func<ReactUIBuilderData, object> OnPropsEvaluated     { get; set; }
+        public ComponentClassFinder ComponentClassFinder { get; set; }
+
+        public Action<ReactUIBuilderData>       OnBeforeStartToProcessAttribute { get; set; }
+        public Func<ReactUIBuilderData, object> OnPropsEvaluated                { get; set; }
         #endregion
 
         #region Public Methods
@@ -46,7 +51,7 @@ namespace Bridge.BOAIntegration
         {
             Input = input;
             var rootNode = GetRootNode(input.XmlUI);
-            return BuildNodes(rootNode, input.Prop, "0");
+            return BuildNodes(rootNode, input.DataContext, "0", null);
         }
         #endregion
 
@@ -68,7 +73,31 @@ namespace Bridge.BOAIntegration
             }
         }
 
-        object BuildChildNodes(Element node, object prop, string nodeLocation)
+        void BDateTimePicker_onChange_Handler(DateTime? value, string bindingPath)
+        {
+            var caller       = Input.Caller;
+            var propertyPath = new PropertyPath(bindingPath);
+            var state        = caller[AttributeName.state];
+
+            propertyPath.Walk(state);
+
+            propertyPath.SetPropertyValue(value.As<object>());
+        }
+
+        void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
+        {
+            Data.CurrentAttributeName  = attributeName;
+            Data.CurrentAttributeValue = attributeValue?.Trim();
+
+            if (OnBeforeStartToProcessAttribute == null)
+            {
+                return;
+            }
+
+            OnBeforeStartToProcessAttribute(Data);
+        }
+
+        object[] BuildChildNodes(Element node, object prop, string nodeLocation, object componentProp)
         {
             var childNodes = node.ChildNodes;
             var len        = childNodes.Length;
@@ -77,7 +106,7 @@ namespace Bridge.BOAIntegration
 
             for (var i = 0; i < len; i++)
             {
-                var childElement = BuildNodes(childNodes[i].As<Element>(), prop, nodeLocation + Comma + i);
+                var childElement = BuildNodes(childNodes[i].As<Element>(), prop, nodeLocation + Comma + i, componentProp);
                 if (childElement == null)
                 {
                     continue;
@@ -89,7 +118,7 @@ namespace Bridge.BOAIntegration
             return childElements;
         }
 
-        ReactElement BuildNodes(Element node, object prop, string nodeLocation)
+        ReactElement BuildNodes(Element node, object prop, string nodeLocation, object parentComponentProp)
         {
             if (node.NodeType == NodeType.Text)
             {
@@ -112,6 +141,27 @@ namespace Bridge.BOAIntegration
                 return propertyPath.GetPropertyValue().As<ReactElement>();
             }
 
+            if (node.TagName == "ComboBoxColumn")
+            {
+                return EvaluateProps(node.TagName, node, prop, nodeLocation).As<ReactElement>();
+            }
+
+            var parentNodeName = node.ParentNode?.NodeName;
+            var nodeName       = node.NodeName;
+
+            if (nodeName.StartsWith(parentNodeName + "."))
+            {
+                var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
+
+                var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
+
+                BeforeStartToProcessAttribute(propertyName, null);
+
+                parentComponentProp[Data.CurrentAttributeName] = value;
+
+                return null;
+            }
+
             var componentConstructor = GetComponentClassByTagName(node.TagName);
 
             if (node.HasChildNodes() == false)
@@ -119,7 +169,9 @@ namespace Bridge.BOAIntegration
                 return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, prop, nodeLocation));
             }
 
-            return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, prop, nodeLocation), BuildChildNodes(node, prop, nodeLocation));
+            var componentProp = EvaluateProps(componentConstructor, node, prop, nodeLocation);
+
+            return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, prop, nodeLocation, componentProp));
         }
 
         object EvaluateAttributeValue(string attributeValue, object prop)
@@ -150,21 +202,9 @@ namespace Bridge.BOAIntegration
             return attributeValue;
         }
 
-
-        void BDateTimePicker_onChange_Handler(DateTime? value,string bindingPath)
-        {
-            var caller = Input.Caller;
-            var propertyPath = new PropertyPath(bindingPath);
-            var state = caller[AttributeName.state];
-
-            propertyPath.Walk(state);
-
-            propertyPath.SetPropertyValue(value.As<object>());
-        }
-
-
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
         {
+            // ReSharper disable once UnusedVariable
             var me = this;
 
             var attributes = node.Attributes;
@@ -175,35 +215,7 @@ namespace Bridge.BOAIntegration
             for (var i = 0; i < len; i++)
             {
                 var attribute = attributes[i];
-
-                var name  = attribute.NodeName;
-                var value = attribute.NodeValue.Trim();
-
-                elementProps[name] = EvaluateAttributeValue(value, prop);
-
-                var bindingInfo = BindingInfo.TryParseExpression(value);
-
-                if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
-                {
-                    // ReSharper disable once UnusedVariable
-                    var bindingPath = bindingInfo.SourcePath.Path;
-
-                    if (node.TagName == "BDateTimePicker")
-                    {
-                        var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
-                        {
-                            me.BDateTimePicker_onChange_Handler(value,bindingPath);
-                        }");
-                        elementProps["onChange"] = onChangeHandlerFunction;
-                    }
-                    else
-                    {
-                        // TODO: diğerleri için de yapılmalı bulamaz ise error fırlatmalı.
-                    }
-                    
-
-                  
-                }
+                ProcessAttribute(node.TagName, attribute.NodeName, attribute.NodeValue, prop, elementProps);
             }
 
             if (elementProps[AttributeName.key] == Script.Undefined)
@@ -213,6 +225,7 @@ namespace Bridge.BOAIntegration
 
             if (OnPropsEvaluated != null)
             {
+                Data.CurrentComponentName = node.NodeName;
                 Data.CurrentComponentClass = componentConstructor;
                 Data.CurrentComponentProp  = elementProps;
 
@@ -242,6 +255,33 @@ namespace Bridge.BOAIntegration
             }
 
             throw new NotImplementedException(nodeTagName);
+        }
+
+        void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
+        {
+            BeforeStartToProcessAttribute(attributeName, attributeValue.Trim());
+
+            var name  = Data.CurrentAttributeName;
+            var value = Data.CurrentAttributeValue;
+
+            elementProps[name] = EvaluateAttributeValue(value, prop);
+
+            var bindingInfo = BindingInfo.TryParseExpression(value);
+
+            if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
+            {
+                // ReSharper disable once UnusedVariable
+                var bindingPath = bindingInfo.SourcePath.Path;
+
+                if (nodeName == "BDateTimePicker")
+                {
+                    var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
+                    {
+                            me.BDateTimePicker_onChange_Handler(value,bindingPath);
+                    }");
+                    elementProps["onChange"] = onChangeHandlerFunction;
+                }
+            }
         }
         #endregion
     }

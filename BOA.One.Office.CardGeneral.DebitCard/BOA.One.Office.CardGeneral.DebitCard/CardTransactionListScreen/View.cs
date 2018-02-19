@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using BOA.Common.Types;
 using BOA.Types.CardGeneral.DebitCard;
@@ -8,12 +9,15 @@ using BOA.Types.Kernel.DebitCard;
 using BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen;
 using Bridge;
 using Bridge.BOAIntegration;
+using Bridge.Html5;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
 {
     public class View : BrowsePage
     {
-
+       
 
         async Task clearCommand()
         {
@@ -38,15 +42,15 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
                     ExternalResponseCodes       = new List<int>()
                 },
                 TransactionList               = new List<DebitTransactionSearchResultContract>(),
-                ExternalResponseCodes         = await GetExternalResponseCodes(),
+                ExternalResponseCodes         = (await GetExternalResponseCodes()).ToArray(),
                 SelectedExternalResponseCodes = new List<ContractBase>()
             };
 
-            model.ExternalResponseCodes.ForEach(x => x.IsSelected = true);
+            model.ExternalResponseCodes.ToList().ForEach(x => x.IsSelected = true);
 
             Model = model;
 
-            SetState(new ViewState{ExternalResponseCodeList = model.ExternalResponseCodes.ToArray() });
+            
             
         }
 
@@ -72,8 +76,17 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
         public Message Message { get; set; } = new Message();
 
         #region Constructors
+
         public View(object props) : base(props)
         {
+            PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Model")
+                {
+                    forceUpdate();
+                }
+
+            };
         }
         #endregion
 
@@ -94,102 +107,82 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
 
         public ReactElement render()
         {
-            var viewState = new ViewState
-            {
-                ExternalResponseCodeList = new[]
-                {
-                    new ExternalResponseCodeContract
-                    {
-                        ExternalResponseCode = 3,
-                        Description          = "hh"
-                    }
-                },
-                externalResponseCodeListColumns = new[]
-                {
-                    new ComboBoxColumn
-                    {
-                        Key   = "externalResponseCode",
-                        Name  = "ResponseCodeNumber",
-                        Width = 60,
-                        type  = "number"
-                    }
-                }
-            };
+            var dataContext = this;
 
-            var prop = Script.Write<object>("this.state");
-
-            
-            var newProp = ObjectLiteral.Create<object>();
-
-            foreach (var key in Keys(prop))
-            {
-                newProp[key] = prop[key];
-            }
-
-            newProp["externalResponseCodeList"]        = viewState.ExternalResponseCodeList;
-            newProp["externalResponseCodeListColumns"] = viewState.externalResponseCodeListColumns;
-            prop                                       = newProp;
-
-            return BuildUI(@"
+            var xmlUi = @"
 <BGridSection>
 
     <BGridRow>
         <BAccountComponent  
-                accountNumber    = '{windowRequest.searchContract.accountNumber}' 
+                AccountNumber    = '{Binding Model.SearchContract.AccountNumber, Mode=TwoWay}'
                 isVisibleBalance = 'false' 
-                isVisibleIBAN    = 'false'
-                onCustomerSelect = 'this.onCustomerSelect'
-                />
+                isVisibleIBAN    = 'false' />
     </BGridRow>
 
      <BGridRow>
-        <BInputMask  
-                type = 'CreditCard' 
-                hintText    = 'TODO:KartNumber'                
-                />
+        <BInputMask type              = 'CreditCard'
+                    Value             = '{Binding Model.SearchContract.CardNumber, Mode=TwoWay}'
+                    hintText          = '{Model.Label.CardNumber}'
+                    floatingLabelText = '{Model.Label.CardNumber}'  />
     </BGridRow>
 
     <BGridRow>
-        <BDateTimePicker  value = '{windowRequest.searchContract.processTransactionTimeBegin}' />
+        <BDateTimePicker  Value = '{Binding Model.SearchContract.TransactionDateBegin, Mode=TwoWay}' />
     </BGridRow>
 
     <BGridRow>
         <BDateTimePicker  />
     </BGridRow>
 
- <BGridRow>
+    <BGridRow>
 
         <BComboBox
-            labelText='commm' 
-            dataSource='{externalResponseCodeList}'
-            defaultValue = '{windowRequest.searchContract.externalResponseCodes}'
-            columns      = '{externalResponseCodeListColumns}'
-            displayLabelSeperator=','
-            multiSelect='true'
-            multiColumn='true'
-            isAllOptionIncluded='true'
-            valueMemberPath='externalResponseCode'
-            displayMemberPath = 'description'
-        />
+            labelText       ='{Binding Model.Label.CodeOfActionAnswer}' 
+            dataSource      ='{Binding Model.ExternalResponseCodes, Mode=TwoWay}'
+            displayLabelSeperator   =','
+            multiSelect             ='true'
+            multiColumn             ='true'
+            isAllOptionIncluded     ='true'
+            valueMemberPath         ='ExternalResponseCode'
+            displayMemberPath       = 'Description'>
+            <BComboBox.Columns>
+                <ComboBoxColumn key = 'Description'  Name='{Binding Model.Label.ResponseCodeNumber}'  />
+            </BComboBox.Columns>
 
-    </BGridRow>  
+
+        </BComboBox>
+
+    </BGridRow>
 
 </BGridSection>
-", prop);
+";
+            return BuildUI(xmlUi, dataContext);
         }
 
 
         #endregion
 
         #region Methods
+        static T ConvertToBridgeGeneratedType<T>(object jsonValue)
+        {
+              var jsonString = JSON.Stringify(jsonValue);
 
+            return JsonConvert.DeserializeObject<T>(jsonString,new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
 
+        }
         async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
         {
             var response = await base.ExecuteAsync<RequestBase, GenericResponse<TResponseValueType>>(request);
             if (response.Success)
             {
-                return response.Value;
+                var responseValue = response.Value;
+
+                responseValue =  ConvertToBridgeGeneratedType<TResponseValueType>(responseValue);
+
+                return responseValue;
             }
 
             throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
