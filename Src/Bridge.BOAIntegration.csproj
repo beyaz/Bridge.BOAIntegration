@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\Data\DataGridColumnInfoContract.cs">
+      <Link>Bridge.BOAIntegration\DataGridColumnInfoContract.cs</Link>
+    </Compile>
+    <Compile Include=".Net Override\System.Windows.Input\ICommand.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
     <Compile Include="BOA.Common.Types\ApplicationSide.cs" />
@@ -48,6 +52,8 @@
     <Compile Include="BOA.Common.Types\Result.cs" />
     <Compile Include="BOA.Common.Types\Severity.cs" />
     <Compile Include="BOA.Messaging\MessagingHelper.cs" />
+    <Compile Include="BOA.Types.Kernel.Account\AccountComponentAccountsContract.cs" />
+    <Compile Include="BOA.UI.Types\DelegateCommand.cs" />
     <Compile Include="Bridge.BOAIntegration\AttributeName.cs" />
     <Compile Include="Bridge.BOAIntegration\BState.cs" />
     <Compile Include="Bridge.BOAIntegration\BContext.cs" />
@@ -92,6 +98,7 @@
   <ItemGroup>
     <Content Include="kaldım.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetDir)Bridge\bridge.js"      	           "D:\BOA\One\wwwroot\"

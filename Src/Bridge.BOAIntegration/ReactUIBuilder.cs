@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
+using BOA.Types.Kernel.Account;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -75,14 +76,67 @@ namespace Bridge.BOAIntegration
 
         void BDateTimePicker_onChange_Handler(DateTime? value, string bindingPath)
         {
-            var caller       = Input.Caller;
             var propertyPath = new PropertyPath(bindingPath);
-            var state        = caller[AttributeName.state];
 
-            propertyPath.Walk(state);
+            propertyPath.Walk(Input.DataContext);
 
             propertyPath.SetPropertyValue(value.As<object>());
         }
+
+        void BInputMask_onChange_Handler(string value, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(Input.DataContext);
+
+            propertyPath.SetPropertyValue(value);
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        void BComboBox_onSelect_Handler(int index,object[] items, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(Input.DataContext);
+
+            propertyPath.SetPropertyValue(items);
+        }
+        
+
+        void BAccountComponent_onAccountSelect_Handler(AccountComponentAccountsContract selectedAccount, string bindingPath,string propName)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(Input.DataContext);
+
+            if (propName =="accountNumber")
+            {
+                propertyPath.SetPropertyValue(selectedAccount.AccountNumber);
+                return;
+            }
+
+            if (propName == "accountSuffix")
+            {
+                propertyPath.SetPropertyValue(selectedAccount.AccountSuffix);
+                return;
+            }
+            // TODO acaba gelen contractın tam olarak bilgisi ne ? 
+            if (propName == "selectedAccount")
+            {
+                propertyPath.SetPropertyValue(selectedAccount);
+                return;
+            }
+
+            
+
+            throw new ArgumentException(propName);
+
+
+
+        }
+
+
+
 
         void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
@@ -261,19 +315,23 @@ namespace Bridge.BOAIntegration
         {
             BeforeStartToProcessAttribute(attributeName, attributeValue.Trim());
 
-            var name  = Data.CurrentAttributeName;
-            var value = Data.CurrentAttributeValue;
+            attributeName = Data.CurrentAttributeName;
+            attributeValue = Data.CurrentAttributeValue;
 
-            elementProps[name] = EvaluateAttributeValue(value, prop);
+            elementProps[attributeName] = EvaluateAttributeValue(attributeValue, prop);
 
-            var bindingInfo = BindingInfo.TryParseExpression(value);
+            var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
 
             if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
             {
                 // ReSharper disable once UnusedVariable
                 var bindingPath = bindingInfo.SourcePath.Path;
 
-                if (nodeName == "BDateTimePicker")
+                // ReSharper disable once UnusedVariable
+                var me = this;
+
+
+                if (attributeName == AttributeName.value && nodeName == "BDateTimePicker")
                 {
                     var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
                     {
@@ -281,6 +339,37 @@ namespace Bridge.BOAIntegration
                     }");
                     elementProps["onChange"] = onChangeHandlerFunction;
                 }
+                
+
+                if (attributeName == AttributeName.value && nodeName == "BInputMask")
+                {
+                    var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
+                    {
+                            me.BInputMask_onChange_Handler(value,bindingPath);
+                    }");
+                    elementProps["onChange"] = onChangeHandlerFunction;
+                }
+
+                if (attributeName == "accountNumber" && nodeName == "BAccountComponent")
+                {
+                    var onChangeHandlerFunction = Script.Write<object>(@"function(contract)
+                    {
+                            me.BAccountComponent_onAccountSelect_Handler(contract,bindingPath,'accountNumber');
+                    }");
+                    elementProps["onAccountSelect"] = onChangeHandlerFunction;
+                }
+
+                if (attributeName == "selectedItems" && nodeName == "BComboBox")
+                {
+                    elementProps["onSelect"] = Script.Write<object>(@"function(index,items)
+                    {
+                            me.BComboBox_onSelect_Handler(index,items,bindingPath);
+                    }");
+                }
+
+                
+
+
             }
         }
         #endregion

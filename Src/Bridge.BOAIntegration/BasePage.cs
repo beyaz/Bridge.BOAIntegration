@@ -1,12 +1,32 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BOA.Common.Types;
 
 namespace Bridge.BOAIntegration
 {
     public class BasePage: INotifyPropertyChanged
     {
+
+
+        public void onActionClick(ResourceActionContract resourceAction)
+        {
+            var propertyName = resourceAction.CommandName + "Command";
+
+            var propertyInfo = this.GetType().GetProperty(propertyName);
+
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException(propertyName + " command not found.");
+            }
+
+            var command = (ICommand)propertyInfo.GetValue(this);
+
+            command.Execute(null);
+        }
+
+
         #region INotifyPropertyChanged Members
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,7 +61,7 @@ namespace Bridge.BOAIntegration
         }
 
 
-        [Name("proxyExecute")]
+        [Template("$TypeScriptVersion.proxyExecute({0})")]
         public extern void ProxyExecute(object requestContainer);
         #endregion
 

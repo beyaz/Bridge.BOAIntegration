@@ -1,24 +1,81 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using BOA.Common.Types;
 using BOA.Messaging;
+using BOA.UI.CardGeneral.DebitCard.Common.Data;
 
 namespace Bridge.BOAIntegration
 {
+
+    public static class BrowsePageExtensions
+    {
+        static BindingFlags AllBindings
+        {
+            get { return BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic; }
+        }
+
+        /// <summary>
+        ///     Tries the type of the get proper.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns></returns>
+        public static Type TryGetProperType(this Type type, string propertyName)
+        {
+            if (type == null)
+            {
+                return null;
+            }
+            var property = type.GetProperty(propertyName, AllBindings);
+            if (property == null)
+            {
+                return null;
+            }
+
+            return property.PropertyType;
+        }
+
+
+        public static void ConfigureColumns(this BrowsePage browseForm, IEnumerable<DataGridColumnInfoContract> columns)
+        {
+
+            var fields = new object[0];
+            foreach (var item in columns)
+            {
+                var field = new object
+                {
+                   ["key"] = item.BindingPath,
+                    ["name"] =item.Label,
+                    ["resizable"] = true
+
+
+
+                };
+
+                if (item.DataType?.IsNumeric() == true)
+                {
+                    field["type"] = "number";
+                    field["numberFormat"] = "M";
+                }
+
+                fields.Push(field);
+            }
+
+
+            browseForm[AttributeName.DolarColumns] = fields;
+
+        }
+
+    }
+
     public class BrowsePage : BasePage
     {
-        #region Constructors
-        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-        public BrowsePage(object props)
-        {
-            // call base constructor
-            Script.Write(@"Bridge.$BOAIntegration.BrowsePageInTypeScript.prototype.constructor.apply(this,[props]);");
-        }
-        #endregion
 
         #region Public Properties
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-        public BState State { [Template("state")] get; }
+        public BState State { [Template("$TypeScriptVersion.state")] get; }
         #endregion
 
         #region Public Methods
@@ -38,7 +95,7 @@ namespace Bridge.BOAIntegration
         {
             var dialogHelper = NodeModules.BDialogHelper();
 
-            Script.Write("dialogHelper.showError(this.state.context,message,results); ");
+            Script.Write("dialogHelper.showError(this.$TypeScriptVersion.state.context,message,results); ");
         }
         #endregion
 
@@ -90,7 +147,7 @@ namespace Bridge.BOAIntegration
             // ReSharper disable once UnusedVariable
             var me = this;
 
-            componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.snaps[ snapKey ] = r;  }");
+            componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.$TypeScriptVersion.snaps[ snapKey ] = r;  }");
 
             if (data.CurrentComponentName == "BInputMask")
             {
@@ -116,7 +173,10 @@ namespace Bridge.BOAIntegration
             return componentProp;
         }
 
+        [Template("$TypeScriptVersion.setState({0})")]
         extern void setState(object state);
+
+        [Template("$TypeScriptVersion.forceUpdate()")]
         protected extern void forceUpdate(); 
         #endregion
     }

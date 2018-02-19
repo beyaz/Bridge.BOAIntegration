@@ -43,5 +43,19 @@ namespace BOA.Common.Types
     {
 
     }
+
+    [External]
+    [ObjectLiteral]
+    public class ResourceActionContract
+    {
+        [Name("commandName")]
+        public string CommandName { get; set; }
+
+        [Name("actionId")]
+        public short ActionId { get; set; }
+        
+    }
+
     
+
 }
