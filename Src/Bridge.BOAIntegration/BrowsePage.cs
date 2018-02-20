@@ -17,10 +17,25 @@ namespace Bridge.BOAIntegration
             return true;
         }
 
+      
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         public void ShowStatusMessage(string message, DialogTypes dialogType)
         {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
 
+            Script.Write("dialogHelper.showStatusMessage(message); ");
         }
+
+        public void ClearStatusMessage()
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.clearStatusMessage(); ");
+        }
+        
 
         #region Public Properties
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]

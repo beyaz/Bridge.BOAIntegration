@@ -23,6 +23,11 @@ namespace Bridge.BOAIntegration
         {
             return FindByExportKey(nameof(BDialogHelper)).As<Function>();
         }
+        public static Function BFormManager()
+        {
+            return FindByExportKey(nameof(BFormManager)).As<Function>();
+        }
+        
 
         public static Function getMessage()
         {

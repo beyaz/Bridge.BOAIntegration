@@ -312,13 +312,15 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
         /// </summary>
         async Task GetInfoExecute()
         {
+            ClearStatusMessage();
+
             var searchValues = Model.SearchContract;
             if (string.IsNullOrWhiteSpace(searchValues.CardNumber))
             {
                 searchValues.CardNumber = null;
             }
 
-            searchValues.ExternalResponseCodes = Model.SelectedExternalResponseCodes.Where(x => x.IsSelected).Select(x => ((ExternalResponseCodeContract)x).ExternalResponseCode).ToList();
+            searchValues.ExternalResponseCodes = Model.SelectedExternalResponseCodes.Select(x => ((ExternalResponseCodeContract) x).ExternalResponseCode).ToArray();
 
             Model.TransactionList = await Search(searchValues);
 
