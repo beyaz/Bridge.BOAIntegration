@@ -31,29 +31,33 @@ A
 B
 C", injectInfo.JSDataInjectedVersion);
         }
-        #endregion
 
 
         [TestMethod]
-        public void InjectInheritancePart()
+        public void SetFirstStatementOfFunction()
         {
             var injector = new Injector();
 
             var injectInfo = new InjectInfo
             {
                 JSData = @"A
-}(b_framework_1.BrowsePage);
+B
+value: function getDefaultPageRequest() {
 C",
 
-                ViewTypeFullName = "BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View"
+                JSCodeWillbeInject = "X"
             };
 
-            injector.InjectInheritancePart(injectInfo);
+            injector.SetFirstStatementOfFunction(injectInfo, "getDefaultPageRequest");
 
-            Assert.AreEqual(@"A
-}(BOA.One.Office.CardGeneral.DebitCard.CardTransactionList.View);
-C", injectInfo.JSDataInjectedVersion);
+            var expected = @"A
+B
+value: function getDefaultPageRequest() {X
+C";
+            Assert.AreEqual(expected, injectInfo.JSDataInjectedVersion);
         }
+
+        #endregion
 
     }
 }

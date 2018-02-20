@@ -105,6 +105,6 @@
     <PostBuildEvent>copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
 copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"
 
-start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen.View"</PostBuildEvent>
+start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen.View"</PostBuildEvent>
   </PropertyGroup>
 </Project>

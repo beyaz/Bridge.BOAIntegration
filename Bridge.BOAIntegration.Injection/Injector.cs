@@ -21,8 +21,8 @@ namespace Bridge.BOAIntegration.Injection
 
             injectInfo.JSCodeWillbeInject = @"
 // --- Injected Code --->
-if (!window['Bridge']) 
-{    
+if (!window.Bridge)
+{
     window.React = React; 
     
 
@@ -68,15 +68,9 @@ if (!window['Bridge'])
             injectInfo.JSCodeWillbeInject = @"
 
         // --- Injected Code --->
-		_this.$DotNetVersion                    = new" + injectInfo.ViewTypeFullName + @"();
+		_this.$DotNetVersion                    = new " + injectInfo.ViewTypeFullName + @"();
 		_this.$DotNetVersion.$TypeScriptVersion = _this;
 		_this.state.columns 					= _this.$DotNetVersion.$columns
-
-        // forward some functions to .net version
-        _this.onActionClick     = function(command)         {  this.$DotNetVersion.onActionClick(command);   }
-        _this.render            = function()                {  this.$DotNetVersion.render();   }
-        _this.proxyDidRespond   = function(proxyResponse)   {  this.$DotNetVersion.proxyDidRespond(proxyResponse);  }
-
 		// <--- Injected Code ---
        
 
@@ -86,7 +80,22 @@ if (!window['Bridge'])
 
             injectInfo.JSData = injectInfo.JSDataInjectedVersion;
 
-          
+
+            injectInfo.JSCodeWillbeInject = " return this.$DotNetVersion.onActionClick(command); ";
+            SetFirstStatementOfFunction(injectInfo, "function onActionClick(command)");
+            injectInfo.JSData = injectInfo.JSDataInjectedVersion;
+
+
+            injectInfo.JSCodeWillbeInject = " return this.$DotNetVersion.render(); ";
+            SetFirstStatementOfFunction(injectInfo, "function render()");
+            injectInfo.JSData = injectInfo.JSDataInjectedVersion;
+
+
+            injectInfo.JSCodeWillbeInject = " return this.$DotNetVersion.proxyDidRespond(proxyResponse); ";
+            SetFirstStatementOfFunction(injectInfo, "function proxyDidRespond(proxyResponse)");
+            injectInfo.JSData = injectInfo.JSDataInjectedVersion;
+
+
 
             File.WriteAllText(injectInfo.SourceJsFilePath, injectInfo.JSDataInjectedVersion);
         }
@@ -155,6 +164,107 @@ if (!window['Bridge'])
         static List<string> Split(string injectInfoJsData)
         {
             return injectInfoJsData.Split(Environment.NewLine.ToCharArray()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        }
+        #endregion
+
+        public void SetFirstStatementOfFunction(InjectInfo injectInfo,string functionName)
+        {
+            var lines = Split(injectInfo.JSData);
+
+
+            var injectLocationIndex = -1;
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var line = lines[i];
+
+                
+                var isEqual = SpaceCaseInsensitiveComparator.Compare(line, "value: "+ functionName + " {");
+                if (isEqual)
+                {
+                    injectLocationIndex = i;
+                    break;
+                }
+                
+            }
+
+            if (injectLocationIndex == -1)
+            {
+                throw new ArgumentException(functionName);
+            }
+
+
+            lines[injectLocationIndex] = lines[injectLocationIndex] + injectInfo.JSCodeWillbeInject;
+
+            injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
+        }
+    }
+}
+
+
+
+
+
+
+namespace Bridge.BOAIntegration.Injection
+{
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    public static class SpaceCaseInsensitiveComparator
+    {
+        #region Public Methods
+        public static bool Compare(string left, string right)
+        {
+            return Compare(left, right, CultureInfo.CurrentCulture);
+        }
+
+        public static bool Compare(string left, string right, CultureInfo cultureInfo)
+        {
+            if (left == null)
+            {
+                if (right == null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (right == null)
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
+            return ExceptChars(left.ToLower(cultureInfo), ExceptCharachters).Equals(ExceptChars(right.ToLower(cultureInfo), ExceptCharachters));
+        }
+        #endregion
+
+        static readonly char[] ExceptCharachters = new[] { ' ', '\t', '\n', '\r' };
+
+        public static string ToLowerAndClearSpaces(this string value)
+        {
+            if (value == null)
+            {
+                return null;
+
+            }
+            return ExceptChars(value.ToLower(), ExceptCharachters);
+        }
+
+        #region Methods
+        static string ExceptChars(string str, char[] toExclude)
+        {
+            var sb = new StringBuilder();
+            foreach (var c in str)
+            {
+                if (!toExclude.Contains(c))
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
         }
         #endregion
     }
