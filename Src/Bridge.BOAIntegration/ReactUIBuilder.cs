@@ -13,6 +13,8 @@ namespace Bridge.BOAIntegration
         public object Caller      { get; set; }
         public object DataContext { get; set; }
         public string XmlUI       { get; set; }
+        public Element XmlRootElement { get; set; }
+
         #endregion
     }
 
@@ -51,7 +53,9 @@ namespace Bridge.BOAIntegration
         public ReactElement Build(ReactUIBuilderInput input)
         {
             Input = input;
-            var rootNode = GetRootNode(input.XmlUI);
+           
+            var rootNode = input.XmlRootElement?? GetRootNode(input.XmlUI);
+
             return BuildNodes(rootNode, input.DataContext, "0", null);
         }
         #endregion
@@ -244,17 +248,24 @@ namespace Bridge.BOAIntegration
 
             var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
 
+
+            
             if (bindingInfo != null)
             {
                 var propertyPath = bindingInfo.SourcePath;
 
                 propertyPath.Walk(prop);
 
-                return propertyPath.GetPropertyValue();
+                return Unbox( propertyPath.GetPropertyValue() );
             }
 
             return attributeValue;
         }
+
+
+        [Template("Bridge.unbox({0},true)")]
+        static extern object Unbox(object o);
+        
 
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
         {

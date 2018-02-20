@@ -66,9 +66,11 @@
     <Compile Include="..\..\..\work\BOA.Kernel\Dev\BOA.Kernel.CardGeneral\DebitCard\BOA.Types.Kernel.DebitCard\Tables\ExternalResponseCodeContract.designer.cs">
       <Link>BOA.Types.CardGeneral.DebitCard\ExternalResponseCodeContract.designer.cs</Link>
     </Compile>
+    <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\View.One.cs" />
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\View.cs" />
     <Compile Include="BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\ViewState.cs" />
     <Compile Include="BOA.Types.Kernel.DebitCard\Message.cs" />
+    <Compile Include="BOA.UI.CardGeneral.DebitCard\Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

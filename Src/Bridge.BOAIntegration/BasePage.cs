@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BOA.Common.Types;
+using Bridge.Html5;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Bridge.BOAIntegration
 {
@@ -58,6 +62,30 @@ namespace Bridge.BOAIntegration
             };
 
             return ServiceCallExecuter.Call(proxyRequest, this).As<Task<Response>>();
+        }
+
+
+        public async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
+        {
+            var response = await ExecuteAsync<RequestBase, GenericResponse<TResponseValueType>>(request);
+            if (response.Success)
+            {
+                return ConvertToBridgeGeneratedType<TResponseValueType>(response.Value);
+            }
+
+            throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
+        }
+
+
+        static T ConvertToBridgeGeneratedType<T>(object jsonValue)
+        {
+            var jsonString = JSON.Stringify(jsonValue);
+
+            return JsonConvert.DeserializeObject<T>(jsonString, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+
         }
 
 

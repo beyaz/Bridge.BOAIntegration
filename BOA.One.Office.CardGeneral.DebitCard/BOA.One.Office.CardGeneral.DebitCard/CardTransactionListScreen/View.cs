@@ -7,92 +7,45 @@ using BOA.Common.Types;
 using BOA.Messaging;
 using BOA.Types.CardGeneral.DebitCard;
 using BOA.Types.Kernel.DebitCard;
-using BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen;
 using BOA.UI.CardGeneral.DebitCard.Common.Data;
 using BOA.UI.Types;
-using Bridge;
-using Bridge.BOAIntegration;
-using Bridge.Html5;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Task = System.Threading.Tasks.Task;
 
-namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
+namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
 {
-    public class View : BrowsePage
-    { /// <summary>
-        ///     Determines whether this instance [can get information execute].
-        /// </summary>
-        bool CanGetInfoExecute()
-        {
-            if (Model == null)
-            {
-                return false;
-            }
-
-            if (Model.IsFreeSearchEnabled)
-            {
-                return true;
-            }
-            
-
-            return true;
-        }
-
-
+    /// <summary>
+    ///     The view
+    /// </summary>
+    public sealed partial class View
+    {
+        #region Fields
         /// <summary>
-        ///     Searches the specified search values.
+        ///     The model
         /// </summary>
-        async Task<IReadOnlyCollection<DebitTransactionSearchResultContract>> Search(DebitTransactionSearchContract searchValues)
-        {
-            var request = new CardTransactionRequest
-            {
-                MethodName     = "Search",
-                SearchContract = searchValues
-            };
-            return await ExecuteAsync<List<DebitTransactionSearchResultContract>>(request);
-        }
+        Model _model;
+        #endregion
 
+        #region Constructors
         /// <summary>
-        ///     Gets the information execute.
+        ///     Initializes a new instance of the <see cref="View" /> class.
         /// </summary>
-        async Task GetInfoExecute()
+        public View()
         {
-            var searchValues = Model.SearchContract;
-            
+            InitializeComponent();
 
+            this.ConfigureColumns(GetColumnInformations());
 
+            LoadCompleted += async (s, e) => { await OnLoadCompleted(); };
+        }
+        #endregion
 
-            searchValues.ExternalResponseCodes = Model.SelectedExternalResponseCodes.Where(x => x.IsSelected).Select(x => ((ExternalResponseCodeContract)x).ExternalResponseCode).ToList();
-
-            Model.TransactionList = await Search(searchValues);
-
-            Model.TransactionList = new[]
-            {
-                new DebitTransactionSearchResultContract
-                {
-                    InternalResponseCodeDescription = "Aloha",
-                    DebitTransaction = new DebitTransactionContract
-                    {
-                        CardNumber = "hhhtö9"
-                    }
-                },
-                new DebitTransactionSearchResultContract
-                {
-                    InternalResponseCodeDescription = "Aloha3",
-                    DebitTransaction = new DebitTransactionContract
-                    {
-                        CardNumber = "y62"
-                    }
-                }
-            };
-
-
-            var viewState = new ViewState();
-            viewState["dataSource"] = Model.TransactionList.ToArray();
-
-            SetState(viewState);
-
-            
+        #region Public Properties
+        /// <summary>
+        ///     Gets the clear command.
+        /// </summary>
+        public ICommand ClearCommand
+        {
+            get { return new DelegateCommand(async () => { await CleanExecute(); }, () => true); }
         }
 
         /// <summary>
@@ -102,52 +55,6 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
         {
             get { return new DelegateCommand(async () => { await GetInfoExecute(); }, CanGetInfoExecute); }
         }
-
-        /// <summary>
-        ///     Gets the clear command.
-        /// </summary>
-        public ICommand ClearCommand
-        {
-            get { return new DelegateCommand(async () => { await CleanExecute(); }, () => true); }
-        }
-
-        async Task clearCommand()
-        {
-            await CleanExecute();
-        }
-
-        /// <summary>
-        ///     Cleans the execute.
-        /// </summary>
-        async Task CleanExecute()
-        {
-            var model = new Model
-            {
-                LabelWidth = 125,
-
-                SearchContract = new DebitTransactionSearchContract
-                {
-                    TransactionDateBegin        = DateTime.Today.AddYears(-5),
-                    TransactionDateEnd          = DateTime.Today,
-                    ProcessTransactionTimeBegin = "00:00",
-                    ProcessTransactionTimeEnd   = "23:59",
-                    ExternalResponseCodes       = new List<int>()
-                },
-                TransactionList               = new List<DebitTransactionSearchResultContract>(),
-                ExternalResponseCodes         = (await GetExternalResponseCodes()).ToArray(),
-                SelectedExternalResponseCodes = new List<ContractBase>()
-            };
-
-            model.ExternalResponseCodes.ToList().ForEach(x => x.IsSelected = true);
-
-            Model = model;
-
-            
-            
-        }
-
-
-        Model _model;
 
         /// <summary>
         ///     Gets or sets the model.
@@ -164,91 +71,9 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
                 }
             }
         }
-
-        public Message Message { get; set; } = new Message();
-
-        #region Constructors
-
-        public View()
-        {
-            PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Model")
-                {
-                    forceUpdate();
-                }
-
-            };
-
-            this.ConfigureColumns(GetColumnInformations());
-        }
         #endregion
 
-        #region Public Methods
-
-
-        public ReactElement render()
-        {
-            var dataContext = this;
-
-            var xmlUi = @" 
-<BGridSection>
-
-    <BGridRow>
-        <BAccountComponent  
-                AccountNumber    = '{Binding Model.SearchContract.AccountNumber, Mode=TwoWay}'
-                isVisibleBalance = 'false' 
-                isVisibleIBAN    = 'false' />
-    </BGridRow>
-
-     <BGridRow>
-        <BInputMask type              = 'CreditCard'
-                    Value             = '{Binding Model.SearchContract.CardNumber, Mode=TwoWay}'
-                    hintText          = '{Model.Label.CardNumber}'
-                    floatingLabelText = '{Model.Label.CardNumber}'  />
-    </BGridRow>
-
-    <BGridRow>
-        <BDateTimePicker Value                  = '{Binding Model.SearchContract.TransactionDateBegin, Mode=TwoWay}' 
-                        floatingLabelTextDate   = '{Binding Model.Label.TransactionStartDate}' />
-    </BGridRow>
-
-    <BGridRow>
-        
-        <BDateTimePicker Value                  = '{Binding Model.SearchContract.TransactionDateEnd, Mode=TwoWay}' 
-                        floatingLabelTextDate   = '{Binding Model.Label.TransactionDeadline}' />
-    </BGridRow>
-
-    <BGridRow>
-
-        <BComboBox
-            labelText       = '{Binding Model.Label.CodeOfActionAnswer}'
-            dataSource      = '{Binding Model.ExternalResponseCodes, Mode=TwoWay}'
-            SelectedItems   = '{Binding Model.SelectedExternalResponseCodes, Mode=TwoWay}'
-
-            displayLabelSeperator   =','
-            multiSelect             ='true'
-            multiColumn             ='true'
-            isAllOptionIncluded     ='true'
-            valueMemberPath         ='ExternalResponseCode'
-            displayMemberPath       = 'Description'>
-            <BComboBox.Columns>
-                <ComboBoxColumn key = 'Description'  Name='{Binding Model.Label.ResponseCodeNumber}'  />
-            </BComboBox.Columns>
-
-
-        </BComboBox>
-
-    </BGridRow>
-
-</BGridSection>
-";
-
-           
-            return BuildUI(xmlUi, dataContext);
-        }
-
-
+        #region Methods
         /// <summary>
         ///     Gets the column informations.
         /// </summary>
@@ -412,36 +237,59 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
             };
         }
 
-
-        #endregion
-
-        #region Methods
-        static T ConvertToBridgeGeneratedType<T>(object jsonValue)
+        /// <summary>
+        ///     Determines whether this instance [can get information execute].
+        /// </summary>
+        bool CanGetInfoExecute()
         {
-              var jsonString = JSON.Stringify(jsonValue);
-
-            return JsonConvert.DeserializeObject<T>(jsonString,new JsonSerializerSettings
+            if (Model == null)
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
-
-        }
-        async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
-        {
-            var response = await base.ExecuteAsync<RequestBase, GenericResponse<TResponseValueType>>(request);
-            if (response.Success)
-            {
-                var responseValue = response.Value;
-
-                responseValue =  ConvertToBridgeGeneratedType<TResponseValueType>(responseValue);
-
-                return responseValue;
+                return false;
             }
 
-            throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
+            if (Model.IsFreeSearchEnabled)
+            {
+                return true;
+            }
+
+            if (Model.SearchContract.AccountNumber == null &&
+                string.IsNullOrWhiteSpace(Model.SearchContract.CardNumber))
+            {
+                return false;
+            }
+
+            return true;
         }
 
+        /// <summary>
+        ///     Cleans the execute.
+        /// </summary>
+        async Task CleanExecute()
+        {
+            var model = new Model
+            {
+                LabelWidth = 125,
 
+                SearchContract = new DebitTransactionSearchContract
+                {
+                    TransactionDateBegin = DateTime.Today.AddDays(-10),
+                    TransactionDateEnd = DateTime.Today,
+                    ProcessTransactionTimeBegin = "00:00",
+                    ProcessTransactionTimeEnd = "23:59",
+                    ExternalResponseCodes = new List<int>()
+                },
+                TransactionList = new List<DebitTransactionSearchResultContract>(),
+                ExternalResponseCodes = (await GetExternalResponseCodes()).ToArray(),
+                IsFreeSearchEnabled = CanExecuteAction("FreeSearch"),
+                SelectedExternalResponseCodes = new List<ContractBase>()
+            };
+
+            model.ExternalResponseCodes.ToList().ForEach(x => x.IsSelected = true);
+
+            Model = model;
+
+            ClearMultiSelectComponent();
+        }
 
         /// <summary>
         ///     Gets the external response codes.
@@ -459,13 +307,70 @@ namespace BOA.One.Office.CardGeneral.DebitCard.CardTransactionListScreen
             return list;
         }
 
-
-        async Task getExternalResponseCodesCommand()
+        /// <summary>
+        ///     Gets the information execute.
+        /// </summary>
+        async Task GetInfoExecute()
         {
-            SetState(new ViewState
+            var searchValues = Model.SearchContract;
+            if (string.IsNullOrWhiteSpace(searchValues.CardNumber))
             {
-                ExternalResponseCodeList = (await GetExternalResponseCodes()).ToArray()
-            });
+                searchValues.CardNumber = null;
+            }
+
+            searchValues.ExternalResponseCodes = Model.SelectedExternalResponseCodes.Where(x => x.IsSelected).Select(x => ((ExternalResponseCodeContract)x).ExternalResponseCode).ToList();
+
+            Model.TransactionList = await Search(searchValues);
+
+            ShowStatusMessage(Model.TransactionList.Count + " adet kayıt getirildi.", DialogTypes.Info);
+        }
+
+        async Task OnLoadCompleted()
+        {
+            await CleanExecute();
+
+            await ProcessDataProperty();
+        }
+
+        /// <summary>
+        ///     Processes the data property.
+        /// </summary>
+        async Task ProcessDataProperty()
+        {
+            var cardNumber = Data as string;
+            if (cardNumber != null)
+            {
+                Model.SearchContract.CardNumber = cardNumber;
+                await GetInfoExecute();
+                return;
+            }
+
+            var searchContract = Data as DebitTransactionSearchContract;
+
+            if (searchContract == null)
+            {
+                return;
+            }
+
+            searchContract.CopyNotNullValues(Model.SearchContract);
+
+            if (searchContract.CardNumber != null)
+            {
+                await GetInfoExecute();
+            }
+        }
+
+        /// <summary>
+        ///     Searches the specified search values.
+        /// </summary>
+        async Task<IReadOnlyCollection<DebitTransactionSearchResultContract>> Search(DebitTransactionSearchContract searchValues)
+        {
+            var request = new CardTransactionRequest
+            {
+                MethodName = "Search",
+                SearchContract = searchValues
+            };
+            return await ExecuteAsync<List<DebitTransactionSearchResultContract>>(request);
         }
         #endregion
     }

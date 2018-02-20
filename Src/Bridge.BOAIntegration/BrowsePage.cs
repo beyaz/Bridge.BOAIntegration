@@ -1,81 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using BOA.Common.Types;
 using BOA.Messaging;
-using BOA.UI.CardGeneral.DebitCard.Common.Data;
+using BOA.UI.Types;
+using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
 
-    public static class BrowsePageExtensions
-    {
-        static BindingFlags AllBindings
-        {
-            get { return BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic; }
-        }
-
-        /// <summary>
-        ///     Tries the type of the get proper.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <returns></returns>
-        public static Type TryGetProperType(this Type type, string propertyName)
-        {
-            if (type == null)
-            {
-                return null;
-            }
-            var property = type.GetProperty(propertyName, AllBindings);
-            if (property == null)
-            {
-                return null;
-            }
-
-            return property.PropertyType;
-        }
-
-
-        public static void ConfigureColumns(this BrowsePage browseForm, IEnumerable<DataGridColumnInfoContract> columns)
-        {
-
-            var fields = new object[0];
-            foreach (var item in columns)
-            {
-                var field = new object
-                {
-                   ["key"] = item.BindingPath,
-                    ["name"] =item.Label,
-                    ["resizable"] = true
-
-
-
-                };
-
-                if (item.DataType?.IsNumeric() == true)
-                {
-                    field["type"] = "number";
-                    field["numberFormat"] = "M";
-                }
-
-                fields.Push(field);
-            }
-
-
-            browseForm[AttributeName.DolarColumns] = fields;
-
-        }
-
-    }
-
     public class BrowsePage : BasePage
     {
+        public event EventHandler LoadCompleted;
+
+        public bool CanExecuteAction(string commandName)
+        {
+            return true;
+        }
+
+        public void ShowStatusMessage(string message, DialogTypes dialogType)
+        {
+
+        }
 
         #region Public Properties
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
         public BState State { [Template("$TypeScriptVersion.state")] get; }
+
+
+        public object Data => State.PageParams.Data;
         #endregion
 
         #region Public Methods
@@ -89,6 +41,21 @@ namespace Bridge.BOAIntegration
             setState(state);
         }
 
+
+        protected Array DataSource
+        {
+            set
+            {
+                var newState = ObjectLiteral.Create<object>();
+
+                newState["dataSource"] = value;
+
+                setState(newState);
+            }
+        }
+
+
+
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         [SuppressMessage("ReSharper", "UnusedVariable")]
         public void ShowError(string message, Result[] results)
@@ -100,7 +67,24 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Methods
-        protected ReactElement BuildUI(string xmlUI, object prop)
+
+        protected string XmlUI { get; set; }
+
+        public int RenderCount { get; private set; }
+        public ReactElement render()
+        {
+            
+
+            if (RenderCount == 0)
+            {
+                jQuery.Ready(() => { LoadCompleted?.Invoke(this, null); });
+            }
+
+            RenderCount++;
+
+            return BuildUI(XmlUI);
+        }
+        protected ReactElement BuildUI(string xmlUI)
         {
             var reactUiBuilder = new ReactUIBuilder
             {
@@ -112,7 +96,7 @@ namespace Bridge.BOAIntegration
             return reactUiBuilder.Build(new ReactUIBuilderInput
             {
                 XmlUI  = xmlUI,
-                DataContext   = prop,
+                DataContext   = this,
                 Caller = this
             });
         }
@@ -177,7 +161,14 @@ namespace Bridge.BOAIntegration
         extern void setState(object state);
 
         [Template("$TypeScriptVersion.forceUpdate()")]
-        protected extern void forceUpdate(); 
+        protected extern void forceUpdate();
+
+
+
+        protected void ForceRender()
+        {
+            forceUpdate();
+        }
         #endregion
     }
 }

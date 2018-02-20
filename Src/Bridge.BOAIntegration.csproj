@@ -42,6 +42,7 @@
     <Compile Include=".Net Override\System.Windows.Input\ICommand.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />
+    <Compile Include="BOA.Common.Helpers\INotifyPropertyChangedHelper.cs" />
     <Compile Include="BOA.Common.Types\ApplicationSide.cs" />
     <Compile Include="BOA.Common.Types\BOAMessageBase.cs" />
     <Compile Include="BOA.Common.Types\ContractBase.cs" />

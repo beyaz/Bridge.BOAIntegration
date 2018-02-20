@@ -7,7 +7,13 @@ using System.Windows.Input;
 
 namespace BOA.UI.Types
 {
-
+    public enum DialogTypes
+    {
+        Info,
+        Error,
+        Warning,
+        Question,
+    }
 
     public class BOADelegateCommand
     {
