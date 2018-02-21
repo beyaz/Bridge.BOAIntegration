@@ -42,7 +42,24 @@ if (!window.Bridge)
 	if (!Bridge.$BOAIntegration) {
 		Bridge.$BOAIntegration = 
         {
-            $_extends: _extends        
+            $_extends: Object.assign || function (target)
+		                                {
+			                                for (var i = 1; i < arguments.length; i++) 
+			                                {
+				                                var source = arguments[i];
+				                                for (var key in source) 
+				                                {
+					                                if (Object.prototype.hasOwnProperty.call(source, key)) 
+					                                {
+						                                target[key] = source[key];
+					                                }
+				                                }
+			                                }
+			                                return target;
+		                                }
+                                    
+
+
         };
 	}
 
@@ -172,7 +189,6 @@ if (!window.Bridge)
             var lines = Split(injectInfo.JSData);
 
 
-            var injectLocationIndex = -1;
             for (var i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
@@ -181,22 +197,27 @@ if (!window.Bridge)
                 var isEqual = SpaceCaseInsensitiveComparator.Compare(line, "value: "+ functionName + " {");
                 if (isEqual)
                 {
-                    injectLocationIndex = i;
-                    break;
+                    lines[i] = line + injectInfo.JSCodeWillbeInject;
+
+                    injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
+                    return;
                 }
-                
+
+
+                isEqual = SpaceCaseInsensitiveComparator.Compare(line, "value: " + functionName + " {}");
+                if (isEqual)
+                {
+                    lines[i] = line.Trim().RemoveFromEnd("}") + injectInfo.JSCodeWillbeInject + " } ";
+
+                    injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
+                    return;
+                }
+
             }
 
-            if (injectLocationIndex == -1)
-            {
-                throw new ArgumentException(functionName);
-            }
-
-
-            lines[injectLocationIndex] = lines[injectLocationIndex] + injectInfo.JSCodeWillbeInject;
-
-            injectInfo.JSDataInjectedVersion = string.Join(Environment.NewLine, lines);
+            throw new ArgumentException(functionName);
         }
+
     }
 }
 
