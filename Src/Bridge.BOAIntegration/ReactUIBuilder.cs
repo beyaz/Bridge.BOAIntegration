@@ -10,11 +10,10 @@ namespace Bridge.BOAIntegration
     public class ReactUIBuilderInput
     {
         #region Public Properties
-        public object Caller      { get; set; }
-        public object DataContext { get; set; }
-        public string XmlUI       { get; set; }
+        public object  Caller         { get; set; }
+        public object  DataContext    { get; set; }
         public Element XmlRootElement { get; set; }
-
+        public string  XmlUI          { get; set; }
         #endregion
     }
 
@@ -26,8 +25,8 @@ namespace Bridge.BOAIntegration
         public string CurrentAttributeName  { get; set; }
         public string CurrentAttributeValue { get; set; }
         public object CurrentComponentClass { get; internal set; }
+        public string CurrentComponentName  { get; set; }
         public object CurrentComponentProp  { get; internal set; }
-        public string CurrentComponentName { get; set; }
         #endregion
     }
 
@@ -53,8 +52,8 @@ namespace Bridge.BOAIntegration
         public ReactElement Build(ReactUIBuilderInput input)
         {
             Input = input;
-           
-            var rootNode = input.XmlRootElement?? GetRootNode(input.XmlUI);
+
+            var rootNode = input.XmlRootElement ?? GetRootNode(input.XmlUI);
 
             return BuildNodes(rootNode, input.DataContext, "0", null);
         }
@@ -78,42 +77,16 @@ namespace Bridge.BOAIntegration
             }
         }
 
-        void BDateTimePicker_onChange_Handler(DateTime? value, string bindingPath)
+        [Template("Bridge.unbox({0},true)")]
+        static extern object Unbox(object o);
+
+        void BAccountComponent_onAccountSelect_Handler(AccountComponentAccountsContract selectedAccount, string bindingPath, string propName)
         {
             var propertyPath = new PropertyPath(bindingPath);
 
             propertyPath.Walk(Input.DataContext);
 
-            propertyPath.SetPropertyValue(value.As<object>());
-        }
-
-        void BInputMask_onChange_Handler(string value, string bindingPath)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(Input.DataContext);
-
-            propertyPath.SetPropertyValue(value);
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        void BComboBox_onSelect_Handler(int index,object[] items, string bindingPath)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(Input.DataContext);
-
-            propertyPath.SetPropertyValue(items);
-        }
-        
-
-        void BAccountComponent_onAccountSelect_Handler(AccountComponentAccountsContract selectedAccount, string bindingPath,string propName)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(Input.DataContext);
-
-            if (propName =="accountNumber")
+            if (propName == "accountNumber")
             {
                 propertyPath.SetPropertyValue(selectedAccount.AccountNumber);
                 return;
@@ -124,6 +97,7 @@ namespace Bridge.BOAIntegration
                 propertyPath.SetPropertyValue(selectedAccount.AccountSuffix);
                 return;
             }
+
             // TODO acaba gelen contractın tam olarak bilgisi ne ? 
             if (propName == "selectedAccount")
             {
@@ -131,16 +105,27 @@ namespace Bridge.BOAIntegration
                 return;
             }
 
-            
-
             throw new ArgumentException(propName);
-
-
-
         }
 
+        // ReSharper disable once UnusedParameter.Local
+        void BComboBox_onSelect_Handler(int index, object[] items, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
 
+            propertyPath.Walk(Input.DataContext);
 
+            propertyPath.SetPropertyValue(items);
+        }
+
+        void BDateTimePicker_onChange_Handler(DateTime? value, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(Input.DataContext);
+
+            propertyPath.SetPropertyValue(value.As<object>());
+        }
 
         void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
@@ -153,6 +138,15 @@ namespace Bridge.BOAIntegration
             }
 
             OnBeforeStartToProcessAttribute(Data);
+        }
+
+        void BInputMask_onChange_Handler(string value, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(Input.DataContext);
+
+            propertyPath.SetPropertyValue(value);
         }
 
         object[] BuildChildNodes(Element node, object prop, string nodeLocation, object componentProp)
@@ -248,24 +242,17 @@ namespace Bridge.BOAIntegration
 
             var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
 
-
-            
             if (bindingInfo != null)
             {
                 var propertyPath = bindingInfo.SourcePath;
 
                 propertyPath.Walk(prop);
 
-                return Unbox( propertyPath.GetPropertyValue() );
+                return Unbox(propertyPath.GetPropertyValue());
             }
 
             return attributeValue;
         }
-
-
-        [Template("Bridge.unbox({0},true)")]
-        static extern object Unbox(object o);
-        
 
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
         {
@@ -290,7 +277,7 @@ namespace Bridge.BOAIntegration
 
             if (OnPropsEvaluated != null)
             {
-                Data.CurrentComponentName = node.NodeName;
+                Data.CurrentComponentName  = node.NodeName;
                 Data.CurrentComponentClass = componentConstructor;
                 Data.CurrentComponentProp  = elementProps;
 
@@ -326,7 +313,7 @@ namespace Bridge.BOAIntegration
         {
             BeforeStartToProcessAttribute(attributeName, attributeValue.Trim());
 
-            attributeName = Data.CurrentAttributeName;
+            attributeName  = Data.CurrentAttributeName;
             attributeValue = Data.CurrentAttributeValue;
 
             elementProps[attributeName] = EvaluateAttributeValue(attributeValue, prop);
@@ -341,33 +328,28 @@ namespace Bridge.BOAIntegration
                 // ReSharper disable once UnusedVariable
                 var me = this;
 
-
                 if (attributeName == AttributeName.value && nodeName == "BDateTimePicker")
                 {
-                    var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
+                    elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
                     {
                             me.BDateTimePicker_onChange_Handler(value,bindingPath);
-                    }");
-                    elementProps["onChange"] = onChangeHandlerFunction;
+                    }"); 
                 }
-                
 
                 if (attributeName == AttributeName.value && nodeName == "BInputMask")
                 {
-                    var onChangeHandlerFunction = Script.Write<object>(@"function(p0,value)
+                    elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
                     {
                             me.BInputMask_onChange_Handler(value,bindingPath);
                     }");
-                    elementProps["onChange"] = onChangeHandlerFunction;
                 }
 
                 if (attributeName == "accountNumber" && nodeName == "BAccountComponent")
                 {
-                    var onChangeHandlerFunction = Script.Write<object>(@"function(contract)
+                    elementProps["onAccountSelect"] = Script.Write<object>(@"function(contract)
                     {
                             me.BAccountComponent_onAccountSelect_Handler(contract,bindingPath,'accountNumber');
                     }");
-                    elementProps["onAccountSelect"] = onChangeHandlerFunction;
                 }
 
                 if (attributeName == "selectedItems" && nodeName == "BComboBox")
@@ -377,10 +359,6 @@ namespace Bridge.BOAIntegration
                             me.BComboBox_onSelect_Handler(index,items,bindingPath);
                     }");
                 }
-
-                
-
-
             }
         }
         #endregion
