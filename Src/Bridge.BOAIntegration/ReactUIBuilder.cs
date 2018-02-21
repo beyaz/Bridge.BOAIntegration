@@ -234,17 +234,10 @@ namespace Bridge.BOAIntegration
             var parentNodeName = node.ParentNode?.NodeName;
             var nodeName       = node.NodeName;
 
-            if (nodeName.StartsWith(parentNodeName + "."))
+            var isParentComponentProperty = nodeName.StartsWith(parentNodeName + ".");
+            if (isParentComponentProperty)
             {
-                var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
-
-                var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
-
-                BeforeStartToProcessAttribute(propertyName, null);
-
-                parentComponentProp[Data.CurrentAttributeName] = value;
-
-                return null;
+                return BuildNodeAsParentComponentProperty(node, prop, nodeLocation, parentComponentProp, parentNodeName, nodeName);
             }
 
             var componentConstructor = GetComponentClassByTagName(node.TagName);
@@ -257,6 +250,19 @@ namespace Bridge.BOAIntegration
             var componentProp = EvaluateProps(componentConstructor, node, prop, nodeLocation);
 
             return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, prop, nodeLocation, componentProp));
+        }
+
+         ReactElement BuildNodeAsParentComponentProperty(Element node, object prop, string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
+        {
+            var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
+
+            var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
+
+            BeforeStartToProcessAttribute(propertyName, null);
+
+            parentComponentProp[Data.CurrentAttributeName] = value;
+
+            return null;
         }
 
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
