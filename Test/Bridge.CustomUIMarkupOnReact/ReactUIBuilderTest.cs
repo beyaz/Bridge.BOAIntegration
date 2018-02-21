@@ -4,34 +4,46 @@ using Bridge.QUnit;
 
 namespace Bridge.BOAIntegration
 {
-    class ReactUIBuilderTest
+    partial class ReactUIBuilderTest
     {
         #region Public Methods
         public static void Register()
         {
             QUnit.QUnit.Test(nameof(BOAIntegration) + "->" + nameof(ShouldRenderSimpleOneDivInnerHTML), ShouldRenderSimpleOneDivInnerHTML);
+            QUnit.QUnit.Test(nameof(BOAIntegration) + "->" + nameof(EvaluateAttributeValue_Should_Evaluate_From_BindingPath), EvaluateAttributeValue_Should_Evaluate_From_BindingPath);
+            QUnit.QUnit.Test(nameof(BOAIntegration) + "->" + nameof(EvaluateAttributeValue_Should_Return_Function_When_Attribute_Value_Is_Looking_To_Method), EvaluateAttributeValue_Should_Return_Function_When_Attribute_Value_Is_Looking_To_Method);
         }
         #endregion
 
         #region Methods
-        static dynamic BuildUI(string xmlUI, dynamic prop)
+        static void EvaluateAttributeValue_Should_Evaluate_From_BindingPath(Assert assert)
         {
+            // ARRANGE
+            var builder = new ReactUIBuilder();
+
+            // ACT 
+            var value = builder.EvaluateAttributeValue("{Model.Name}", JSON.Parse("{\"Model\":{\"Name\":\"t\"}}"));
+
+            // ASSERT
+            assert.Equal(value, "t");
+        }
+
+        static void EvaluateAttributeValue_Should_Return_Function_When_Attribute_Value_Is_Looking_To_Method(Assert assert)
+        {
+            // ARRANGE
             var builder = new ReactUIBuilder
             {
-                ComponentClassFinder = tag =>
+                Input = new ReactUIBuilderInput
                 {
-                    if (tag == nameof(Component_1))
-                    {
-                        return typeof(Component_1);
-                    }
-
-                    return null;
-                },
-                OnPropsEvaluated = (reactUIBuilderData) => reactUIBuilderData.CurrentComponentProp
+                    Caller = Script.Write<object>("{A:function(){ }}")
+                }
             };
 
-            var element = builder.Build(new ReactUIBuilderInput{ XmlUI  = xmlUI,DataContext = prop});
-            return element;
+            // ACT 
+            var value = builder.EvaluateAttributeValue("this.A", null);
+
+            // ASSERT
+            assert.Equal(Script.TypeOf(value), "function");
         }
 
         static void ShouldRenderSimpleOneDivInnerHTML(Assert assert)
@@ -42,14 +54,16 @@ namespace Bridge.BOAIntegration
                         "<Component_1 Name5='{Inner.Name3}' />" +
                         "</div>";
 
-            dynamic prop = ObjectLiteral.Create<object>();
-            prop.name   = "AbC";
-            prop.Width3 = 45;
+            var prop = Script.Write<object>(@"
+{
+    name:'AbC', 
+    Width3:45,
+    Inner: 
+    {
+        Name3:'YYç'
+    }
 
-            dynamic innerObject = ObjectLiteral.Create<object>();
-            innerObject.Name3 = "YYç";
-
-            prop.Inner = innerObject;
+}");
 
             var element = BuildUI(xmlUI, prop);
 

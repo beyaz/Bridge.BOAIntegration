@@ -37,8 +37,8 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Fields
-        readonly ReactUIBuilderData Data = new ReactUIBuilderData();
-        ReactUIBuilderInput         Input;
+        internal ReactUIBuilderInput Input;
+        readonly ReactUIBuilderData  Data = new ReactUIBuilderData();
         #endregion
 
         #region Public Properties
@@ -60,6 +60,55 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Methods
+        internal object EvaluateAttributeValue(string attributeValue, object prop)
+        {
+            var isMethod = attributeValue.StartsWith("this.");
+            if (isMethod)
+            {
+                // ReSharper disable once UnusedVariable
+                var methodName = attributeValue.RemoveFromStart("this.").Trim();
+
+                // ReSharper disable once UnusedVariable
+                var caller = Input.Caller;
+
+                return Script.Write<object>(@"function(){ return caller[methodName].apply(caller,arguments);  } ");
+            }
+
+            var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
+
+            if (bindingInfo != null)
+            {
+                var propertyPath = bindingInfo.SourcePath;
+
+                propertyPath.Walk(prop);
+
+                return Unbox(propertyPath.GetPropertyValue());
+            }
+
+            return attributeValue;
+        }
+
+        static ReactElement BuildNodeAsText(Element node, object prop)
+        {
+            var innerText   = node.GetInnerText();
+            var bindingInfo = BindingInfo.TryParseExpression(innerText);
+
+            if (bindingInfo == null)
+            {
+                if (string.IsNullOrWhiteSpace(innerText))
+                {
+                    return null;
+                }
+
+                return innerText.As<ReactElement>();
+            }
+
+            var propertyPath = bindingInfo.SourcePath;
+
+            propertyPath.Walk(prop);
+            return propertyPath.GetPropertyValue().As<ReactElement>();
+        }
+
         static Element GetRootNode(string xmlString)
         {
             if (xmlString == null)
@@ -174,23 +223,7 @@ namespace Bridge.BOAIntegration
         {
             if (node.NodeType == NodeType.Text)
             {
-                var innerText   = node.GetInnerText();
-                var bindingInfo = BindingInfo.TryParseExpression(innerText);
-
-                if (bindingInfo == null)
-                {
-                    if (string.IsNullOrWhiteSpace(innerText))
-                    {
-                        return null;
-                    }
-
-                    return innerText.As<ReactElement>();
-                }
-
-                var propertyPath = bindingInfo.SourcePath;
-
-                propertyPath.Walk(prop);
-                return propertyPath.GetPropertyValue().As<ReactElement>();
+                return BuildNodeAsText(node, prop);
             }
 
             if (node.TagName == "ComboBoxColumn")
@@ -226,39 +259,8 @@ namespace Bridge.BOAIntegration
             return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, prop, nodeLocation, componentProp));
         }
 
-        object EvaluateAttributeValue(string attributeValue, object prop)
-        {
-            var isMethod = attributeValue.StartsWith("this.");
-            if (isMethod)
-            {
-                // ReSharper disable once UnusedVariable
-                var methodName = attributeValue.RemoveFromStart("this.").Trim();
-
-                // ReSharper disable once UnusedVariable
-                var caller = Input.Caller;
-
-                return Script.Write<object>(@"function(){ return caller[methodName].apply(caller,arguments);  } ");
-            }
-
-            var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
-
-            if (bindingInfo != null)
-            {
-                var propertyPath = bindingInfo.SourcePath;
-
-                propertyPath.Walk(prop);
-
-                return Unbox(propertyPath.GetPropertyValue());
-            }
-
-            return attributeValue;
-        }
-
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
         {
-            // ReSharper disable once UnusedVariable
-            var me = this;
-
             var attributes = node.Attributes;
             var len        = attributes.Length;
 
@@ -333,7 +335,7 @@ namespace Bridge.BOAIntegration
                     elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
                     {
                             me.BDateTimePicker_onChange_Handler(value,bindingPath);
-                    }"); 
+                    }");
                 }
 
                 if (attributeName == AttributeName.value && nodeName == "BInputMask")
