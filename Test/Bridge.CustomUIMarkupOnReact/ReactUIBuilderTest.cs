@@ -1,39 +1,10 @@
-﻿using System;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Bridge.jQuery2;
 using Bridge.QUnit;
 
 namespace Bridge.BOAIntegration
 {
-    [ObjectLiteral]
-    class Component_1_Prop
-    {
-        #region Public Properties
-        public string Name5 { get; set; }
-        #endregion
-    }
-
-    class Component_1 : Component
-    {
-        #region Properties
-        Component_1_Prop Props
-        {
-            get { return this["props"].As<Component_1_Prop>(); }
-        }
-        #endregion
-
-        #region Public Methods
-        public override ReactElement render()
-        {
-            var prop = ObjectLiteral.Create<object>();
-            prop["href"] = Props.Name5;
-
-            return ReactElement.Create("a", prop);
-        }
-        #endregion
-    }
-
-    class AllTest
+    class ReactUIBuilderTest
     {
         #region Public Methods
         public static void Register()

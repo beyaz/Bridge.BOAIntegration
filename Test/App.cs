@@ -11,7 +11,7 @@ namespace Bridge.BOAIntegration
         [Ready]
         public static void RunAll()
         {
-            AllTest.Register();
+            ReactUIBuilderTest.Register();
         }
         #endregion
 

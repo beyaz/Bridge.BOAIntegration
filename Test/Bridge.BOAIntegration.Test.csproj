@@ -37,7 +37,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Bridge.CustomUIMarkupOnReact\AllTest.cs" />
+    <Compile Include="Bridge.CustomUIMarkupOnReact\Component_1.cs" />
+    <Compile Include="Bridge.CustomUIMarkupOnReact\Component_1_Prop.cs" />
+    <Compile Include="Bridge.CustomUIMarkupOnReact\ReactUIBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
