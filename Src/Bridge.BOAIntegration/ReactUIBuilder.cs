@@ -6,34 +6,23 @@ using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
-    public class ReactUIBuilderInput
+    public delegate object ComponentClassFinder(string nodeTagName);
+
+    public class PropsEvaluatedEventArgs : EventArgs
     {
         #region Public Properties
-        public object  Caller         { get; set; }
-        public object  DataContext    { get; set; }
-        public Element XmlRootElement { get; set; }
-        public string  XmlUI          { get; set; }
+        public object CurrentComponentClass { get; internal set; }
+        public string CurrentComponentName  { get; internal set; }
+        public object CurrentComponentProp  { get; internal set; }
         #endregion
     }
 
-    public delegate object ComponentClassFinder(string nodeTagName);
-
-    public class ReactUIBuilderData
+    public class BeforeStartToProcessAttributeEventArgs : EventArgs
     {
         #region Public Properties
         public string CurrentAttributeName  { get; set; }
         public string CurrentAttributeValue { get; set; }
-        public object CurrentComponentClass { get; internal set; }
-        public string CurrentComponentName  { get; set; }
-        public object CurrentComponentProp  { get; internal set; }
         #endregion
-    }
-
-    public class PropsEvaluatedEventArgs : EventArgs
-    {
-        public object CurrentComponentClass { get; internal set; }
-        public string CurrentComponentName  { get; internal set; }
-        public object CurrentComponentProp  { get; internal set; }
     }
 
     public class ReactUIBuilder
@@ -43,32 +32,35 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Fields
-        internal ReactUIBuilderInput Input;
-        readonly ReactUIBuilderData  Data = new ReactUIBuilderData();
+        readonly BeforeStartToProcessAttributeEventArgs BeforeStartToProcessAttributeEventArgs = new BeforeStartToProcessAttributeEventArgs();
 
-        object DataContext;
+        string CurrentAttributeName;
+        string CurrentAttributeValue;
+        #endregion
+
+        #region Public Events
+        public event Action<BeforeStartToProcessAttributeEventArgs> BeforeProcessAttribute;
+
+        public event Action<PropsEvaluatedEventArgs> PropsEvaluated;
         #endregion
 
         #region Public Properties
+        public object               Caller               { get; set; }
         public ComponentClassFinder ComponentClassFinder { get; set; }
-
-        public Action<ReactUIBuilderData>       OnBeforeStartToProcessAttribute { get; set; }
-
-        public event  Action<PropsEvaluatedEventArgs> PropsEvaluated;
-
-        
+        public object               DataContext          { get; set; }
+        public Element              XmlRootElement       { get; set; }
+        public string               XmlUI                { get; set; }
         #endregion
 
         #region Public Methods
-        public ReactElement Build(ReactUIBuilderInput input)
+        public ReactElement Build()
         {
-            Input = input;
+            if (XmlRootElement == null)
+            {
+                XmlRootElement = GetRootNode(XmlUI);
+            }
 
-            DataContext = input.DataContext;
-
-            var rootNode = input.XmlRootElement ?? GetRootNode(input.XmlUI);
-
-            return BuildNodes(rootNode, "0", null).As<ReactElement>();
+            return BuildNodes(XmlRootElement, "0", null).As<ReactElement>();
         }
         #endregion
 
@@ -103,7 +95,7 @@ namespace Bridge.BOAIntegration
                 var methodName = attributeValue.RemoveFromStart("this.").Trim();
 
                 // ReSharper disable once UnusedVariable
-                var caller = Input.Caller;
+                var caller = Caller;
 
                 return Script.Write<object>(@"function(){ return caller[methodName].apply(caller,arguments);  } ");
             }
@@ -144,15 +136,21 @@ namespace Bridge.BOAIntegration
 
         void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
-            Data.CurrentAttributeName  = attributeName;
-            Data.CurrentAttributeValue = attributeValue?.Trim();
+            CurrentAttributeName  = attributeName;
+            CurrentAttributeValue = attributeValue?.Trim();
 
-            if (OnBeforeStartToProcessAttribute == null)
+            if (BeforeProcessAttribute == null)
             {
                 return;
             }
 
-            OnBeforeStartToProcessAttribute(Data);
+            BeforeStartToProcessAttributeEventArgs.CurrentAttributeName  = CurrentAttributeName;
+            BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue = CurrentAttributeValue;
+
+            BeforeProcessAttribute(BeforeStartToProcessAttributeEventArgs);
+
+            CurrentAttributeName  = BeforeStartToProcessAttributeEventArgs.CurrentAttributeName;
+            CurrentAttributeValue = BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue;
         }
 
         void BInputMask_onChange_Handler(string value, string bindingPath)
@@ -193,7 +191,7 @@ namespace Bridge.BOAIntegration
 
             BeforeStartToProcessAttribute(propertyName, null);
 
-            parentComponentProp[Data.CurrentAttributeName] = value;
+            parentComponentProp[CurrentAttributeName] = value;
 
             return null;
         }
@@ -259,7 +257,6 @@ namespace Bridge.BOAIntegration
                 };
 
                 PropsEvaluated(propsEvaluatedEventArgs);
-                
             }
 
             return elementProps;
@@ -289,14 +286,11 @@ namespace Bridge.BOAIntegration
 
         void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
         {
-            BeforeStartToProcessAttribute(attributeName, attributeValue.Trim());
+            BeforeStartToProcessAttribute(attributeName, attributeValue);
 
-            attributeName  = Data.CurrentAttributeName;
-            attributeValue = Data.CurrentAttributeValue;
+            elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
 
-            elementProps[attributeName] = EvaluateAttributeValue(attributeValue, prop);
-
-            var bindingInfo = BindingInfo.TryParseExpression(attributeValue);
+            var bindingInfo = BindingInfo.TryParseExpression(CurrentAttributeValue);
 
             if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
             {
@@ -305,7 +299,7 @@ namespace Bridge.BOAIntegration
                     elementProps  = elementProps,
                     bindingInfo   = bindingInfo,
                     DataContext   = DataContext,
-                    attributeName = attributeName,
+                    attributeName = CurrentAttributeName,
                     nodeName      = nodeName
                 };
 
@@ -313,7 +307,5 @@ namespace Bridge.BOAIntegration
             }
         }
         #endregion
-
-        
     }
 }

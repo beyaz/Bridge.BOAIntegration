@@ -104,26 +104,24 @@ namespace Bridge.BOAIntegration
             var reactUiBuilder = new ReactUIBuilder
             {
                 ComponentClassFinder = NodeModules.FindComponent,
-                
-                OnBeforeStartToProcessAttribute = OnBeforeStartToProcessAttribute
+                XmlUI       = xmlUI,
+                DataContext = this,
+                Caller      = this
+
             };
 
             reactUiBuilder.PropsEvaluated += OnPropsEvaluated;
+            reactUiBuilder.BeforeProcessAttribute += OnBeforeStartToProcessAttribute;
 
-            return reactUiBuilder.Build(new ReactUIBuilderInput
-            {
-                XmlUI  = xmlUI,
-                DataContext   = this,
-                Caller = this
-            });
+            return reactUiBuilder.Build();
         }
 
-        void OnBeforeStartToProcessAttribute(ReactUIBuilderData data)
+        void OnBeforeStartToProcessAttribute(BeforeStartToProcessAttributeEventArgs data)
         {
             MakeLowercaseFirstChar(data);
         }
 
-         static void MakeLowercaseFirstChar(ReactUIBuilderData data)
+         static void MakeLowercaseFirstChar(BeforeStartToProcessAttributeEventArgs data)
         {
             data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
         }

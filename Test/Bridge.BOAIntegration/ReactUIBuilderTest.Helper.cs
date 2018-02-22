@@ -15,16 +15,15 @@
                     }
 
                     return null;
-                }
-                
+                },
+
+                XmlUI       = xmlUI,
+                DataContext = prop
+
             };
 
 
-            var element = builder.Build(new ReactUIBuilderInput
-            {
-                XmlUI       = xmlUI,
-                DataContext = prop
-            });
+            var element = builder.Build();
             return element;
         }
         #endregion

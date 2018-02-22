@@ -104,10 +104,7 @@ namespace Bridge.BOAIntegration
                 // ARRANGE
                 var builder = new ReactUIBuilder
                 {
-                    Input = new ReactUIBuilderInput
-                    {
-                        Caller = Script.Write<object>("{A:function(){ }}")
-                    }
+                    Caller = Script.Write<object>("{A:function(){ }}")
                 };
 
                 // ACT 
