@@ -34,7 +34,11 @@ namespace Bridge.BOAIntegration
     {
         #region Constants
         const string Comma = ",";
+
+
         #endregion
+
+        object DataContext;
 
         #region Fields
         internal ReactUIBuilderInput Input;
@@ -53,9 +57,11 @@ namespace Bridge.BOAIntegration
         {
             Input = input;
 
+            DataContext = input.DataContext;
+
             var rootNode = input.XmlRootElement ?? GetRootNode(input.XmlUI);
 
-            return BuildNodes(rootNode, input.DataContext, "0", null).As<ReactElement>();
+            return BuildNodes(rootNode, "0", null).As<ReactElement>();
         }
         #endregion
 
@@ -133,7 +139,7 @@ namespace Bridge.BOAIntegration
         {
             var propertyPath = new PropertyPath(bindingPath);
 
-            propertyPath.Walk(Input.DataContext);
+            propertyPath.Walk(DataContext);
 
             if (propName == "accountNumber")
             {
@@ -162,7 +168,7 @@ namespace Bridge.BOAIntegration
         {
             var propertyPath = new PropertyPath(bindingPath);
 
-            propertyPath.Walk(Input.DataContext);
+            propertyPath.Walk(DataContext);
 
             propertyPath.SetPropertyValue(items);
         }
@@ -171,7 +177,7 @@ namespace Bridge.BOAIntegration
         {
             var propertyPath = new PropertyPath(bindingPath);
 
-            propertyPath.Walk(Input.DataContext);
+            propertyPath.Walk(DataContext);
 
             propertyPath.SetPropertyValue(value.As<object>());
         }
@@ -193,12 +199,12 @@ namespace Bridge.BOAIntegration
         {
             var propertyPath = new PropertyPath(bindingPath);
 
-            propertyPath.Walk(Input.DataContext);
+            propertyPath.Walk(DataContext);
 
             propertyPath.SetPropertyValue(value);
         }
 
-        object[] BuildChildNodes(Element node, object prop, string nodeLocation, object componentProp)
+        object[] BuildChildNodes(Element node, string nodeLocation, object componentProp)
         {
             var childNodes = node.ChildNodes;
             var len        = childNodes.Length;
@@ -207,7 +213,7 @@ namespace Bridge.BOAIntegration
 
             for (var i = 0; i < len; i++)
             {
-                var childElement = BuildNodes(childNodes[i].As<Element>(), prop, nodeLocation + Comma + i, componentProp);
+                var childElement = BuildNodes(childNodes[i].As<Element>(),  nodeLocation + Comma + i, componentProp);
                 if (childElement == null)
                 {
                     continue;
@@ -219,9 +225,9 @@ namespace Bridge.BOAIntegration
             return childElements;
         }
 
-        ReactElement BuildNodeAsParentComponentProperty(Element node, object prop, string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
+        ReactElement BuildNodeAsParentComponentProperty(Element node,  string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
         {
-            var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
+            var value = BuildChildNodes(node,  nodeLocation, parentComponentProp);
 
             var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
 
@@ -232,16 +238,16 @@ namespace Bridge.BOAIntegration
             return null;
         }
 
-        object BuildNodes(Element node, object prop, string nodeLocation, object parentComponentProp)
+        object BuildNodes(Element node,string nodeLocation, object parentComponentProp)
         {
             if (node.NodeType == NodeType.Text)
             {
-                return BuildNodeAsText(node.GetInnerText(), prop);
+                return BuildNodeAsText(node.GetInnerText(), DataContext);
             }
 
             if (node.TagName == "ComboBoxColumn")
             {
-                return EvaluateProps(node.TagName, node, prop, nodeLocation);
+                return EvaluateProps(node.TagName, node, DataContext, nodeLocation);
             }
 
             var parentNodeName = node.ParentNode?.NodeName;
@@ -250,19 +256,19 @@ namespace Bridge.BOAIntegration
             var isParentComponentProperty = nodeName.StartsWith(parentNodeName + ".");
             if (isParentComponentProperty)
             {
-                return BuildNodeAsParentComponentProperty(node, prop, nodeLocation, parentComponentProp, parentNodeName, nodeName);
+                return BuildNodeAsParentComponentProperty(node, nodeLocation, parentComponentProp, parentNodeName, nodeName);
             }
 
             var componentConstructor = GetComponentClassByTagName(node.TagName);
 
             if (node.HasChildNodes() == false)
             {
-                return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, prop, nodeLocation));
+                return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, DataContext, nodeLocation));
             }
 
-            var componentProp = EvaluateProps(componentConstructor, node, prop, nodeLocation);
+            var componentProp = EvaluateProps(componentConstructor, node, DataContext, nodeLocation);
 
-            return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, prop, nodeLocation, componentProp));
+            return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, nodeLocation, componentProp));
         }
 
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
