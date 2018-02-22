@@ -55,11 +55,32 @@ namespace Bridge.BOAIntegration
 
             var rootNode = input.XmlRootElement ?? GetRootNode(input.XmlUI);
 
-            return BuildNodes(rootNode, input.DataContext, "0", null);
+            return BuildNodes(rootNode, input.DataContext, "0", null).As<ReactElement>();
         }
         #endregion
 
         #region Methods
+        internal static object BuildNodeAsText(string innerText, object dataContext)
+        {
+            var bindingInfo = BindingInfo.TryParseExpression(innerText);
+
+            if (bindingInfo == null)
+            {
+                if (string.IsNullOrWhiteSpace(innerText))
+                {
+                    return null;
+                }
+
+                return innerText;
+            }
+
+            var propertyPath = bindingInfo.SourcePath;
+
+            propertyPath.Walk(dataContext);
+
+            return propertyPath.GetPropertyValue();
+        }
+
         internal object EvaluateAttributeValue(string attributeValue, object prop)
         {
             var isMethod = attributeValue.StartsWith("this.");
@@ -86,27 +107,6 @@ namespace Bridge.BOAIntegration
             }
 
             return attributeValue;
-        }
-
-        static ReactElement BuildNodeAsText(Element node, object prop)
-        {
-            var innerText   = node.GetInnerText();
-            var bindingInfo = BindingInfo.TryParseExpression(innerText);
-
-            if (bindingInfo == null)
-            {
-                if (string.IsNullOrWhiteSpace(innerText))
-                {
-                    return null;
-                }
-
-                return innerText.As<ReactElement>();
-            }
-
-            var propertyPath = bindingInfo.SourcePath;
-
-            propertyPath.Walk(prop);
-            return propertyPath.GetPropertyValue().As<ReactElement>();
         }
 
         static Element GetRootNode(string xmlString)
@@ -219,16 +219,29 @@ namespace Bridge.BOAIntegration
             return childElements;
         }
 
-        ReactElement BuildNodes(Element node, object prop, string nodeLocation, object parentComponentProp)
+        ReactElement BuildNodeAsParentComponentProperty(Element node, object prop, string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
+        {
+            var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
+
+            var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
+
+            BeforeStartToProcessAttribute(propertyName, null);
+
+            parentComponentProp[Data.CurrentAttributeName] = value;
+
+            return null;
+        }
+
+        object BuildNodes(Element node, object prop, string nodeLocation, object parentComponentProp)
         {
             if (node.NodeType == NodeType.Text)
             {
-                return BuildNodeAsText(node, prop);
+                return BuildNodeAsText(node.GetInnerText(), prop);
             }
 
             if (node.TagName == "ComboBoxColumn")
             {
-                return EvaluateProps(node.TagName, node, prop, nodeLocation).As<ReactElement>();
+                return EvaluateProps(node.TagName, node, prop, nodeLocation);
             }
 
             var parentNodeName = node.ParentNode?.NodeName;
@@ -250,19 +263,6 @@ namespace Bridge.BOAIntegration
             var componentProp = EvaluateProps(componentConstructor, node, prop, nodeLocation);
 
             return ReactElement.Create(componentConstructor, componentProp, BuildChildNodes(node, prop, nodeLocation, componentProp));
-        }
-
-         ReactElement BuildNodeAsParentComponentProperty(Element node, object prop, string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
-        {
-            var value = BuildChildNodes(node, prop, nodeLocation, parentComponentProp);
-
-            var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
-
-            BeforeStartToProcessAttribute(propertyName, null);
-
-            parentComponentProp[Data.CurrentAttributeName] = value;
-
-            return null;
         }
 
         object EvaluateProps(object componentConstructor, Element node, object prop, string nodeLocation)
