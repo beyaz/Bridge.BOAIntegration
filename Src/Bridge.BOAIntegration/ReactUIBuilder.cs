@@ -29,6 +29,13 @@ namespace Bridge.BOAIntegration
         #endregion
     }
 
+    public class PropsEvaluatedEventArgs : EventArgs
+    {
+        public object CurrentComponentClass { get; internal set; }
+        public string CurrentComponentName  { get; internal set; }
+        public object CurrentComponentProp  { get; internal set; }
+    }
+
     public class ReactUIBuilder
     {
         #region Constants
@@ -46,7 +53,10 @@ namespace Bridge.BOAIntegration
         public ComponentClassFinder ComponentClassFinder { get; set; }
 
         public Action<ReactUIBuilderData>       OnBeforeStartToProcessAttribute { get; set; }
-        public Func<ReactUIBuilderData, object> OnPropsEvaluated                { get; set; }
+
+        public event  Action<PropsEvaluatedEventArgs> PropsEvaluated;
+
+        
         #endregion
 
         #region Public Methods
@@ -239,13 +249,17 @@ namespace Bridge.BOAIntegration
                 elementProps[AttributeName.key] = nodeLocation;
             }
 
-            if (OnPropsEvaluated != null)
+            if (PropsEvaluated != null)
             {
-                Data.CurrentComponentName  = node.NodeName;
-                Data.CurrentComponentClass = componentConstructor;
-                Data.CurrentComponentProp  = elementProps;
+                var propsEvaluatedEventArgs = new PropsEvaluatedEventArgs
+                {
+                    CurrentComponentName  = node.NodeName,
+                    CurrentComponentClass = componentConstructor,
+                    CurrentComponentProp  = elementProps
+                };
 
-                elementProps = OnPropsEvaluated(Data);
+                PropsEvaluated(propsEvaluatedEventArgs);
+                
             }
 
             return elementProps;
@@ -299,5 +313,7 @@ namespace Bridge.BOAIntegration
             }
         }
         #endregion
+
+        
     }
 }

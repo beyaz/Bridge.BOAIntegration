@@ -104,9 +104,11 @@ namespace Bridge.BOAIntegration
             var reactUiBuilder = new ReactUIBuilder
             {
                 ComponentClassFinder = NodeModules.FindComponent,
-                OnPropsEvaluated     = OnPropsEvaluated,
+                
                 OnBeforeStartToProcessAttribute = OnBeforeStartToProcessAttribute
             };
+
+            reactUiBuilder.PropsEvaluated += OnPropsEvaluated;
 
             return reactUiBuilder.Build(new ReactUIBuilderInput
             {
@@ -126,7 +128,7 @@ namespace Bridge.BOAIntegration
             data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
         }
 
-        object OnPropsEvaluated(ReactUIBuilderData data)
+        void OnPropsEvaluated(PropsEvaluatedEventArgs data)
         {
             var componentProp = data.CurrentComponentProp;
 
@@ -167,9 +169,7 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-
-
-            return componentProp;
+            
         }
 
         [Template("$TypeScriptVersion.setState({0})")]

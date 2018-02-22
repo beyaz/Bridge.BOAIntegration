@@ -15,9 +15,10 @@
                     }
 
                     return null;
-                },
-                OnPropsEvaluated = reactUIBuilderData => reactUIBuilderData.CurrentComponentProp
+                }
+                
             };
+
 
             var element = builder.Build(new ReactUIBuilderInput
             {
