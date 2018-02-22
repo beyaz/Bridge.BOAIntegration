@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
-using BOA.Types.Kernel.Account;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -34,15 +33,13 @@ namespace Bridge.BOAIntegration
     {
         #region Constants
         const string Comma = ",";
-
-
         #endregion
-
-        object DataContext;
 
         #region Fields
         internal ReactUIBuilderInput Input;
         readonly ReactUIBuilderData  Data = new ReactUIBuilderData();
+
+        object DataContext;
         #endregion
 
         #region Public Properties
@@ -135,53 +132,6 @@ namespace Bridge.BOAIntegration
         [Template("Bridge.unbox({0},true)")]
         static extern object Unbox(object o);
 
-        void BAccountComponent_onAccountSelect_Handler(AccountComponentAccountsContract selectedAccount, string bindingPath, string propName)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(DataContext);
-
-            if (propName == "accountNumber")
-            {
-                propertyPath.SetPropertyValue(selectedAccount.AccountNumber);
-                return;
-            }
-
-            if (propName == "accountSuffix")
-            {
-                propertyPath.SetPropertyValue(selectedAccount.AccountSuffix);
-                return;
-            }
-
-            // TODO acaba gelen contractın tam olarak bilgisi ne ? 
-            if (propName == "selectedAccount")
-            {
-                propertyPath.SetPropertyValue(selectedAccount);
-                return;
-            }
-
-            throw new ArgumentException(propName);
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        void BComboBox_onSelect_Handler(int index, object[] items, string bindingPath)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(DataContext);
-
-            propertyPath.SetPropertyValue(items);
-        }
-
-        void BDateTimePicker_onChange_Handler(DateTime? value, string bindingPath)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(DataContext);
-
-            propertyPath.SetPropertyValue(value.As<object>());
-        }
-
         void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
             Data.CurrentAttributeName  = attributeName;
@@ -213,7 +163,7 @@ namespace Bridge.BOAIntegration
 
             for (var i = 0; i < len; i++)
             {
-                var childElement = BuildNodes(childNodes[i].As<Element>(),  nodeLocation + Comma + i, componentProp);
+                var childElement = BuildNodes(childNodes[i].As<Element>(), nodeLocation + Comma + i, componentProp);
                 if (childElement == null)
                 {
                     continue;
@@ -225,9 +175,9 @@ namespace Bridge.BOAIntegration
             return childElements;
         }
 
-        ReactElement BuildNodeAsParentComponentProperty(Element node,  string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
+        ReactElement BuildNodeAsParentComponentProperty(Element node, string nodeLocation, object parentComponentProp, string parentNodeName, string nodeName)
         {
-            var value = BuildChildNodes(node,  nodeLocation, parentComponentProp);
+            var value = BuildChildNodes(node, nodeLocation, parentComponentProp);
 
             var propertyName = nodeName.RemoveFromStart(parentNodeName + ".");
 
@@ -238,7 +188,7 @@ namespace Bridge.BOAIntegration
             return null;
         }
 
-        object BuildNodes(Element node,string nodeLocation, object parentComponentProp)
+        object BuildNodes(Element node, string nodeLocation, object parentComponentProp)
         {
             if (node.NodeType == NodeType.Text)
             {
@@ -336,43 +286,16 @@ namespace Bridge.BOAIntegration
 
             if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
             {
-                // ReSharper disable once UnusedVariable
-                var bindingPath = bindingInfo.SourcePath.Path;
-
-                // ReSharper disable once UnusedVariable
-                var me = this;
-
-                if (attributeName == AttributeName.value && nodeName == "BDateTimePicker")
+                var targetToSourceBinder = new TargetToSourceBinder
                 {
-                    elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
-                    {
-                            me.BDateTimePicker_onChange_Handler(value,bindingPath);
-                    }");
-                }
+                    elementProps  = elementProps,
+                    bindingInfo   = bindingInfo,
+                    DataContext   = DataContext,
+                    attributeName = attributeName,
+                    nodeName      = nodeName
+                };
 
-                if (attributeName == AttributeName.value && nodeName == "BInputMask")
-                {
-                    elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
-                    {
-                            me.BInputMask_onChange_Handler(value,bindingPath);
-                    }");
-                }
-
-                if (attributeName == "accountNumber" && nodeName == "BAccountComponent")
-                {
-                    elementProps["onAccountSelect"] = Script.Write<object>(@"function(contract)
-                    {
-                            me.BAccountComponent_onAccountSelect_Handler(contract,bindingPath,'accountNumber');
-                    }");
-                }
-
-                if (attributeName == "selectedItems" && nodeName == "BComboBox")
-                {
-                    elementProps["onSelect"] = Script.Write<object>(@"function(index,items)
-                    {
-                            me.BComboBox_onSelect_Handler(index,items,bindingPath);
-                    }");
-                }
+                targetToSourceBinder.TryBind();
             }
         }
         #endregion

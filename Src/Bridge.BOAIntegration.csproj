@@ -66,6 +66,7 @@
     <Compile Include="Bridge.BOAIntegration\GridColumnInfo.cs" />
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
+    <Compile Include="Bridge.BOAIntegration\TargetToSourceBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include=".Net Override\System\MissingMemberException.cs" />
     <Compile Include=".Net Override\System.Reflection\ReflectionHelper.cs" />
