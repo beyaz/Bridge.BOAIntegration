@@ -2,24 +2,6 @@
 
 namespace Bridge.BOAIntegration.Injection
 {
-
-    static class Extensions
-    {
-
-        /// <summary>
-        ///     Removes value from end of str
-        /// </summary>
-        public static string RemoveFromEnd(this string data, string value)
-        {
-            if (data.EndsWith(value))
-            {
-                return data.Substring(0, data.Length - value.Length);
-            }
-
-            return data;
-        }
-
-    }
     class Program
     {
         #region Methods
