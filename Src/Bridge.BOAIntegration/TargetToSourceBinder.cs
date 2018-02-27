@@ -44,6 +44,16 @@ namespace Bridge.BOAIntegration
                 return true;
             }
 
+            if (attributeName == AttributeName.value && nodeName == "BInputNumeric")
+            {
+                elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
+                {
+                            me.BInputNumeric_onChange_Handler(value,bindingPath);
+                }");
+
+                return true;
+            }
+
             if (attributeName == "accountNumber" && nodeName == "BAccountComponent")
             {
                 elementProps["onAccountSelect"] = Script.Write<object>(@"function(contract)
@@ -115,6 +125,28 @@ namespace Bridge.BOAIntegration
 
             propertyPath.SetPropertyValue(value.As<object>());
         }
+
+        void BInputMask_onChange_Handler(string value, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(DataContext);
+
+            propertyPath.SetPropertyValue(value);
+        }
+
+
+        void BInputNumeric_onChange_Handler(string value, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(DataContext);
+
+            propertyPath.SetPropertyValue(value);
+        }
+
+
+        
         #endregion
     }
 }

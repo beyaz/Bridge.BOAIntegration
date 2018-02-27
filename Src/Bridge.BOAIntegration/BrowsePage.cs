@@ -7,56 +7,25 @@ using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
-
     public class BrowsePage : BasePage
     {
+        #region Public Events
         public event EventHandler LoadCompleted;
-
-        public bool CanExecuteAction(string commandName)
-        {
-            return true;
-        }
-
-      
-
-        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
-        public void ShowStatusMessage(string message, DialogTypes dialogType)
-        {
-            // ReSharper disable once UnusedVariable
-            var dialogHelper = NodeModules.BFormManager();
-
-            Script.Write("dialogHelper.showStatusMessage(message); ");
-        }
-
-        public void ClearStatusMessage()
-        {
-            // ReSharper disable once UnusedVariable
-            var dialogHelper = NodeModules.BFormManager();
-
-            Script.Write("dialogHelper.clearStatusMessage(); ");
-        }
-        
+        #endregion
 
         #region Public Properties
+        public object Data => State.PageParams.Data;
+
+        public int RenderCount { get; private set; }
+
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
         public BState State { [Template("$TypeScriptVersion.state")] get; }
 
-
-        public object Data => State.PageParams.Data;
+        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
+        public object TypeScriptVersion { [Template("$TypeScriptVersion")] get; }
         #endregion
 
-        #region Public Methods
-        public virtual string GetMessage(string groupName, string propertyName)
-        {
-            return MessagingHelper.GetMessage(groupName, propertyName);
-        }
-
-        public void SetState<T>(T state) where T : BState
-        {
-            setState(state);
-        }
-
-
+        #region Properties
         protected Array DataSource
         {
             set
@@ -69,27 +38,30 @@ namespace Bridge.BOAIntegration
             }
         }
 
-
-
-        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
-        [SuppressMessage("ReSharper", "UnusedVariable")]
-        public void ShowError(string message, Result[] results)
-        {
-            var dialogHelper = NodeModules.BDialogHelper();
-
-            Script.Write("dialogHelper.showError(this.$TypeScriptVersion.state.context,message,results); ");
-        }
+        protected string XmlUI { get; set; }
         #endregion
 
-        #region Methods
+        #region Public Methods
+        public bool CanExecuteAction(string commandName)
+        {
+            return true;
+        }
 
-        protected string XmlUI { get; set; }
+        public void ClearStatusMessage()
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
 
-        public int RenderCount { get; private set; }
+            Script.Write("dialogHelper.clearStatusMessage(); ");
+        }
+
+        public virtual string GetMessage(string groupName, string propertyName)
+        {
+            return MessagingHelper.GetMessage(groupName, propertyName);
+        }
+
         public ReactElement render()
         {
-            
-
             if (RenderCount == 0)
             {
                 jQuery.Ready(() => { LoadCompleted?.Invoke(this, null); });
@@ -99,89 +71,55 @@ namespace Bridge.BOAIntegration
 
             return BuildUI(XmlUI);
         }
+
+        public void SetState<T>(T state) where T : BState
+        {
+            setState(state);
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
+        [SuppressMessage("ReSharper", "UnusedVariable")]
+        public void ShowError(string message, Result[] results)
+        {
+            var dialogHelper = NodeModules.BDialogHelper();
+
+            Script.Write("dialogHelper.showError(this.$TypeScriptVersion.state.context,message,results); ");
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
+        public void ShowStatusMessage(string message, DialogTypes dialogType)
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+        }
+        #endregion
+
+        #region Methods
         protected ReactElement BuildUI(string xmlUI)
         {
-            var reactUiBuilder = new ReactUIBuilder
+            var reactUiBuilder = new ReactUIBuilderBOAVersion
             {
-                ComponentClassFinder = NodeModules.FindComponent,
-                XmlUI       = xmlUI,
-                DataContext = this,
-                Caller      = this
-
+                XmlUI                     = xmlUI,
+                DataContext               = this,
+                Caller                    = this,
+                TypeScriptWrittenJsObject = TypeScriptVersion
             };
-
-            reactUiBuilder.PropsEvaluated += OnPropsEvaluated;
-            reactUiBuilder.BeforeProcessAttribute += OnBeforeStartToProcessAttribute;
 
             return reactUiBuilder.Build();
         }
-
-        void OnBeforeStartToProcessAttribute(BeforeStartToProcessAttributeEventArgs data)
-        {
-            MakeLowercaseFirstChar(data);
-        }
-
-         static void MakeLowercaseFirstChar(BeforeStartToProcessAttributeEventArgs data)
-        {
-            data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
-        }
-
-        void OnPropsEvaluated(PropsEvaluatedEventArgs data)
-        {
-            var componentProp = data.CurrentComponentProp;
-
-            var pageParams = State.PageParams;
-            var context    = State.Context;
-
-            var snapKey = componentProp[AttributeName.key].As<string>();
-
-            componentProp[AttributeName.snapKey]    = snapKey;
-            componentProp[AttributeName.pageParams] = pageParams;
-            componentProp[AttributeName.context]    = context;
-            componentProp[AttributeName.snapshot]   = State[AttributeName.snapshot][snapKey];
-            var previousSnap = State[AttributeName.dynamicProps][snapKey];
-
-            componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
-
-            // ReSharper disable once UnusedVariable
-            var me = this;
-
-            componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.$TypeScriptVersion.snaps[ snapKey ] = r;  }");
-
-            if (data.CurrentComponentName == "BInputMask")
-            {
-                // TODO: bug fix value null olduğunda _isCorrectFormatText metodu patlıyor. düzeltileiblir
-                if (componentProp[AttributeName.value] == null)
-                {
-                    componentProp[AttributeName.value] = "";
-                }
-            }
-
-
-            if (data.CurrentComponentName == "BComboBox")
-            {
-                // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
-                if (componentProp[AttributeName.dataSource] == null)
-                {
-                    componentProp[AttributeName.dataSource] = new object[0];
-                }
-            }
-
-            
-        }
-
-        [Template("$TypeScriptVersion.setState({0})")]
-        extern void setState(object state);
-
-        [Template("$TypeScriptVersion.forceUpdate()")]
-        protected extern void forceUpdate();
-
-
 
         protected void ForceRender()
         {
             forceUpdate();
         }
+
+        [Template("$TypeScriptVersion.forceUpdate()")]
+        protected extern void forceUpdate();
+
+        [Template("$TypeScriptVersion.setState({0})")]
+        extern void setState(object state);
         #endregion
     }
 }

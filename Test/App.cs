@@ -1,7 +1,4 @@
-﻿using System.Text.Tokenizers;
-using System.Windows;
-using Bridge.Html5;
-using Bridge.QUnit;
+﻿using Bridge.Html5;
 
 namespace Bridge.BOAIntegration
 {
@@ -12,10 +9,9 @@ namespace Bridge.BOAIntegration
         public static void RunAll()
         {
             ReactUIBuilderTest.Register();
-        }
-        #endregion
 
-        #region Methods
+            ReactUIBuilderBOAVersionTest.Register();
+        }
         #endregion
     }
 }

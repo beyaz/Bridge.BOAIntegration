@@ -39,6 +39,7 @@
     <Compile Include="App.cs" />
     <Compile Include="Bridge.BOAIntegration\Component_1.cs" />
     <Compile Include="Bridge.BOAIntegration\Component_1_Prop.cs" />
+    <Compile Include="Bridge.BOAIntegration\ReactUIBuilderBOAVersionTest.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderTest.Helper.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
