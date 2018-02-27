@@ -5,6 +5,12 @@ namespace Bridge.BOAIntegration
 {
     class ReactUIBuilderBOAVersion : ReactUIBuilder
     {
+        #region Constants
+        const string FALSE = "FALSE";
+
+        const string TRUE = "TRUE";
+        #endregion
+
         #region Static Fields
         static readonly Dictionary<string, string[]> BooleanAttributes = new Dictionary<string, string[]>
         {
@@ -34,6 +40,7 @@ namespace Bridge.BOAIntegration
         internal static void EvaluateBooleanValues(string componentName, object componentProp)
         {
             string[] booleanAttributes = null;
+
             if (BooleanAttributes.TryGetValue(componentName, out booleanAttributes) == false)
             {
                 return;
@@ -49,13 +56,13 @@ namespace Bridge.BOAIntegration
                     continue;
                 }
 
-                if (stringValue.ToUpper() == "FALSE")
+                if (stringValue.ToUpper() == FALSE)
                 {
                     componentProp[attributeName] = Script.Write<object>("false");
                     continue;
                 }
 
-                if (stringValue.ToUpper() == "TRUE")
+                if (stringValue.ToUpper() == TRUE)
                 {
                     componentProp[attributeName] = Script.Write<object>("true");
                     continue;
