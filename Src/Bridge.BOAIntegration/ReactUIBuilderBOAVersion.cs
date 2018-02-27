@@ -22,6 +22,7 @@ namespace Bridge.BOAIntegration
 
         static readonly Dictionary<string, string[]> NumberAttributes = new Dictionary<string, string[]>
         {
+            {"BCheckBox", new[] {"size"}},
             {"BComboBox", new[] {"size"}},
             {"BInput", new[] {"rows", "rowsMax", "size"}},
             {"BParameterComponent", new[] {"size"}}

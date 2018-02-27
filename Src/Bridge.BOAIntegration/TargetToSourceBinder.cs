@@ -55,11 +55,21 @@ namespace Bridge.BOAIntegration
                 return true;
             }
 
-            if (attributeName == "accountNumber" && nodeName == "BAccountComponent")
+            if (nodeName == "BAccountComponent" && attributeName == "accountNumber")
             {
                 elementProps["onAccountSelect"] = Script.Write<object>(@"function(contract)
                 {
                     me.BAccountComponent_onAccountSelect_Handler(contract,bindingPath,'accountNumber');
+                }");
+
+                return true;
+            }
+
+            if (nodeName == "BParameterComponent" && attributeName == "selectedParamCode")
+            {
+                elementProps["onParameterSelect"] = Script.Write<object>(@"function(contract)
+                {
+                    me.BParameterComponent_onParameterSelect_Handler(contract,bindingPath,'selectedParamCode');
                 }");
 
                 return true;
@@ -70,6 +80,16 @@ namespace Bridge.BOAIntegration
                 elementProps["onSelect"] = Script.Write<object>(@"function(index,items)
                 {
                             me.BComboBox_onSelect_Handler(index,items,bindingPath);
+                }");
+
+                return true;
+            }
+
+            if (nodeName == "BCheckBox" && attributeName == "checked")
+            {
+                elementProps["onCheck"] = Script.Write<object>(@"function(e,isChecked)
+                {
+                       me.BCheckBox_onCheck_Handler(isChecked,bindingPath);
                 }");
 
                 return true;
@@ -108,6 +128,15 @@ namespace Bridge.BOAIntegration
             throw new ArgumentException(propName);
         }
 
+        void BCheckBox_onCheck_Handler(bool isChecked, string bindingPath)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(DataContext);
+
+            propertyPath.SetPropertyValue(isChecked);
+        }
+
         // ReSharper disable once UnusedParameter.Local
         void BComboBox_onSelect_Handler(int index, object[] items, string bindingPath)
         {
@@ -143,6 +172,21 @@ namespace Bridge.BOAIntegration
             propertyPath.Walk(DataContext);
 
             propertyPath.SetPropertyValue(value);
+        }
+
+        void BParameterComponent_onParameterSelect_Handler(dynamic parameterContract, string bindingPath, string propName)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(DataContext);
+
+            if (propName == "selectedParamCode")
+            {
+                propertyPath.SetPropertyValue(parameterContract.paramCode);
+                return;
+            }
+
+            throw new ArgumentException(propName);
         }
         #endregion
     }
