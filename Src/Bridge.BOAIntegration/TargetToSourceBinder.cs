@@ -34,7 +34,8 @@ namespace Bridge.BOAIntegration
                 return true;
             }
 
-            if (attributeName == AttributeName.value && nodeName == "BInputMask")
+            if (attributeName == AttributeName.value &&
+                (nodeName == "BInputMask" || nodeName == "BInput"))
             {
                 elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
                 {
@@ -135,7 +136,6 @@ namespace Bridge.BOAIntegration
             propertyPath.SetPropertyValue(value);
         }
 
-
         void BInputNumeric_onChange_Handler(string value, string bindingPath)
         {
             var propertyPath = new PropertyPath(bindingPath);
@@ -144,9 +144,6 @@ namespace Bridge.BOAIntegration
 
             propertyPath.SetPropertyValue(value);
         }
-
-
-        
         #endregion
     }
 }

@@ -15,7 +15,16 @@ namespace Bridge.BOAIntegration
         static readonly Dictionary<string, string[]> BooleanAttributes = new Dictionary<string, string[]>
         {
             {"BAccountComponent", new[] {"isVisibleBalance", "isVisibleIBAN"}},
-            {"BComboBox", new[] {"multiSelect", "multiColumn", "isAllOptionIncluded"}}
+            {"BComboBox", new[] {"multiSelect", "multiColumn", "isAllOptionIncluded"}},
+            {"BInput", new[] {"noWrap", "multiLine"}},
+            {"BParameterComponent", new[] {"disabled"}}
+        };
+
+        static readonly Dictionary<string, string[]> NumberAttributes = new Dictionary<string, string[]>
+        {
+            {"BComboBox", new[] {"size"}},
+            {"BInput", new[] {"rows", "rowsMax", "size"}},
+            {"BParameterComponent", new[] {"size"}}
         };
         #endregion
 
@@ -72,6 +81,32 @@ namespace Bridge.BOAIntegration
             }
         }
 
+        internal static void EvaluateNumberValues(string componentName, object componentProp)
+        {
+            string[] attributes = null;
+
+            if (NumberAttributes.TryGetValue(componentName, out attributes) == false)
+            {
+                return;
+            }
+
+            var length = attributes.Length;
+            for (var i = 0; i < length; i++)
+            {
+                var attributeName = attributes[i];
+                var stringValue   = componentProp[attributeName] as string;
+                if (stringValue == null)
+                {
+                    continue;
+                }
+
+                // ReSharper disable once UnusedVariable
+                var intValue = int.Parse(stringValue);
+
+                componentProp[attributeName] = Script.Write<object>("intValue");
+            }
+        }
+
         static void MakeLowercaseFirstChar(BeforeStartToProcessAttributeEventArgs data)
         {
             data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
@@ -123,6 +158,7 @@ namespace Bridge.BOAIntegration
             }
 
             EvaluateBooleanValues(data.CurrentComponentName, data.CurrentComponentProp);
+            EvaluateNumberValues(data.CurrentComponentName, data.CurrentComponentProp);
         }
         #endregion
     }
