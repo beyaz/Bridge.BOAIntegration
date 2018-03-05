@@ -10,37 +10,8 @@ using Newtonsoft.Json.Serialization;
 
 namespace Bridge.BOAIntegration
 {
-    public class BasePage: INotifyPropertyChanged
+    public class BasePage : INotifyPropertyChanged
     {
-
-
-        public void onActionClick(ResourceActionContract resourceAction)
-        {
-            var propertyName = resourceAction.CommandName + "Command";
-
-            var propertyInfo = this.GetType().GetProperty(propertyName);
-
-            if (propertyInfo == null)
-            {
-                throw new ArgumentException(propertyName + " command not found.");
-            }
-
-            var command = (ICommand)propertyInfo.GetValue(this);
-
-            command.Execute(null);
-        }
-
-
-        #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged(string prop)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-        #endregion
-
-
         #region Events
         internal event Action<string, object> OnProxyDidRespond;
         #endregion
@@ -51,19 +22,17 @@ namespace Bridge.BOAIntegration
             return ServiceCallExecuter.Call(proxyRequest, this).As<Task<TResponse>>();
         }
 
-
         public Task<Response> ExecuteAsync<Request, Response>(Request request) where Request : RequestBase, new() where Response : ResponseBase
         {
             var proxyRequest = new ProxyRequest<Request>
             {
                 RequestClass = request.GetType().FullName,
-                RequestBody = request,
-                Key =request.MethodName
+                RequestBody  = request,
+                Key          = request.MethodName + "-" + Guid.NewGuid()
             };
 
             return ServiceCallExecuter.Call(proxyRequest, this).As<Task<Response>>();
         }
-
 
         public async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
         {
@@ -76,7 +45,27 @@ namespace Bridge.BOAIntegration
             throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
         }
 
+        public void onActionClick(ResourceActionContract resourceAction)
+        {
+            var propertyName = resourceAction.CommandName + "Command";
 
+            var propertyInfo = GetType().GetProperty(propertyName);
+
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException(propertyName + " command not found.");
+            }
+
+            var command = (ICommand) propertyInfo.GetValue(this);
+
+            command.Execute(null);
+        }
+
+        [Template("$TypeScriptVersion.proxyExecute({0})")]
+        public extern void ProxyExecute(object requestContainer);
+        #endregion
+
+        #region Methods
         static T ConvertToBridgeGeneratedType<T>(object jsonValue)
         {
             var jsonString = JSON.Stringify(jsonValue);
@@ -85,15 +74,8 @@ namespace Bridge.BOAIntegration
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
-
         }
 
-
-        [Template("$TypeScriptVersion.proxyExecute({0})")]
-        public extern void ProxyExecute(object requestContainer);
-        #endregion
-
-        #region Methods
         void proxyDidRespond(dynamic proxyResponse)
         {
             string key = proxyResponse.key;
@@ -107,11 +89,10 @@ namespace Bridge.BOAIntegration
         class ServiceCallExecuter : IPromise
         {
             #region Fields
-            dynamic _request;
-            dynamic _view;
-            dynamic _response;
-
             Delegate _fulfilledHandler;
+            dynamic  _request;
+            dynamic  _response;
+            dynamic  _view;
             #endregion
 
             #region Properties
@@ -168,5 +149,14 @@ namespace Bridge.BOAIntegration
             }
             #endregion
         }
+
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string prop)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
     }
 }
