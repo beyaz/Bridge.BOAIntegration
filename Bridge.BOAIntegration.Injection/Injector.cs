@@ -23,52 +23,9 @@ namespace Bridge.BOAIntegration.Injection
 // --- Injected Code --->
 if (!window.Bridge)
 {
-    window.React = React; 
-    
 
-	var IncludeJs = function IncludeJs(url) 
-	{
-		$.ajax({
-			url: url,
-			dataType: 'script',
-			async: false
-		});
-	};
-
-	IncludeJs('bridge.js');
-	IncludeJs('bridge.meta.js');
-    IncludeJs('newtonsoft.json.js');
-
-	if (!Bridge.$BOAIntegration) {
-		Bridge.$BOAIntegration = 
-        {
-            $_extends: Object.assign || function (target)
-		                                {
-			                                for (var i = 1; i < arguments.length; i++) 
-			                                {
-				                                var source = arguments[i];
-				                                for (var key in source) 
-				                                {
-					                                if (Object.prototype.hasOwnProperty.call(source, key)) 
-					                                {
-						                                target[key] = source[key];
-					                                }
-				                                }
-			                                }
-			                                return target;
-		                                }
-                                    
-
-
-        };
-	}
-
-	IncludeJs('Bridge.BOAIntegration.js');
-	IncludeJs('Bridge.BOAIntegration.meta.js');
-    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.js');
-    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.meta.js');
-
-	Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
+    $.ajax({url: 'Bridge_BOAIntegration_Loader.js',dataType: 'script',async: false});
+    Bridge.BOAIntegration.$Setup(__webpack_require__,React);   
 }
 // <--- Injected Code ---
 
