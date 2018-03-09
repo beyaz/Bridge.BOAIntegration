@@ -130,7 +130,7 @@ namespace Bridge.BOAIntegration.Injection
 
         static bool IsAlreadyInjected(string allText)
         {
-            return allText.Contains("Bridge.$BOAIntegration");
+            return allText.Contains("return this.$DotNetVersion.render();");
         }
 
         static List<string> Split(string injectInfoJsData)
