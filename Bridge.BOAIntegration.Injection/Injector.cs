@@ -21,12 +21,12 @@ namespace Bridge.BOAIntegration.Injection
 
             injectInfo.JSCodeWillbeInject = @"
 // --- Injected Code --->
-if (!window.Bridge)
-{
+    if (!window.Bridge)
+    {
 
-    $.ajax({url: 'Bridge_BOAIntegration_Loader.js',dataType: 'script',async: false});
-    Bridge.BOAIntegration.$Setup(__webpack_require__,React);   
-}
+        $.ajax({url: 'Bridge_BOAIntegration_Loader.js',dataType: 'script',async: false});
+        Bridge.BOAIntegration.$Setup(__webpack_require__,React);   
+    }
 // <--- Injected Code ---
 
 ";
@@ -42,9 +42,7 @@ if (!window.Bridge)
             injectInfo.JSCodeWillbeInject = @"
 
         // --- Injected Code --->
-		_this.$DotNetVersion                    = new " + injectInfo.ViewTypeFullName + @"();
-		_this.$DotNetVersion.$TypeScriptVersion = _this;
-		_this.state.columns 					= _this.$DotNetVersion.$columns
+            Bridge.BOAIntegration.$Connect_Typescript_And_Dotnet_Instances_for_BrowsePage(_this," + injectInfo.ViewTypeFullName + @");
 		// <--- Injected Code ---
        
 
