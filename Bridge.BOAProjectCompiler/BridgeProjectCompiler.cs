@@ -8,7 +8,7 @@ namespace Bridge.BOAProjectCompiler
     class BridgeProjectCompiler
     {
         #region Constants
-        const string BridgeVersion         = "16.7.1";
+        const string BridgeVersion         = "16.8.2";
         const string OutDir                = @"bin\Debug\";
         const string PackagesDirectoryPath = @"D:\github\Bridge.BOAIntegration\packages\";
         #endregion
