@@ -1,33 +1,45 @@
 ﻿using System.IO;
 using Bridge.Contract;
 using Bridge.Translator;
+using Bridge.Translator.Logging;
 
 namespace Bridge.BOAProjectCompiler
 {
     class BridgeProjectCompiler
     {
-        public BridgeProjectCompilerInput Input { get; set; }
+        #region Constants
+        const string BridgeVersion         = "16.7.1";
+        const string OutDir                = @"bin\Debug\";
+        const string PackagesDirectoryPath = @"D:\github\Bridge.BOAIntegration\packages\";
+        #endregion
 
+        #region Public Properties
+        public BridgeProjectCompilerInput Input { get; set; }
+        #endregion
+
+        #region Public Methods
         public void Compile()
         {
-            var bridgeOptions = new Bridge.Translator.BridgeOptions
+            var bridgeLocation = PackagesDirectoryPath + $@"Bridge.Core.{BridgeVersion}\lib\net40\Bridge.dll";
+
+            var bridgeOptions = new BridgeOptions
             {
                 Name = "",
-                ProjectProperties = new Bridge.Contract.ProjectProperties
+                ProjectProperties = new ProjectProperties
                 {
                     AssemblyName = Path.GetFileNameWithoutExtension(Input.CsprojFilePath),
-                    OutputPath   = @"bin\Debug\",
-                    OutDir       = @"bin\Debug\",
+                    OutputPath   = OutDir,
+                    OutDir       = OutDir
                 },
                 ProjectLocation = Input.CsprojFilePath,
-                OutputLocation  = @"bin\Debug\",
+                OutputLocation  = OutDir,
                 DefaultFileName = Path.GetFileNameWithoutExtension(Input.CsprojFilePath) + ".dll",
-                BridgeLocation  = @"D:\github\Bridge.BOAIntegration\packages\Bridge.Core.16.7.1\lib\net40\Bridge.dll",
+                BridgeLocation  = bridgeLocation,
                 ExtractCore     = true,
-                FromTask        = true,
+                FromTask        = true
             };
 
-            var logger    = new Bridge.Translator.Logging.Logger(null, false, LoggerLevel.Info, true, new Bridge.Translator.Logging.ConsoleLoggerWriter(), new Bridge.Translator.Logging.FileLoggerWriter());
+            var logger    = new Logger(null, false, LoggerLevel.Info, true, new ConsoleLoggerWriter(), new FileLoggerWriter());
             var processor = new TranslatorProcessor(bridgeOptions, logger);
 
             processor.PreProcess();
@@ -35,5 +47,6 @@ namespace Bridge.BOAProjectCompiler
             processor.Process();
             processor.PostProcess();
         }
+        #endregion
     }
 }
