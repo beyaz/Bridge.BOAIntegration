@@ -54,12 +54,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Bridge.BOAIntegration.Injection\Bridge.BOAIntegration.Injection.csproj">
-      <Project>{d49450ae-d57f-4e98-8eff-193ffd4ba4fb}</Project>
-      <Name>Bridge.BOAIntegration.Injection</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

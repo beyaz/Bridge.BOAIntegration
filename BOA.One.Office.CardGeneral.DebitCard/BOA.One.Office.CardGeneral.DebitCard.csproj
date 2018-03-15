@@ -98,8 +98,7 @@
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetDir)Bridge\$(TargetName).js"      "D:\BOA\One\wwwroot\"
 copy /y "$(TargetDir)Bridge\$(TargetName).meta.js" "D:\BOA\One\wwwroot\"
-
-start D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration.Injection\bin\Debug\Bridge.BOAIntegration.Injection.exe   "cardgeneral.debitcard.card-transaction-list.js,BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen.View"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Bridge.Min.16.8.2\build\Bridge.Min.targets" Condition="Exists('..\packages\Bridge.Min.16.8.2\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
