@@ -24,7 +24,8 @@ namespace Bridge.BOAIntegration
             // ReSharper disable once UnusedVariable
             var me = this;
 
-            if (attributeName == AttributeName.value && nodeName == "BDateTimePicker")
+            if (attributeName == AttributeName.value &&
+                (nodeName == "BDateTimePicker"|| nodeName == "BDatePicker"))
             {
                 elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
                 {
@@ -155,6 +156,8 @@ namespace Bridge.BOAIntegration
 
             propertyPath.SetPropertyValue(value.As<object>());
         }
+
+        
 
         void BInputMask_onChange_Handler(string value, string bindingPath)
         {
