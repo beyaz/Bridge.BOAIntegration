@@ -13,17 +13,10 @@ namespace Bridge.BOAIntegration
         public object           CurrentComponentClass { get; internal set; }
         public string           CurrentComponentName  { get; internal set; }
         public object           CurrentComponentProp  { get; internal set; }
-        public Action<object>[] RefHandlers           { get; set; }
         #endregion
     }
 
-    public class BeforeStartToProcessAttributeEventArgs : EventArgs
-    {
-        #region Public Properties
-        public string CurrentAttributeName  { get; set; }
-        public string CurrentAttributeValue { get; set; }
-        #endregion
-    }
+    
 
     public class ReactUIBuilder
     {
@@ -32,20 +25,21 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Fields
-        readonly BeforeStartToProcessAttributeEventArgs BeforeStartToProcessAttributeEventArgs = new BeforeStartToProcessAttributeEventArgs();
 
         int _buildCount;
 
-        string CurrentAttributeName;
-        string CurrentAttributeValue;
+        protected string CurrentAttributeName;
+        protected string CurrentAttributeValue;
 
-        Action<object>[] RefHandlers;
+        protected Action<object>[] RefHandlers;
         #endregion
 
         #region Public Events
-        public event Action<BeforeStartToProcessAttributeEventArgs> BeforeProcessAttribute;
 
-        public event Action<PropsEvaluatedEventArgs> PropsEvaluated;
+        protected virtual void OnPropsEvaluated(PropsEvaluatedEventArgs data)
+        {
+
+        }
         #endregion
 
         #region Public Properties
@@ -155,23 +149,10 @@ namespace Bridge.BOAIntegration
             RefHandlers.Push(item);
         }
 
-        void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
+        protected virtual void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
             CurrentAttributeName  = attributeName;
             CurrentAttributeValue = attributeValue?.Trim();
-
-            if (BeforeProcessAttribute == null)
-            {
-                return;
-            }
-
-            BeforeStartToProcessAttributeEventArgs.CurrentAttributeName  = CurrentAttributeName;
-            BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue = CurrentAttributeValue;
-
-            BeforeProcessAttribute(BeforeStartToProcessAttributeEventArgs);
-
-            CurrentAttributeName  = BeforeStartToProcessAttributeEventArgs.CurrentAttributeName;
-            CurrentAttributeValue = BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue;
         }
 
         void BindSourceToTarget(BindingInfo bindingInfo, string nodeName, object source)
@@ -190,7 +171,9 @@ namespace Bridge.BOAIntegration
                         value = bindingInfo.Converter.Convert(value, null, bindingInfo.ConverterParameter, null);
                     }
 
-                    if (nodeName == "BInputMask")
+                    // TODO copy here to REact BOA builder
+                    //  TODO fix ""  and null or value if same do not update state??
+                    if (nodeName == ComponentName.BInputMask.ToString())
                     {
                         if (currentAttributeName == "value")
                         {
@@ -300,20 +283,16 @@ namespace Bridge.BOAIntegration
                 elementProps[AttributeName.key] = nodeLocation;
             }
 
-            if (PropsEvaluated != null)
+            var propsEvaluatedEventArgs = new PropsEvaluatedEventArgs
             {
-                var propsEvaluatedEventArgs = new PropsEvaluatedEventArgs
-                {
-                    CurrentComponentName  = node.NodeName,
-                    CurrentComponentClass = componentConstructor,
-                    CurrentComponentProp  = elementProps,
-                    RefHandlers           = RefHandlers
-                };
+                CurrentComponentName  = node.NodeName,
+                CurrentComponentClass = componentConstructor,
+                CurrentComponentProp  = elementProps,
+            };
 
-                PropsEvaluated(propsEvaluatedEventArgs);
+            OnPropsEvaluated(propsEvaluatedEventArgs);
 
-                RefHandlers = null;
-            }
+            RefHandlers = null;
 
             return elementProps;
         }

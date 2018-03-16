@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace Bridge.BOAIntegration
 {
+
+    enum ComponentName
+    {
+        BInputMask,
+        BComboBox
+    }
+
     class ReactUIBuilderBOAVersion : ReactUIBuilder
     {
         #region Constants
@@ -36,9 +43,7 @@ namespace Bridge.BOAIntegration
         #region Constructors
         public ReactUIBuilderBOAVersion()
         {
-            ComponentClassFinder   =  NodeModules.FindComponent;
-            PropsEvaluated         += OnPropsEvaluated;
-            BeforeProcessAttribute += OnBeforeStartToProcessAttribute;
+            ComponentClassFinder =  NodeModules.FindComponent;
         }
         #endregion
 
@@ -108,17 +113,15 @@ namespace Bridge.BOAIntegration
             }
         }
 
-        static void MakeLowercaseFirstChar(BeforeStartToProcessAttributeEventArgs data)
+        protected override void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
-            data.CurrentAttributeName = data.CurrentAttributeName[0].ToString().ToLower() + data.CurrentAttributeName.Substring(1);
+            base.BeforeStartToProcessAttribute(attributeName, attributeValue);
+
+            // MakeLowercaseFirstChar
+            CurrentAttributeName = CurrentAttributeName[0].ToString().ToLower() + CurrentAttributeName.Substring(1);
         }
 
-        static void OnBeforeStartToProcessAttribute(BeforeStartToProcessAttributeEventArgs data)
-        {
-            MakeLowercaseFirstChar(data);
-        }
-
-        void OnPropsEvaluated(PropsEvaluatedEventArgs data)
+        protected override void OnPropsEvaluated(PropsEvaluatedEventArgs data)
         {
             var componentProp = data.CurrentComponentProp;
 
@@ -145,14 +148,14 @@ namespace Bridge.BOAIntegration
 
             var hasNameAttribute = componentProp["x.Name"] != Script.Undefined;
             if (hasNameAttribute)
-            { 
+            {
                 fieldName = componentProp["x.Name"].As<string>();
 
                 Script.Write("delete componentProp['x.Name']");
-                
             }
 
-            Action<object> onRef = (r) =>
+            var refHandlers = RefHandlers;
+            Action<object> onRef = r =>
             {
                 var snaps = me.TypeScriptWrittenJsObject["snaps"];
 
@@ -160,7 +163,6 @@ namespace Bridge.BOAIntegration
                 {
                     throw new InvalidOperationException("snaps not found");
                 }
-                
 
                 snaps[snapKey] = r;
                 if (fieldName != null)
@@ -168,19 +170,18 @@ namespace Bridge.BOAIntegration
                     me.Caller[fieldName] = r;
                 }
 
-                if (data.RefHandlers != null)
+                if (refHandlers != null)
                 {
-                    foreach (var refHandler in data.RefHandlers)
+                    foreach (var refHandler in refHandlers)
                     {
                         refHandler(r);
                     }
                 }
             };
 
-
             componentProp[AttributeName.Ref] = onRef;
 
-            if (data.CurrentComponentName == "BInputMask")
+            if (data.CurrentComponentName == ComponentName.BInputMask.ToString())
             {
                 // TODO: bug fix value null olduğunda _isCorrectFormatText metodu patlıyor. düzeltileiblir
                 if (componentProp[AttributeName.value] == null)
@@ -189,7 +190,7 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-            if (data.CurrentComponentName == "BComboBox")
+            if (data.CurrentComponentName == ComponentName.BComboBox.ToString() )
             {
                 // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
                 if (componentProp[AttributeName.dataSource] == null)
