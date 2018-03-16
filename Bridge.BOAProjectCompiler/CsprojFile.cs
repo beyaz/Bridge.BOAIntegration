@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Bridge.BOAProjectCompiler
@@ -6,18 +7,26 @@ namespace Bridge.BOAProjectCompiler
     class CsprojFile
     {
         #region Public Properties
-        public string AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
-        public string Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Src\bin\Debug\Bridge.BOAIntegration.dll";
-        public string FileName                       { get; set; }
-        public string PackagesDirectory              { get; set; } = @"D:\github\Bridge.BOAIntegration\packages\";
-        public string WorkingDirectory               { get; set; } = @"d:\temp\";
+        public string                AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
+        public string                Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Src\bin\Debug\Bridge.BOAIntegration.dll";
+        public string                FileName                       { get; set; }
+        public string                OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
+        public string                OutputFilePath                 => OutputFileDirectory + FileName;
+        public string                PackagesDirectory              { get; set; } = @"D:\github\Bridge.BOAIntegration\packages\";
+        public IReadOnlyList<string> SourceFiles                    { get; set; }
 
-        public string OutputFilePath => WorkingDirectory + FileName;
+        public IReadOnlyList<string> ReferenceAssemblyPaths { get; set; }
+        public string                WorkingDirectory               { get; set; } = Directories.WorkingDirectory;
         #endregion
 
         #region Public Methods
         public void WriteToFile()
         {
+            if (Directory.Exists(OutputFileDirectory))
+            {
+                Directory.Delete(OutputFileDirectory, true);
+            }
+
             var sb = new StringBuilder();
 
             sb.AppendLine(@"<?xml version=""1.0"" encoding=""utf-8""?>");
@@ -58,15 +67,27 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"    <WarningLevel>4</WarningLevel>");
             sb.AppendLine(@"  </PropertyGroup>");
             sb.AppendLine(@"  <ItemGroup>");
-            sb.AppendLine(@"    <Compile Include=""..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\Data\DataGridColumnInfoContract.cs"">");
-            sb.AppendLine(@"      <Link>Bridge.BOAIntegration\DataGridColumnInfoContract.cs</Link>");
-            sb.AppendLine(@"    </Compile>");
+
+            foreach (var sourceFile in SourceFiles)
+            {
+                sb.AppendLine(@"    <Compile Include=" + '"' + sourceFile + '"' + "/>");
+            }
+
             sb.AppendLine(@"  </ItemGroup>");
             sb.AppendLine(@"  <ItemGroup>");
 
             sb.AppendLine(@"    <Reference Include=""Bridge, Version=16.8.0.0, Culture=neutral, processorArchitecture=MSIL"">");
             sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core.16.8.2\lib\net40\Bridge.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
+
+
+            if (ReferenceAssemblyPaths!= null)
+            {
+                foreach (var assemblyPath in ReferenceAssemblyPaths)
+                {
+                    sb.AppendLine(@"    <Reference Include="+ '"' + assemblyPath + '"'+"/>");
+                }
+            }
 
             sb.AppendLine(@"    <Reference Include=""Bridge.BOAIntegration.dll"">");
             sb.AppendLine(@"      <HintPath>" + Bridge_BOAIntegration_dll_Path + @"</HintPath>");
@@ -94,6 +115,7 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets')"" />");
             sb.AppendLine(@"</Project>");
 
+            Directory.CreateDirectory(OutputFileDirectory);
             File.WriteAllText(OutputFilePath, sb.ToString(), Encoding.UTF8);
         }
         #endregion
