@@ -154,14 +154,7 @@ namespace Bridge.BOAIntegration
             CurrentAttributeValue = BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue;
         }
 
-        void BInputMask_onChange_Handler(string value, string bindingPath)
-        {
-            var propertyPath = new PropertyPath(bindingPath);
-
-            propertyPath.Walk(DataContext);
-
-            propertyPath.SetPropertyValue(value);
-        }
+     
 
         object[] BuildChildNodes(Element node, string nodeLocation, object componentProp)
         {

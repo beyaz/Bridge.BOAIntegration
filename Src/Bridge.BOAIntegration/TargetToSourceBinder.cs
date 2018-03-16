@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using BOA.Types.Kernel.Account;
+using Bridge.jQuery2;
 
 namespace Bridge.BOAIntegration
 {
@@ -25,12 +26,9 @@ namespace Bridge.BOAIntegration
             var me = this;
 
             if (attributeName == AttributeName.value &&
-                (nodeName == "BDateTimePicker"|| nodeName == "BDatePicker"))
+                (nodeName == "BDateTimePicker" || nodeName == "BDatePicker"))
             {
-                elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
-                {
-                            me.BDateTimePicker_onChange_Handler(value,bindingPath);
-                }");
+                elementProps["onChange"] = (Action<jQueryEvent, DateTime?>) ((queryEvent, value) => { me.BDateTimePicker_onChange_Handler(value, bindingPath); });
 
                 return true;
             }
@@ -38,60 +36,42 @@ namespace Bridge.BOAIntegration
             if (attributeName == AttributeName.value &&
                 (nodeName == "BInputMask" || nodeName == "BInput"))
             {
-                elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
-                {
-                            me.BInputMask_onChange_Handler(value,bindingPath);
-                }");
+                elementProps["onChange"] = (Action<jQueryEvent, string>) ((queryEvent, value) => { me.BInputMask_onChange_Handler(value, bindingPath); });
 
                 return true;
             }
 
             if (attributeName == AttributeName.value && nodeName == "BInputNumeric")
             {
-                elementProps["onChange"] = Script.Write<object>(@"function(p0,value)
-                {
-                            me.BInputNumeric_onChange_Handler(value,bindingPath);
-                }");
+                elementProps["onChange"] = (Action<jQueryEvent, string>) ((queryEvent, value) => { me.BInputNumeric_onChange_Handler(value, bindingPath); });
 
                 return true;
             }
 
             if (nodeName == "BAccountComponent" && attributeName == "accountNumber")
             {
-                elementProps["onAccountSelect"] = Script.Write<object>(@"function(contract)
-                {
-                    me.BAccountComponent_onAccountSelect_Handler(contract,bindingPath,'accountNumber');
-                }");
+                elementProps["onAccountSelect"] = (Action<AccountComponentAccountsContract>) (selectedAccount => { me.BAccountComponent_onAccountSelect_Handler(selectedAccount, bindingPath, "accountNumber"); });
 
                 return true;
             }
 
             if (nodeName == "BParameterComponent" && attributeName == "selectedParamCode")
             {
-                elementProps["onParameterSelect"] = Script.Write<object>(@"function(contract)
-                {
-                    me.BParameterComponent_onParameterSelect_Handler(contract,bindingPath,'selectedParamCode');
-                }");
+                elementProps["onParameterSelect"] = (Action<object>) (selectedParameterContract => { me.BParameterComponent_onParameterSelect_Handler(selectedParameterContract, bindingPath, "selectedParamCode"); });
 
                 return true;
             }
 
             if (attributeName == "selectedItems" && nodeName == "BComboBox")
             {
-                elementProps["onSelect"] = Script.Write<object>(@"function(index,items)
-                {
-                            me.BComboBox_onSelect_Handler(index,items,bindingPath);
-                }");
+                elementProps["onSelect"] = (Action<int, object[]>) ((index, items) => { me.BComboBox_onSelect_Handler(index, items, bindingPath); });
 
                 return true;
             }
 
             if (nodeName == "BCheckBox" && attributeName == "checked")
             {
-                elementProps["onCheck"] = Script.Write<object>(@"function(e,isChecked)
-                {
-                       me.BCheckBox_onCheck_Handler(isChecked,bindingPath);
-                }");
+                elementProps["onCheck"] = (Action<jQueryEvent, bool>) ((e, isChecked) => { me.BCheckBox_onCheck_Handler(isChecked, bindingPath); });
 
                 return true;
             }
@@ -156,8 +136,6 @@ namespace Bridge.BOAIntegration
 
             propertyPath.SetPropertyValue(value.As<object>());
         }
-
-        
 
         void BInputMask_onChange_Handler(string value, string bindingPath)
         {
