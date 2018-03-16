@@ -34,10 +34,10 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
                         Model.SearchContract.TransactionDateBegin = Model.SearchContract.TransactionDateBegin.AddDays(-1);
 
 
-                        var c = _TransactionDateBeginComponent;
-                        var v = Model.SearchContract.TransactionDateBegin;
+                        //var c = _TransactionDateBeginComponent;
+                        //var v = Model.SearchContract.TransactionDateBegin;
 
-                        Script.Write("c.setState({value:v})");
+                        //Script.Write("c.setState({value:v})");
 
                     });
                 }

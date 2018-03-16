@@ -167,6 +167,14 @@ namespace Bridge.BOAIntegration
                 {
                     me.Caller[fieldName] = r;
                 }
+
+                if (data.RefHandlers != null)
+                {
+                    foreach (var refHandler in data.RefHandlers)
+                    {
+                        refHandler(r);
+                    }
+                }
             };
 
 

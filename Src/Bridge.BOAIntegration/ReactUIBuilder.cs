@@ -10,9 +10,10 @@ namespace Bridge.BOAIntegration
     public class PropsEvaluatedEventArgs : EventArgs
     {
         #region Public Properties
-        public object CurrentComponentClass { get; internal set; }
-        public string CurrentComponentName  { get; internal set; }
-        public object CurrentComponentProp  { get; internal set; }
+        public object           CurrentComponentClass { get; internal set; }
+        public string           CurrentComponentName  { get; internal set; }
+        public object           CurrentComponentProp  { get; internal set; }
+        public Action<object>[] RefHandlers           { get; set; }
         #endregion
     }
 
@@ -33,8 +34,12 @@ namespace Bridge.BOAIntegration
         #region Fields
         readonly BeforeStartToProcessAttributeEventArgs BeforeStartToProcessAttributeEventArgs = new BeforeStartToProcessAttributeEventArgs();
 
+        int _buildCount;
+
         string CurrentAttributeName;
         string CurrentAttributeValue;
+
+        Action<object>[] RefHandlers;
         #endregion
 
         #region Public Events
@@ -54,6 +59,8 @@ namespace Bridge.BOAIntegration
         #region Public Methods
         public ReactElement Build()
         {
+            _buildCount++;
+
             if (XmlRootElement == null)
             {
                 XmlRootElement = GetRootNode(XmlUI);
@@ -133,6 +140,21 @@ namespace Bridge.BOAIntegration
         [Template("Bridge.unbox({0},true)")]
         static extern object Unbox(object o);
 
+        void AddToRefHandlers(Action<object> item)
+        {
+            if (_buildCount > 1)
+            {
+                return;
+            }
+
+            if (RefHandlers == null)
+            {
+                RefHandlers = new Action<object>[0];
+            }
+
+            RefHandlers.Push(item);
+        }
+
         void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
         {
             CurrentAttributeName  = attributeName;
@@ -152,7 +174,46 @@ namespace Bridge.BOAIntegration
             CurrentAttributeValue = BeforeStartToProcessAttributeEventArgs.CurrentAttributeValue;
         }
 
-     
+        void BindSourceToTarget(BindingInfo bindingInfo, string nodeName, object source)
+        {
+            var currentAttributeName = CurrentAttributeName;
+
+            Action<object> onRef = (dynamic componentt) =>
+            {
+                var component = componentt;
+                Action UpdateTarget = () =>
+                {
+                    var value = bindingInfo.SourcePath.GetPropertyValue();
+
+                    if (bindingInfo.Converter != null)
+                    {
+                        value = bindingInfo.Converter.Convert(value, null, bindingInfo.ConverterParameter, null);
+                    }
+
+                    if (nodeName == "BInputMask")
+                    {
+                        if (currentAttributeName == "value")
+                        {
+                            var existingValue = component.state[currentAttributeName];
+                            if (existingValue == "" && value == null)
+                            {
+                                return;
+                            }
+                        }
+                    }
+
+                    var newState = ObjectLiteral.Create<object>();
+                    newState[currentAttributeName] = Unbox(value);
+                    component.setState(newState);
+                };
+
+                bindingInfo.Source = source;
+
+                bindingInfo.SourcePath.Listen(bindingInfo.Source, UpdateTarget);
+            };
+
+            AddToRefHandlers(onRef);
+        }
 
         object[] BuildChildNodes(Element node, string nodeLocation, object componentProp)
         {
@@ -245,10 +306,13 @@ namespace Bridge.BOAIntegration
                 {
                     CurrentComponentName  = node.NodeName,
                     CurrentComponentClass = componentConstructor,
-                    CurrentComponentProp  = elementProps
+                    CurrentComponentProp  = elementProps,
+                    RefHandlers           = RefHandlers
                 };
 
                 PropsEvaluated(propsEvaluatedEventArgs);
+
+                RefHandlers = null;
             }
 
             return elementProps;
@@ -280,24 +344,27 @@ namespace Bridge.BOAIntegration
         {
             BeforeStartToProcessAttribute(attributeName, attributeValue);
 
-            
-
             elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
 
             var bindingInfo = BindingInfo.TryParseExpression(CurrentAttributeValue);
 
-            if (bindingInfo != null && bindingInfo.BindingMode == BindingMode.TwoWay)
+            if (bindingInfo != null)
             {
-                var targetToSourceBinder = new TargetToSourceBinder
-                {
-                    elementProps  = elementProps,
-                    bindingInfo   = bindingInfo,
-                    DataContext   = DataContext,
-                    attributeName = CurrentAttributeName,
-                    nodeName      = nodeName
-                };
+                BindSourceToTarget(bindingInfo, nodeName, prop);
 
-                targetToSourceBinder.TryBind();
+                if (bindingInfo.BindingMode == BindingMode.TwoWay)
+                {
+                    var targetToSourceBinder = new TargetToSourceBinder
+                    {
+                        elementProps  = elementProps,
+                        bindingInfo   = bindingInfo,
+                        DataContext   = DataContext,
+                        attributeName = CurrentAttributeName,
+                        nodeName      = nodeName
+                    };
+
+                    targetToSourceBinder.TryBind();
+                }
             }
         }
         #endregion
