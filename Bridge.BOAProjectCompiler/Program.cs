@@ -5,15 +5,23 @@
         #region Methods
         static void Main(string[] args)
         {
-            var bridgeProjectCompiler = new BridgeProjectCompiler
+            var csprojFile = new CsprojFile
             {
-                Input = new BridgeProjectCompilerInput
-                {
-                    CsprojFilePath = @"D:\github\Bridge.BOAIntegration\Src\Bridge.BOAIntegration.csproj"
-                }
+                FileName = "X.csproj"
             };
 
-            bridgeProjectCompiler.Compile();
+            csprojFile.WriteToFile( );
+
+
+            //var bridgeProjectCompiler = new BridgeProjectCompiler
+            //{
+            //    Input = new BridgeProjectCompilerInput
+            //    {
+            //        CsprojFilePath = @"D:\github\Bridge.BOAIntegration\Src\Bridge.BOAIntegration.csproj"
+            //    }
+            //};
+
+            //bridgeProjectCompiler.Compile();
         }
         #endregion
     }
