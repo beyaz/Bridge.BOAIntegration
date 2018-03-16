@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Windows;
 using System.Windows.Data;
 using Bridge.Html5;
 using Bridge.jQuery2;
