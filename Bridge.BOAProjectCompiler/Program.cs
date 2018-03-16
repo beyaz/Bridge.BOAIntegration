@@ -10,7 +10,18 @@
                 FileName = "X.csproj"
             };
 
-            csprojFile.WriteToFile( );
+            csprojFile.WriteToFile();
+
+
+            var bridgeProjectCompiler = new BridgeProjectCompiler
+            {
+                Input = new BridgeProjectCompilerInput
+                {
+                    CsprojFilePath = csprojFile.OutputFilePath
+                }
+            };
+
+            bridgeProjectCompiler.Compile();
 
 
             //var bridgeProjectCompiler = new BridgeProjectCompiler
