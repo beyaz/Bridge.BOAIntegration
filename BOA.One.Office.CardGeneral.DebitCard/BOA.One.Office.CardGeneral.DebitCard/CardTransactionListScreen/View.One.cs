@@ -1,11 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BOA.Common.Helpers;
+using Bridge;
 using Bridge.BOAIntegration;
+using Bridge.Html5;
 
 namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
 {
     public partial class View : BrowsePage
     {
+        object _TransactionDateBeginComponent;
+
         #region Methods
         void ClearMultiSelectComponent()
         {
@@ -19,7 +24,22 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
             {
                 if (Model != null)
                 {
-                    Model.OnPropertyChanged(nameof(Model.TransactionList), () => { DataSource = Model.TransactionList.ToArray(); });
+                    Model.OnPropertyChanged(nameof(Model.TransactionList), () =>
+                    {
+                        DataSource = Model.TransactionList.ToArray();
+                    });
+
+                    Model.SearchContract.OnPropertyChanged(nameof(Model.SearchContract.CardNumber), () =>
+                    {
+                        Model.SearchContract.TransactionDateBegin = Model.SearchContract.TransactionDateBegin.AddDays(-1);
+
+
+                        var c = _TransactionDateBeginComponent;
+                        var v = Model.SearchContract.TransactionDateBegin;
+
+                        Script.Write("c.setState({value:v})");
+
+                    });
                 }
             });
         }
@@ -44,7 +64,9 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
     </BGridRow>
 
     <BGridRow>
-        <BDateTimePicker Value                  = '{Binding Model.SearchContract.TransactionDateBegin, Mode=TwoWay}' 
+        <BDateTimePicker 
+                        x.Name = '_TransactionDateBeginComponent'
+                        Value                   = '{Binding Model.SearchContract.TransactionDateBegin, Mode=TwoWay}' 
                         floatingLabelTextDate   = '{Binding Model.Label.TransactionStartDate}' />
     </BGridRow>
 

@@ -126,6 +126,10 @@ namespace Bridge.BOAIntegration
             var context    = State.Context;
 
             var snapKey = componentProp[AttributeName.key].As<string>();
+            if (snapKey == null)
+            {
+                throw new InvalidOperationException(nameof(snapKey) + " not found.");
+            }
 
             componentProp[AttributeName.snapKey]    = snapKey;
             componentProp[AttributeName.pageParams] = pageParams;
@@ -135,10 +139,38 @@ namespace Bridge.BOAIntegration
 
             componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
 
-            // ReSharper disable once UnusedVariable
             var me = this;
 
-            componentProp[AttributeName.Ref] = Script.Write<object>("function(r){  me.TypeScriptWrittenJsObject.snaps[ snapKey ] = r;  }");
+            string fieldName = null;
+
+            var hasNameAttribute = componentProp["x.Name"] != Script.Undefined;
+            if (hasNameAttribute)
+            { 
+                fieldName = componentProp["x.Name"].As<string>();
+
+                Script.Write("delete componentProp['x.Name']");
+                
+            }
+
+            Action<object> onRef = (r) =>
+            {
+                var snaps = me.TypeScriptWrittenJsObject["snaps"];
+
+                if (snaps == null)
+                {
+                    throw new InvalidOperationException("snaps not found");
+                }
+                
+
+                snaps[snapKey] = r;
+                if (fieldName != null)
+                {
+                    me.Caller[fieldName] = r;
+                }
+            };
+
+
+            componentProp[AttributeName.Ref] = onRef;
 
             if (data.CurrentComponentName == "BInputMask")
             {

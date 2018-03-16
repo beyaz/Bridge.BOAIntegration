@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 using Bridge.Html5;
@@ -287,6 +288,8 @@ namespace Bridge.BOAIntegration
         void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
         {
             BeforeStartToProcessAttribute(attributeName, attributeValue);
+
+            
 
             elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
 
