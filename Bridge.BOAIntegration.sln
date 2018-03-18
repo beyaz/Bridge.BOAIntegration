@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration", "Src\Bridge.BOAIntegration.csproj", "{501100EC-6824-494B-89ED-8EC8ED9873D2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOA.One.Office.CardGeneral.DebitCard", "BOA.One.Office.CardGeneral.DebitCard\BOA.One.Office.CardGeneral.DebitCard.csproj", "{209200C5-4F8C-4E58-A85E-D54EC881533D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAProjectCompiler", "Bridge.BOAProjectCompiler\Bridge.BOAProjectCompiler.csproj", "{004EBD00-8B84-4A46-BF61-3B23720129D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration", "Bridge.BOAIntegration\Bridge.BOAIntegration.csproj", "{501100EC-6824-494B-89ED-8EC8ED9873D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "Bridge.BOAIntegration.Test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{209200C5-4F8C-4E58-A85E-D54EC881533D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{209200C5-4F8C-4E58-A85E-D54EC881533D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{209200C5-4F8C-4E58-A85E-D54EC881533D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +25,14 @@ Global
 		{004EBD00-8B84-4A46-BF61-3B23720129D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{004EBD00-8B84-4A46-BF61-3B23720129D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{004EBD00-8B84-4A46-BF61-3B23720129D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501100EC-6824-494B-89ED-8EC8ED9873D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -74,12 +74,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Src\Bridge.BOAIntegration.csproj">
-      <Project>{501100ec-6824-494b-89ed-8ec8ed9873d2}</Project>
-      <Name>Bridge.BOAIntegration</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Bridge, Version=16.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bridge.Core.16.8.2\lib\net40\Bridge.dll</HintPath>
     </Reference>
@@ -93,6 +87,12 @@
   <ItemGroup>
     <None Include="bridge.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration.csproj">
+      <Project>{501100ec-6824-494b-89ed-8ec8ed9873d2}</Project>
+      <Name>Bridge.BOAIntegration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
