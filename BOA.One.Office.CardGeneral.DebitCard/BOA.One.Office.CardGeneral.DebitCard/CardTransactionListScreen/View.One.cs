@@ -18,7 +18,7 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
 
         void EvaluateInWhichCaseRenderMethodWillBeCall()
         {
-            this.OnPropertyChanged(nameof(Model), ForceRender);
+             this.OnPropertyChanged(nameof(Model), ForceRender);
 
             this.OnPropertyChanged(nameof(Model), () =>
             {
