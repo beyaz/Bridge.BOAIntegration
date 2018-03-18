@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Data;
 
 namespace Bridge.BOAIntegration
 {
-
-    enum ComponentName
-    {
-        BInputMask,
-        BComboBox
-    }
-
     class ReactUIBuilderBOAVersion : ReactUIBuilder
     {
         #region Constants
@@ -21,18 +15,56 @@ namespace Bridge.BOAIntegration
         #region Static Fields
         static readonly Dictionary<string, string[]> BooleanAttributes = new Dictionary<string, string[]>
         {
-            {"BAccountComponent", new[] {"isVisibleBalance", "isVisibleIBAN"}},
-            {"BComboBox", new[] {"multiSelect", "multiColumn", "isAllOptionIncluded"}},
-            {"BInput", new[] {"noWrap", "multiLine"}},
-            {"BParameterComponent", new[] {"disabled"}}
+            {
+                ComponentName.BAccountComponent.ToString(), new[]
+                {
+                    ComponentPropName.isVisibleBalance.ToString(),
+                    ComponentPropName.isVisibleIBAN.ToString()
+                }
+            },
+            {
+                ComponentName.BComboBox.ToString(), new[]
+                {
+                    ComponentPropName.multiSelect.ToString(),
+                    ComponentPropName.multiColumn.ToString(),
+                    ComponentPropName.isAllOptionIncluded.ToString()
+                }
+            },
+            {
+                ComponentName.BInput.ToString(), new[]
+                {
+                    ComponentPropName.noWrap.ToString(),
+                    ComponentPropName.multiLine.ToString()
+                }
+            },
+            {
+                ComponentName.BParameterComponent.ToString(), new[]
+                    {ComponentPropName.disabled.ToString()}
+            }
         };
 
         static readonly Dictionary<string, string[]> NumberAttributes = new Dictionary<string, string[]>
         {
-            {"BCheckBox", new[] {"size"}},
-            {"BComboBox", new[] {"size"}},
-            {"BInput", new[] {"rows", "rowsMax", "size"}},
-            {"BParameterComponent", new[] {"size"}}
+            {
+                ComponentName.BCheckBox.ToString(), new[]
+                    {ComponentPropName.size.ToString()}
+            },
+            {
+                ComponentName.BComboBox.ToString(), new[]
+                    {ComponentPropName.size.ToString()}
+            },
+            {
+                ComponentName.BInput.ToString(), new[]
+                {
+                    ComponentPropName.rows.ToString(),
+                    ComponentPropName.rowsMax.ToString(),
+                    ComponentPropName.size.ToString()
+                }
+            },
+            {
+                ComponentName.BParameterComponent.ToString(), new[]
+                    {ComponentPropName.size.ToString()}
+            }
         };
         #endregion
 
@@ -43,7 +75,7 @@ namespace Bridge.BOAIntegration
         #region Constructors
         public ReactUIBuilderBOAVersion()
         {
-            ComponentClassFinder =  NodeModules.FindComponent;
+            ComponentClassFinder = NodeModules.FindComponent;
         }
         #endregion
 
@@ -157,6 +189,11 @@ namespace Bridge.BOAIntegration
             var refHandlers = RefHandlers;
             Action<object> onRef = r =>
             {
+                if (r == null)
+                {
+                    return;
+                }
+
                 var snaps = me.TypeScriptWrittenJsObject["snaps"];
 
                 if (snaps == null)
@@ -190,7 +227,7 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-            if (data.CurrentComponentName == ComponentName.BComboBox.ToString() )
+            if (data.CurrentComponentName == ComponentName.BComboBox.ToString())
             {
                 // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
                 if (componentProp[AttributeName.dataSource] == null)
@@ -201,6 +238,90 @@ namespace Bridge.BOAIntegration
 
             EvaluateBooleanValues(data.CurrentComponentName, data.CurrentComponentProp);
             EvaluateNumberValues(data.CurrentComponentName, data.CurrentComponentProp);
+        }
+
+        protected override void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
+        {
+            BeforeStartToProcessAttribute(attributeName, attributeValue);
+
+            elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
+
+            var bindingInfo = BindingInfo.TryParseExpression(CurrentAttributeValue);
+
+            if (bindingInfo != null)
+            {
+                BindSourceToTarget(bindingInfo, nodeName, prop);
+
+                if (bindingInfo.BindingMode == BindingMode.TwoWay)
+                {
+                    var targetToSourceBinder = new TargetToSourceBinder
+                    {
+                        elementProps  = elementProps,
+                        bindingInfo   = bindingInfo,
+                        DataContext   = DataContext,
+                        attributeName = CurrentAttributeName,
+                        nodeName      = nodeName
+                    };
+
+                    targetToSourceBinder.TryBind();
+                }
+            }
+        }
+
+        static bool ComponentPropNeedToUpdate(string nodeName, dynamic component, string propName, object value)
+        {
+            if (nodeName == ComponentName.BInputMask.ToString() ||
+                nodeName == ComponentName.BInput.ToString())
+            {
+                if (propName == ComponentPropName.value.ToString())
+                {
+                    var existingValue = component.state[propName];
+                    if (existingValue == null || existingValue == string.Empty)
+                    {
+                        if (value == null || value as string == string.Empty)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        void BindSourceToTarget(BindingInfo bindingInfo, string nodeName, object source)
+        {
+            var currentAttributeName = CurrentAttributeName;
+
+            Action<object> onRef = (dynamic componentt) =>
+            {
+                var component = componentt;
+                Action UpdateTarget = () =>
+                {
+                    var value = bindingInfo.SourcePath.GetPropertyValue();
+
+                    if (bindingInfo.Converter != null)
+                    {
+                        value = bindingInfo.Converter.Convert(value, null, bindingInfo.ConverterParameter, null);
+                    }
+
+                    var componentPropNeedToUpdate = ComponentPropNeedToUpdate(nodeName, component, currentAttributeName, value);
+                    if (!componentPropNeedToUpdate)
+                    {
+                        return;
+                    }
+
+                    var newState = ObjectLiteral.Create<object>();
+                    newState[currentAttributeName] = Unbox(value);
+                    component.setState(newState);
+                };
+
+                bindingInfo.Source = source;
+
+                bindingInfo.SourcePath.Listen(bindingInfo.Source, UpdateTarget);
+            };
+
+            AddToRefHandlers(onRef);
         }
         #endregion
     }

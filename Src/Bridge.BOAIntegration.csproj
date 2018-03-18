@@ -62,6 +62,8 @@
     <Compile Include="Bridge.BOAIntegration\BasePage.cs" />
     <Compile Include="Bridge.BOAIntegration\BrowsePage.cs" />
     <Compile Include="Bridge.BOAIntegration\ComboBoxColumn.cs" />
+    <Compile Include="Bridge.BOAIntegration\ComponentName.cs" />
+    <Compile Include="Bridge.BOAIntegration\ComponentPropName.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactApi.cs" />
     <Compile Include="Bridge.BOAIntegration\GridColumnInfo.cs" />
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />

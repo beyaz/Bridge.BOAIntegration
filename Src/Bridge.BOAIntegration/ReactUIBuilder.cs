@@ -132,9 +132,9 @@ namespace Bridge.BOAIntegration
         }
 
         [Template("Bridge.unbox({0},true)")]
-        static extern object Unbox(object o);
+        protected static extern object Unbox(object o);
 
-        void AddToRefHandlers(Action<object> item)
+        protected void AddToRefHandlers(Action<object> item)
         {
             if (_buildCount > 1)
             {
@@ -155,48 +155,7 @@ namespace Bridge.BOAIntegration
             CurrentAttributeValue = attributeValue?.Trim();
         }
 
-        void BindSourceToTarget(BindingInfo bindingInfo, string nodeName, object source)
-        {
-            var currentAttributeName = CurrentAttributeName;
-
-            Action<object> onRef = (dynamic componentt) =>
-            {
-                var component = componentt;
-                Action UpdateTarget = () =>
-                {
-                    var value = bindingInfo.SourcePath.GetPropertyValue();
-
-                    if (bindingInfo.Converter != null)
-                    {
-                        value = bindingInfo.Converter.Convert(value, null, bindingInfo.ConverterParameter, null);
-                    }
-
-                    // TODO copy here to REact BOA builder
-                    //  TODO fix ""  and null or value if same do not update state??
-                    if (nodeName == ComponentName.BInputMask.ToString())
-                    {
-                        if (currentAttributeName == "value")
-                        {
-                            var existingValue = component.state[currentAttributeName];
-                            if (existingValue == "" && value == null)
-                            {
-                                return;
-                            }
-                        }
-                    }
-
-                    var newState = ObjectLiteral.Create<object>();
-                    newState[currentAttributeName] = Unbox(value);
-                    component.setState(newState);
-                };
-
-                bindingInfo.Source = source;
-
-                bindingInfo.SourcePath.Listen(bindingInfo.Source, UpdateTarget);
-            };
-
-            AddToRefHandlers(onRef);
-        }
+       
 
         object[] BuildChildNodes(Element node, string nodeLocation, object componentProp)
         {
@@ -319,32 +278,12 @@ namespace Bridge.BOAIntegration
             throw new NotImplementedException(nodeTagName);
         }
 
-        void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
+        protected virtual void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
         {
             BeforeStartToProcessAttribute(attributeName, attributeValue);
 
             elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
-
-            var bindingInfo = BindingInfo.TryParseExpression(CurrentAttributeValue);
-
-            if (bindingInfo != null)
-            {
-                BindSourceToTarget(bindingInfo, nodeName, prop);
-
-                if (bindingInfo.BindingMode == BindingMode.TwoWay)
-                {
-                    var targetToSourceBinder = new TargetToSourceBinder
-                    {
-                        elementProps  = elementProps,
-                        bindingInfo   = bindingInfo,
-                        DataContext   = DataContext,
-                        attributeName = CurrentAttributeName,
-                        nodeName      = nodeName
-                    };
-
-                    targetToSourceBinder.TryBind();
-                }
-            }
+            
         }
         #endregion
     }

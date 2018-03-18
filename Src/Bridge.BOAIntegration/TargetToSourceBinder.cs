@@ -26,7 +26,7 @@ namespace Bridge.BOAIntegration
             var me = this;
 
             if (attributeName == AttributeName.value &&
-                (nodeName == "BDateTimePicker" || nodeName == "BDatePicker"))
+                (nodeName == ComponentName.BDateTimePicker.ToString() || nodeName == ComponentName.BDatePicker.ToString()))
             {
                 elementProps["onChange"] = (Action<jQueryEvent, DateTime?>) ((queryEvent, value) => { me.BDateTimePicker_onChange_Handler(value, bindingPath); });
 
@@ -34,42 +34,42 @@ namespace Bridge.BOAIntegration
             }
 
             if (attributeName == AttributeName.value &&
-                (nodeName == "BInputMask" || nodeName == "BInput"))
+                (nodeName == ComponentName.BInputMask.ToString() || nodeName == ComponentName.BInput.ToString()))
             {
                 elementProps["onChange"] = (Action<jQueryEvent, string>) ((queryEvent, value) => { me.BInputMask_onChange_Handler(value, bindingPath); });
 
                 return true;
             }
 
-            if (attributeName == AttributeName.value && nodeName == "BInputNumeric")
+            if (attributeName == AttributeName.value && nodeName == ComponentName.BInputNumeric.ToString())
             {
                 elementProps["onChange"] = (Action<jQueryEvent, string>) ((queryEvent, value) => { me.BInputNumeric_onChange_Handler(value, bindingPath); });
 
                 return true;
             }
 
-            if (nodeName == "BAccountComponent" && attributeName == "accountNumber")
+            if (nodeName == ComponentName.BAccountComponent.ToString() && attributeName == "accountNumber")
             {
                 elementProps["onAccountSelect"] = (Action<AccountComponentAccountsContract>) (selectedAccount => { me.BAccountComponent_onAccountSelect_Handler(selectedAccount, bindingPath, "accountNumber"); });
 
                 return true;
             }
 
-            if (nodeName == "BParameterComponent" && attributeName == "selectedParamCode")
+            if (nodeName == ComponentName.BParameterComponent.ToString() && attributeName == "selectedParamCode")
             {
                 elementProps["onParameterSelect"] = (Action<object>) (selectedParameterContract => { me.BParameterComponent_onParameterSelect_Handler(selectedParameterContract, bindingPath, "selectedParamCode"); });
 
                 return true;
             }
 
-            if (attributeName == "selectedItems" && nodeName == "BComboBox")
+            if (attributeName == "selectedItems" && nodeName == ComponentName.BComboBox.ToString())
             {
                 elementProps["onSelect"] = (Action<int, object[]>) ((index, items) => { me.BComboBox_onSelect_Handler(index, items, bindingPath); });
 
                 return true;
             }
 
-            if (nodeName == "BCheckBox" && attributeName == "checked")
+            if (nodeName == ComponentName.BCheckBox.ToString() && attributeName == "checked")
             {
                 elementProps["onCheck"] = (Action<jQueryEvent, bool>) ((e, isChecked) => { me.BCheckBox_onCheck_Handler(isChecked, bindingPath); });
 
@@ -87,20 +87,20 @@ namespace Bridge.BOAIntegration
 
             propertyPath.Walk(DataContext);
 
-            if (propName == "accountNumber")
+            if (propName == ComponentPropName.accountNumber.ToString()) 
             {
                 propertyPath.SetPropertyValue(selectedAccount.AccountNumber);
                 return;
             }
 
-            if (propName == "accountSuffix")
+            if (propName == ComponentPropName.accountSuffix.ToString())
             {
                 propertyPath.SetPropertyValue(selectedAccount.AccountSuffix);
                 return;
             }
 
             // TODO acaba gelen contractın tam olarak bilgisi ne ? 
-            if (propName == "selectedAccount")
+            if (propName == ComponentPropName.selectedAccount.ToString())
             {
                 propertyPath.SetPropertyValue(selectedAccount);
                 return;
