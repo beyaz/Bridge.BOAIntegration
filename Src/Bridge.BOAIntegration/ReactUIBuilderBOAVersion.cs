@@ -317,6 +317,15 @@ namespace Bridge.BOAIntegration
                         return;
                     }
 
+                    // TODO: move to function
+                    if (nodeName == ComponentName.BInputMask.ToString() && currentAttributeName == ComponentPropName.value.ToString())
+                    {
+                        if (value == null)
+                        {
+                            value = "";
+                        }
+                    }
+
                     var newState = ObjectLiteral.Create<object>();
                     newState[currentAttributeName] = Unbox(value);
                     component.setState(newState);
