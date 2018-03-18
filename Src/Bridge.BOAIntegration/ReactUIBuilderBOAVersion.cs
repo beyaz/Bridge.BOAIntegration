@@ -62,6 +62,12 @@ namespace Bridge.BOAIntegration
                 }
             },
             {
+                ComponentName.BInputMask.ToString(), new[]
+                {
+                    ComponentPropName.size.ToString()
+                }
+            },
+            {
                 ComponentName.BParameterComponent.ToString(), new[]
                     {ComponentPropName.size.ToString()}
             }
