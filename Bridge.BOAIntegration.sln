@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{29DA8BB7-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "Test\Bridge.BOAIntegration.Test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAProjectCompiler.Test", "Test\Bridge.BOAProjectCompiler.Test\Bridge.BOAProjectCompiler.Test.csproj", "{49FD53C0-4768-4E59-998B-042BFBA3C8F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +37,17 @@ Global
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49FD53C0-4768-4E59-998B-042BFBA3C8F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49FD53C0-4768-4E59-998B-042BFBA3C8F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49FD53C0-4768-4E59-998B-042BFBA3C8F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49FD53C0-4768-4E59-998B-042BFBA3C8F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C11467C2-1B42-44B4-B558-B8A83088A7B5} = {29DA8BB7-B2B3-401E-8F0B-AB94A8DD74A6}
+		{49FD53C0-4768-4E59-998B-042BFBA3C8F9} = {29DA8BB7-B2B3-401E-8F0B-AB94A8DD74A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECB72D1D-E650-4BCE-A5D4-D574723FC484}
