@@ -10,13 +10,11 @@ namespace Bridge.BOAIntegration
     public class PropsEvaluatedEventArgs : EventArgs
     {
         #region Public Properties
-        public object           CurrentComponentClass { get; internal set; }
-        public string           CurrentComponentName  { get; internal set; }
-        public object           CurrentComponentProp  { get; internal set; }
+        public object CurrentComponentClass { get; internal set; }
+        public string CurrentComponentName  { get; internal set; }
+        public object CurrentComponentProp  { get; internal set; }
         #endregion
     }
-
-    
 
     public class ReactUIBuilder
     {
@@ -25,21 +23,12 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Fields
-
-        int _buildCount;
-
         protected string CurrentAttributeName;
         protected string CurrentAttributeValue;
 
         protected Action<object>[] RefHandlers;
-        #endregion
 
-        #region Public Events
-
-        protected virtual void OnPropsEvaluated(PropsEvaluatedEventArgs data)
-        {
-
-        }
+        int _buildCount;
         #endregion
 
         #region Public Properties
@@ -114,23 +103,6 @@ namespace Bridge.BOAIntegration
             return attributeValue;
         }
 
-        static Element GetRootNode(string xmlString)
-        {
-            if (xmlString == null)
-            {
-                throw new ArgumentNullException(nameof(xmlString));
-            }
-
-            try
-            {
-                return jQuery.ParseXML(xmlString.Trim()).FirstChild.As<Element>();
-            }
-            catch (Exception e)
-            {
-                throw new SystemException("XmlParseErrorOccured.", e);
-            }
-        }
-
         [Template("Bridge.unbox({0},true)")]
         protected static extern object Unbox(object o);
 
@@ -155,7 +127,33 @@ namespace Bridge.BOAIntegration
             CurrentAttributeValue = attributeValue?.Trim();
         }
 
-       
+        protected virtual void OnPropsEvaluated(PropsEvaluatedEventArgs data)
+        {
+        }
+
+        protected virtual void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
+        {
+            BeforeStartToProcessAttribute(attributeName, attributeValue);
+
+            elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
+        }
+
+        static Element GetRootNode(string xmlString)
+        {
+            if (xmlString == null)
+            {
+                throw new ArgumentNullException(nameof(xmlString));
+            }
+
+            try
+            {
+                return jQuery.ParseHTML(xmlString.Trim())[0].As<Element>();
+            }
+            catch (Exception e)
+            {
+                throw new SystemException("XmlParseErrorOccured.", e);
+            }
+        }
 
         object[] BuildChildNodes(Element node, string nodeLocation, object componentProp)
         {
@@ -246,7 +244,7 @@ namespace Bridge.BOAIntegration
             {
                 CurrentComponentName  = node.NodeName,
                 CurrentComponentClass = componentConstructor,
-                CurrentComponentProp  = elementProps,
+                CurrentComponentProp  = elementProps
             };
 
             OnPropsEvaluated(propsEvaluatedEventArgs);
@@ -276,14 +274,6 @@ namespace Bridge.BOAIntegration
             }
 
             throw new NotImplementedException(nodeTagName);
-        }
-
-        protected virtual void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)
-        {
-            BeforeStartToProcessAttribute(attributeName, attributeValue);
-
-            elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
-            
         }
         #endregion
     }
