@@ -147,7 +147,7 @@ namespace Bridge.BOAIntegration
 
             try
             {
-                return jQuery.ParseHTML(xmlString.Trim())[0].As<Element>();
+                return jQuery.ParseXML(xmlString.Trim()).FirstChild.As<Element>();
             }
             catch (Exception e)
             {
