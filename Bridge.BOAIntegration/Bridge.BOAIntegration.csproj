@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\Data\DataGridColumnInfoContract.cs">
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\BOA.UI\DataGridColumnInfoContract.cs">
       <Link>Bridge.BOAIntegration\DataGridColumnInfoContract.cs</Link>
     </Compile>
     <Compile Include=".Net Override\System.Windows.Input\ICommand.cs" />
