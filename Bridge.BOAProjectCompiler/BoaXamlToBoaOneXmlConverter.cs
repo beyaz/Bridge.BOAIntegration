@@ -1,71 +1,83 @@
-﻿using System.Linq;
-using System.Xml.Linq;
-using System.Xml.XPath;
+﻿using System;
+using System.Xml;
 
 namespace Bridge.BOAProjectCompiler
 {
     class BoaXamlToBoaOneXmlConverter
     {
+        #region Public Properties
         public string InputXamlString { get; set; }
-
-        XDocument _xDocument;
-
-        public XDocument XDocument
-        {
-            get
-            {
-                if (_xDocument == null)
-                {
-                    _xDocument = System.Xml.Linq.XDocument.Parse(InputXamlString);
-                }
-
-                return _xDocument;
-            }
-        }
 
         public string OutputXmlString
         {
-            get { return XDocument.ToString(); }
+            get { return RootNode.OuterXml; }
         }
 
+        public XmlNode RootNode { get; set; }
+        #endregion
+
+        #region Properties
+        XmlDocument Document => RootNode.OwnerDocument;
+        #endregion
+
+        #region Methods
         internal void TransformNodes()
         {
-            var elements = XDocument.XPathSelectElements("//StackPanel");
-
-            foreach (var element in elements)
+            if (RootNode == null)
             {
-                Transform_StackPanel(element);
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(InputXamlString);
+                RootNode = xmlDocument.FirstChild;
             }
-            
-            
-            
+
+            TransformStackPanel();
         }
 
-        void Transform_StackPanel(XElement element)
+        void OnStackPanel(XmlNode xmlNode)
         {
-            var bGridSection = new XElement("BGridSection");
+            var bGridSection = Document.CreateElement("BGridSection");
 
+            var nodes = xmlNode.ChildNodes;
 
-
-
-            var nodes = element.Nodes().ToList();
-
-           
-            foreach (var node in nodes)
+            foreach (XmlNode node in nodes)
             {
-                var bGridRow = new XElement("BGridRow");
-                node.Remove();
-                bGridRow.Add(node);
+                var bGridRow = Document.CreateElement("BGridRow");
+                if (node.ParentNode == null)
+                {
+                    throw new ArgumentException();
+                }
 
-                bGridSection.Add(bGridRow);
+                node.ParentNode.RemoveChild(node);
+
+                bGridRow.AppendChild(node);
+
+                bGridSection.AppendChild(bGridRow);
             }
-          
 
+            if (xmlNode.ParentNode == null)
+            {
+                throw new ArgumentException();
+            }
 
-            element.AddBeforeSelf(bGridSection);
+            xmlNode.ParentNode.InsertBefore(bGridSection, xmlNode);
 
-            element.Remove();
-
+            xmlNode.ParentNode.RemoveChild(xmlNode);
         }
+
+        void TransformStackPanel()
+        {
+            var elements = Document.SelectNodes("//StackPanel");
+
+            if (elements == null)
+            {
+                return;
+            }
+
+            foreach (XmlNode xmlNode in elements)
+            {
+                OnStackPanel(xmlNode);
+            }
+        }
+        #endregion
     }
 }

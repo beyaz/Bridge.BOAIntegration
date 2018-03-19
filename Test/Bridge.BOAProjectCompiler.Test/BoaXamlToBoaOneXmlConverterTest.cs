@@ -16,9 +16,10 @@ namespace Bridge.BOAProjectCompiler
 
             converter.TransformNodes();
 
-            
 
-           Assert.AreEqual("<div xmlns:BOABusiness = 't'> <StackPanel Width='40'> <BOABusiness:AccountComponent type='text'/> </StackPanel>  </div>", converter.OutputXmlString);
+            var expected = "<div xmlns:BOABusiness=\"t\"><BGridSection><BGridRow><BOABusiness:AccountComponent type=\"text\" /></BGridRow></BGridSection></div>";
+
+           Assert.AreEqual(expected, converter.OutputXmlString);
         }
     }
 }
