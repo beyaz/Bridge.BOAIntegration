@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using BOA.Common.Helpers;
 
@@ -6,6 +7,10 @@ namespace Bridge.BOAProjectCompiler
 {
     class BoaXamlToBoaOneXmlConverter
     {
+        #region Fields
+        IDictionary<string, string> _namespaces;
+        #endregion
+
         #region Public Properties
         public string InputXamlString { get; set; }
 
@@ -19,6 +24,21 @@ namespace Bridge.BOAProjectCompiler
 
         #region Properties
         XmlDocument Document => RootNode.OwnerDocument;
+
+        IDictionary<string, string> Namespaces
+        {
+            get
+            {
+                if (_namespaces == null)
+                {
+                    var nsMgr = new XmlNamespaceManager(Document.NameTable);
+
+                    _namespaces = nsMgr.GetNamespacesInScope(XmlNamespaceScope.All);
+                }
+
+                return _namespaces;
+            }
+        }
         #endregion
 
         #region Methods
@@ -31,6 +51,18 @@ namespace Bridge.BOAProjectCompiler
                 RootNode = xmlDocument.FirstChild;
             }
 
+            ApplyLayoutTransforms();
+
+            ApplyComponentTransforms();
+        }
+
+        void ApplyComponentTransforms()
+        {
+            Document.GetElementsByTagName("BMaskedEditorLabeled");
+        }
+
+        void ApplyLayoutTransforms()
+        {
             TransformStackPanel();
         }
 
