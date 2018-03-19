@@ -11,12 +11,14 @@ namespace Bridge.BOAProjectCompiler
         {
             var converter = new BoaXamlToBoaOneXmlConverter
             {
-                InputXamlString = "<div> <StackPanel Width='40'> <BOABusiness:AccountComponent type='text'/> </StackPanel>  </div>"
+                InputXamlString = "<div xmlns:BOABusiness = 't'> <StackPanel Width='40'> <BOABusiness:AccountComponent type='text'/> </StackPanel>  </div>"
             };
 
             converter.TransformNodes();
 
-           Assert.AreEqual("<div> <StackPanel Width='40'> <BOABusiness:AccountComponent type='text'/> </StackPanel>  </div>", converter.OutputXmlString);
+            
+
+           Assert.AreEqual("<div xmlns:BOABusiness = 't'> <StackPanel Width='40'> <BOABusiness:AccountComponent type='text'/> </StackPanel>  </div>", converter.OutputXmlString);
         }
     }
 }
