@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAProjectCompiler",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration", "Bridge.BOAIntegration\Bridge.BOAIntegration.csproj", "{501100EC-6824-494B-89ED-8EC8ED9873D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "Bridge.BOAIntegration.Test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{29DA8BB7-B2B3-401E-8F0B-AB94A8DD74A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge.BOAIntegration.Test", "Test\Bridge.BOAIntegration.Test\Bridge.BOAIntegration.Test.csproj", "{C11467C2-1B42-44B4-B558-B8A83088A7B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C11467C2-1B42-44B4-B558-B8A83088A7B5} = {29DA8BB7-B2B3-401E-8F0B-AB94A8DD74A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECB72D1D-E650-4BCE-A5D4-D574723FC484}

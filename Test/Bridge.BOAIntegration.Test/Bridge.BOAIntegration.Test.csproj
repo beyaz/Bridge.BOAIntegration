@@ -51,9 +51,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration\Bridge.BOAIntegration.csproj">
+    <ProjectReference Include="..\..\Bridge.BOAIntegration\Bridge.BOAIntegration.csproj">
       <Project>{501100ec-6824-494b-89ed-8ec8ed9873d2}</Project>
-      <Name>Bridge.CustomUIMarkup</Name>
+      <Name>Bridge.BOAIntegration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
