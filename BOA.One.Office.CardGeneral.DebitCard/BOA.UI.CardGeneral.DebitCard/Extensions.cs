@@ -17,7 +17,7 @@ namespace BOA.UI.CardGeneral.DebitCard
 
 
 
-        public static void ConfigureColumns(this BrowsePage browseForm, IEnumerable<DataGridColumnInfoContract> columns)
+        public static void ConfigureColumns(this BrowsePage browseForm, IEnumerable<DataGridColumnInfoContract> columns,bool isSelectionTypeSingle)
         {
 
             var fields = new object[0];
