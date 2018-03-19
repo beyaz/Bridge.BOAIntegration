@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BOA.Common.Helpers\XmlHelper.cs" />
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
     <Compile Include="BridgeProjectCompiler.cs" />
     <Compile Include="BridgeProjectCompilerInput.cs" />

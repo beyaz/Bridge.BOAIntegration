@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml;
+using BOA.Common.Helpers;
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -10,7 +11,7 @@ namespace Bridge.BOAProjectCompiler
 
         public string OutputXmlString
         {
-            get { return RootNode.OuterXml; }
+            get { return XmlHelper.PrettyXml(RootNode.OuterXml); }
         }
 
         public XmlNode RootNode { get; set; }
@@ -37,9 +38,9 @@ namespace Bridge.BOAProjectCompiler
         {
             var bGridSection = Document.CreateElement("BGridSection");
 
-            var nodes = xmlNode.ChildNodes;
+            var nodes = xmlNode.ChildNodes.ToList();
 
-            foreach (XmlNode node in nodes)
+            foreach (var node in nodes)
             {
                 var bGridRow = Document.CreateElement("BGridRow");
                 if (node.ParentNode == null)
@@ -66,14 +67,9 @@ namespace Bridge.BOAProjectCompiler
 
         void TransformStackPanel()
         {
-            var elements = Document.SelectNodes("//StackPanel");
+            var nodeList = Document.GetElementsByTagName("StackPanel").ToList();
 
-            if (elements == null)
-            {
-                return;
-            }
-
-            foreach (XmlNode xmlNode in elements)
+            foreach (var xmlNode in nodeList)
             {
                 OnStackPanel(xmlNode);
             }
