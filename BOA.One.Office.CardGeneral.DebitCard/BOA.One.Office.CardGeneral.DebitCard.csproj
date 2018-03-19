@@ -45,6 +45,9 @@
     <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\BOA.Types.CardGeneral.DebitCard\Labels.cs">
       <Link>BOA.Types.CardGeneral.DebitCard\Labels.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CardTransactionList\CardTransactionListScreen\Extensions.cs">
+      <Link>BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CardTransactionList\CardTransactionListScreen\Model.cs">
       <Link>BOA.One.Office.CardGeneral.DebitCard\CardTransactionListScreen\Model.cs</Link>
     </Compile>
