@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Bridge.BOAProjectCompiler
@@ -19,6 +20,39 @@ namespace Bridge.BOAProjectCompiler
         public string                WorkingDirectory               { get; set; } = Directories.WorkingDirectory;
         #endregion
 
+        void ConvertXamlFiles()
+        {
+            var sourceFiles = SourceFiles.ToList();
+
+
+            for (var i = 0; i < sourceFiles.Count; i++)
+            {
+                var filePath = sourceFiles[i];
+
+                if (!filePath.EndsWith(".xaml"))
+                {
+                    continue;
+                }
+
+
+                var converter = new BoaXamlToBoaOneXmlConverter
+                {
+                    InputXamlString = File.ReadAllText(filePath)
+                };
+
+                converter.TransformNodes();
+
+                var generatedCode = converter.GenerateCsharpCode();
+
+
+                sourceFiles[i] = OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
+                File.WriteAllText(sourceFiles[i],generatedCode);
+            }
+
+            SourceFiles = sourceFiles;
+        }
+
+
         #region Public Methods
         public void WriteToFile()
         {
@@ -26,6 +60,8 @@ namespace Bridge.BOAProjectCompiler
             {
                 Directory.Delete(OutputFileDirectory, true);
             }
+
+            ConvertXamlFiles();
 
             var sb = new StringBuilder();
 
