@@ -102,7 +102,7 @@
             bridgeProjectCompiler.Compile();
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Build_BOA_Types_Kernel_DebitCard();
             Build_BOA_Types_CardGeneral_DebitCard();
