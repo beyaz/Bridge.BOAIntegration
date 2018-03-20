@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Bridge.BOAIntegration;
 
-namespace BOA.UI.CardGeneral.DebitCard
+namespace BOA.UI
 {
     public static class BrowsePageExtensions
     {
@@ -14,14 +14,14 @@ namespace BOA.UI.CardGeneral.DebitCard
             {
                 var field = new object
                 {
-                    ["key"]       = item.BindingPath,
-                    ["name"]      = item.Label,
+                    ["key"] = item.BindingPath,
+                    ["name"] = item.Label,
                     ["resizable"] = true
                 };
 
                 if (item.DataType?.IsNumeric() == true)
                 {
-                    field["type"]         = "number";
+                    field["type"] = "number";
                     field["numberFormat"] = "M";
                 }
 

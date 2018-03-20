@@ -55,6 +55,7 @@
     <Compile Include="BOA.Messaging\MessagingHelper.cs" />
     <Compile Include="BOA.Types.Kernel.Account\AccountComponentAccountsContract.cs" />
     <Compile Include="BOA.UI.Types\DelegateCommand.cs" />
+    <Compile Include="BOA.UI\BrowsePageExtensions.cs" />
     <Compile Include="Bridge.BOAIntegration\AttributeName.cs" />
     <Compile Include="Bridge.BOAIntegration\BState.cs" />
     <Compile Include="Bridge.BOAIntegration\BContext.cs" />
