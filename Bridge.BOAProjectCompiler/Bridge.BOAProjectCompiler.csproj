@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BOA.Common.Helpers\PaddedStringBuilder.cs" />
+    <Compile Include="BOA.Common.Helpers\StringHelper.cs" />
     <Compile Include="BOA.Common.Helpers\XmlHelper.cs" />
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
     <Compile Include="BridgeProjectCompiler.cs" />

@@ -10,7 +10,8 @@ namespace Bridge.BOAProjectCompiler
     class BoaXamlToBoaOneXmlConverter
     {
         #region Fields
-        IDictionary<string, string> _namespaces;
+        readonly Dictionary<string, string> FieldDefinitions = new Dictionary<string, string>();
+        IDictionary<string, string>         _namespaces;
         #endregion
 
         #region Public Properties
@@ -72,6 +73,11 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingLength += 4;
 
+            foreach (var fieldNameFieldTypePair in FieldDefinitions)
+            {
+                sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key);
+            }
+
             sb.AppendLine("void InitializeComponent()");
             sb.AppendLine("{");
             sb.PaddingLength += 4;
@@ -109,7 +115,6 @@ namespace Bridge.BOAProjectCompiler
 
             sb.PaddingLength -= 4;
             sb.AppendLine("}"); // end of class
-
 
             sb.PaddingLength -= 4;
             sb.AppendLine("}"); // end of namespace
@@ -170,11 +175,6 @@ namespace Bridge.BOAProjectCompiler
             }
         }
 
-        static void TransferNameAttribute(XmlNode xamlNode, XmlElement newElement)
-        {
-            TransferAttribute(xamlNode, "x:Name", newElement, "x.Name");
-        }
-
         void ApplyComponentTransforms()
         {
             Transform_BMaskedEditorLabeled();
@@ -217,6 +217,28 @@ namespace Bridge.BOAProjectCompiler
             xmlNode.ParentNode.InsertBefore(bGridSection, xmlNode);
 
             xmlNode.ParentNode.RemoveChild(xmlNode);
+        }
+
+        void TransferNameAttribute(XmlNode xamlNode, XmlElement newElement)
+        {
+            var xamlPropertyName = "x:Name";
+            var newAttribute = "x.Name";
+
+            if (xamlNode.Attributes?[xamlPropertyName] == null)
+            {
+                return;
+            }
+
+            var fieldName = xamlNode.Attributes?[xamlPropertyName]?.Value;
+
+            FieldDefinitions[fieldName] = GetNamespaceName(xamlNode) + "." + xamlNode.LocalName;
+
+            newElement.SetAttribute(newAttribute, fieldName);
+        }
+
+         static string GetNamespaceName(XmlNode xamlNode)
+        {
+            return xamlNode.NamespaceURI.Split(';').FirstOrDefault(x => x != null && x.Contains("clr-namespace:"))?.RemoveFromStart("clr-namespace:");
         }
 
         void Transform_AccountComponent()
