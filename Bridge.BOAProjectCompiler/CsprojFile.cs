@@ -9,7 +9,7 @@ namespace Bridge.BOAProjectCompiler
     {
         #region Public Properties
         public string                AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
-        public string                Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Src\bin\Debug\Bridge.BOAIntegration.dll";
+        public string                Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
         public string                FileName                       { get; set; }
         public string                OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
         public string                OutputFilePath                 => OutputFileDirectory + FileName;
