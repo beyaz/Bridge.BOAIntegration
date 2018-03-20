@@ -4,8 +4,10 @@
 (function() {
 
 
+    var $ = window.$;
+
     var IncludeJs = function(url) {
-        window.$.ajax({
+        $.ajax({
             url: url,
             dataType: 'script',
             async: false
@@ -70,7 +72,8 @@
                 return;
             }
 
-            $.ajax({ url: assemblyName+'.js', dataType: 'script', async: false });
+            $.ajax({ url: assemblyName+'.js',      dataType: 'script', async: false });
+            $.ajax({ url: assemblyName+'.meta.js', dataType: 'script', async: false });
 
             LoadedAssemblyNames[assemblyName] = 1;
 
@@ -81,8 +84,6 @@
 
     IncludeJs('Bridge.BOAIntegration.js');
     IncludeJs('Bridge.BOAIntegration.meta.js');
-    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.js');
-    IncludeJs('BOA.One.Office.CardGeneral.DebitCard.meta.js');
 
 
 })();
