@@ -91,6 +91,8 @@ namespace Bridge.BOAProjectCompiler
             if (controlGridDataSourceBindingPath.StartsWith("Model."))
             {
                 sb.AppendLine("this.OnPropertyChanged(nameof(Model), ForceRender);");
+                sb.AppendLine("this.OnPropertyChanged(nameof(Model), ()=>{ ControlGridDataSource = new string[0]; });");
+                
                 sb.AppendLine("this.OnPropertyChanged(nameof(Model), () =>");
 
                 sb.AppendLine("{");
@@ -337,7 +339,7 @@ namespace Bridge.BOAProjectCompiler
 
         void Transform_BDateTimeEditorLabeled(XmlNode node)
         {
-            var newElement = Document.CreateElement("BDateTimePicker");
+            var newElement = Document.CreateElement("BDatePicker");
 
             TransferAttribute(node, "Value", newElement, "value");
             TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
