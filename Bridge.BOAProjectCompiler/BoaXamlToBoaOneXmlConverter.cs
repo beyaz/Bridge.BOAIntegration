@@ -90,7 +90,7 @@ namespace Bridge.BOAProjectCompiler
                 sb.AppendLine("{");
                 sb.PaddingLength += 4;
 
-                sb.AppendLine("Model?.OnPropertyChanged( " + controlGridDataSourceBindingPath.Substring("Model.".Length) + " , () =>");
+                sb.AppendLine("Model?.OnPropertyChanged( \"" + controlGridDataSourceBindingPath.Substring("Model.".Length) + "\" , () =>");
 
                 sb.AppendLine("{");
                 sb.PaddingLength += 4;
@@ -101,7 +101,7 @@ namespace Bridge.BOAProjectCompiler
                 sb.AppendLine("});");
 
                 sb.PaddingLength -= 4;
-                sb.AppendLine("}");
+                sb.AppendLine("});");
             }
 
             sb.PaddingLength -= 4;
