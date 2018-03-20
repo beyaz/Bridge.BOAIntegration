@@ -105,9 +105,14 @@ namespace Bridge.BOAProjectCompiler
             }
 
             sb.PaddingLength -= 4;
-            sb.AppendLine("}");
+            sb.AppendLine("}"); // end of method
 
-            sb.AppendLine("}");
+            sb.PaddingLength -= 4;
+            sb.AppendLine("}"); // end of class
+
+
+            sb.PaddingLength -= 4;
+            sb.AppendLine("}"); // end of namespace
 
             return sb.ToString();
         }
