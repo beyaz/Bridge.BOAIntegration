@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using BOA.Common.Types;
 using BOA.Messaging;
@@ -26,7 +27,7 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Properties
-        protected Array DataSource
+        public IEnumerable ControlGridDataSource 
         {
             set
             {
@@ -35,6 +36,10 @@ namespace Bridge.BOAIntegration
                 newState["dataSource"] = value;
 
                 setState(newState);
+            }
+            get
+            {
+                return Script.Write<IEnumerable>("this.$TypeScriptVersion.state.dataSource");
             }
         }
 

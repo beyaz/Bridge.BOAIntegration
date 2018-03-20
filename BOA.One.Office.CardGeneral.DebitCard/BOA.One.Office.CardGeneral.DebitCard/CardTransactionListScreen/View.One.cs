@@ -26,7 +26,7 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
                 {
                     Model.OnPropertyChanged(nameof(Model.TransactionList), () =>
                     {
-                        DataSource = Model.TransactionList.ToArray();
+                        ControlGridDataSource = Model.TransactionList.ToArray();
                     });
 
                     Model.SearchContract.OnPropertyChanged(nameof(Model.SearchContract.CardNumber), () =>
