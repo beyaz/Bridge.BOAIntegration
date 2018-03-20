@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using BOA.Common.Helpers;
 
@@ -31,9 +32,7 @@ namespace Bridge.BOAProjectCompiler
             {
                 if (_namespaces == null)
                 {
-                    var nsMgr = new XmlNamespaceManager(Document.NameTable);
-
-                    _namespaces = nsMgr.GetNamespacesInScope(XmlNamespaceScope.All);
+                    _namespaces = XmlHelper.GetAllNamespaces(Document);
                 }
 
                 return _namespaces;
@@ -56,9 +55,54 @@ namespace Bridge.BOAProjectCompiler
             ApplyComponentTransforms();
         }
 
+        string boa_ui_ns => Namespaces.FirstOrDefault(x => x.Value == "clr-namespace:BOA.UI;assembly=BOA.UI").Key;
+        
+
+
         void ApplyComponentTransforms()
         {
-            Document.GetElementsByTagName("BMaskedEditorLabeled");
+            Transform_BMaskedEditorLabeled();
+        }
+        void Transform_BMaskedEditorLabeled()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BMaskedEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
+        }
+
+        
+        void Transform_BMaskedEditorLabeled(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BInputMask");
+
+            var maskValueIsEqualToCardNumber = node.Attributes?["Mask"]?.Value == "#### #### #### ####";
+            if (maskValueIsEqualToCardNumber)
+            {
+                newElement.SetAttribute("type", "CreditCard");
+            }
+            else if (node.Attributes?["Mask"] != null)
+            {
+                newElement.SetAttribute("type", "custom");
+                newElement.SetAttribute("mask", node.Attributes?["Mask"]?.Value);
+            }
+
+            
+            if (node.Attributes?["Text"] != null)
+            {
+                newElement.SetAttribute("value", node.Attributes?["Text"]?.Value);
+            }
+
+            if (node.Attributes?["Label"] != null)
+            {
+                newElement.SetAttribute("hintText", node.Attributes?["Label"]?.Value);
+                newElement.SetAttribute("floatingLabelText", node.Attributes?["Label"]?.Value);
+            }
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
         }
 
         void ApplyLayoutTransforms()

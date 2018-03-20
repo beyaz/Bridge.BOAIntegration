@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace BOA.Common.Helpers
 {
@@ -34,6 +35,37 @@ namespace BOA.Common.Helpers
             }
 
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        ///     Gets all namespaces.
+        /// </summary>
+        public static IDictionary<string, string> GetAllNamespaces(XmlDocument xDoc)
+        {
+            var result = new XmlNamespaceManager(xDoc.NameTable);
+
+            var xNav = xDoc.CreateNavigator();
+            while (xNav.MoveToFollowing(XPathNodeType.Element))
+            {
+                var localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
+                if (localNamespaces == null)
+                {
+                    continue;
+                }
+
+                foreach (var localNamespace in localNamespaces)
+                {
+                    var prefix = localNamespace.Key;
+                    if (string.IsNullOrEmpty(prefix))
+                    {
+                        prefix = "DEFAULT";
+                    }
+
+                    result.AddNamespace(prefix, localNamespace.Value);
+                }
+            }
+
+            return result.GetNamespacesInScope(XmlNamespaceScope.All);
         }
 
         /// <summary>
