@@ -17,16 +17,24 @@ namespace Bridge.BOAProjectCompiler
 
         public string OutputXmlString
         {
-            get { return XmlHelper.PrettyXml(RootNode.OuterXml); }
+            get
+            {
+                if (RootNodeIsBrowseForm())
+                {
+                    return XmlHelper.PrettyXml(RootNode.FirstChild.OuterXml);
+                }
+
+                return XmlHelper.PrettyXml(RootNode.OuterXml);
+            }
         }
 
         public XmlNode RootNode { get; set; }
         #endregion
 
         #region Properties
-        string      boa_ui_ns => Namespaces.FirstOrDefault(x => x.Value == "clr-namespace:BOA.UI;assembly=BOA.UI").Key;
-        string boa_BusinessComponents_ns => Namespaces.FirstOrDefault(x => x.Value == "clr-namespace:BOA.UI.BusinessComponents;assembly=BOA.UI.BusinessComponents").Key;
-        XmlDocument Document  => RootNode.OwnerDocument;
+        string      boa_BusinessComponents_ns => Namespaces.FirstOrDefault(x => x.Value == "clr-namespace:BOA.UI.BusinessComponents;assembly=BOA.UI.BusinessComponents").Key;
+        string      boa_ui_ns                 => Namespaces.FirstOrDefault(x => x.Value == "clr-namespace:BOA.UI;assembly=BOA.UI").Key;
+        XmlDocument Document                  => RootNode.OwnerDocument;
 
         IDictionary<string, string> Namespaces
         {
@@ -39,6 +47,24 @@ namespace Bridge.BOAProjectCompiler
 
                 return _namespaces;
             }
+        }
+        #endregion
+
+        #region Public Methods
+        public string GetBrowseForm_ControlGridDataSource_BindingPath()
+        {
+            var value = RootNode.Attributes?.GetNamedItem("ControlGridDataSource")?.Value;
+            if (value == null)
+            {
+                return null;
+            }
+
+            return value.Replace("{", "").Replace("}", "").Replace("Binding ", "").Trim();
+        }
+
+        public bool RootNodeIsBrowseForm()
+        {
+            return RootNode.Name == boa_ui_ns + ":BrowseForm";
         }
         #endregion
 
@@ -56,6 +82,8 @@ namespace Bridge.BOAProjectCompiler
 
             ApplyComponentTransforms();
         }
+
+        // ControlGridDataSource = "{Binding Model.TransactionList}"
 
         static void TransferAttribute(XmlNode xamlNode, string xamlPropertyName, XmlElement newElement, string newAttribute)
         {
@@ -114,48 +142,6 @@ namespace Bridge.BOAProjectCompiler
             xmlNode.ParentNode.RemoveChild(xmlNode);
         }
 
-        void Transform_BDateTimeEditorLabeled(XmlNode node)
-        {
-            var newElement = Document.CreateElement("BDateTimePicker");
-
-            TransferAttribute(node, "Value", newElement, "value");
-            TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
-            TransferNameAttribute(node, newElement);
-
-            node.ParentNode?.InsertBefore(newElement, node);
-            node.ParentNode?.RemoveChild(node);
-        }
-
-        void Transform_BMaskedEditorLabeled()
-        {
-            if (boa_ui_ns == null)
-            {
-                return;
-            }
-
-            Document.GetElementsByTagName(boa_ui_ns + ":" + "BMaskedEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
-        }
-        void Transform_BComboEditorMultiSelect()
-        {
-            if (boa_ui_ns == null)
-            {
-                return;
-            }
-
-            Document.GetElementsByTagName(boa_ui_ns + ":" + "BComboEditorMultiSelect").ToList().ForEach(Transform_BComboEditorMultiSelect);
-        }
-    
-
-        void Transform_BDateTimeEditorLabeled()
-        {
-            if (boa_ui_ns == null)
-            {
-                return;
-            }
-
-            Document.GetElementsByTagName(boa_ui_ns + ":" + "BDateTimeEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
-        }
-
         void Transform_AccountComponent()
         {
             if (boa_BusinessComponents_ns == null)
@@ -169,8 +155,6 @@ namespace Bridge.BOAProjectCompiler
         void Transform_AccountComponent(XmlNode node)
         {
             var newElement = Document.CreateElement("BAccountComponent");
-
-           
 
             TransferAttribute(node, "AccountNumber", newElement, "accountNumber");
 
@@ -187,10 +171,7 @@ namespace Bridge.BOAProjectCompiler
             TransferAttribute(node, "ShowBlackListDialogMessages", newElement, "showBlackListDialogMessages");
             TransferAttribute(node, "AllowSharedAccountControl", newElement, "allowSharedAccountControl");
             TransferAttribute(node, "AllowDoubleSignatureControl", newElement, "allowDoubleSignatureControl");
-            TransferAttribute(node, "Allow18AgeControl", newElement, "allow18AgeControl"); 
-
-
-
+            TransferAttribute(node, "Allow18AgeControl", newElement, "allow18AgeControl");
 
             TransferNameAttribute(node, newElement);
 
@@ -198,11 +179,19 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.RemoveChild(node);
         }
 
+        void Transform_BComboEditorMultiSelect()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BComboEditorMultiSelect").ToList().ForEach(Transform_BComboEditorMultiSelect);
+        }
+
         void Transform_BComboEditorMultiSelect(XmlNode node)
         {
             var newElement = Document.CreateElement("BComboBox");
-
-            
 
             TransferAttribute(node, "Label", newElement, "labelText");
             TransferAttribute(node, "ItemsSource", newElement, "dataSource");
@@ -213,34 +202,30 @@ namespace Bridge.BOAProjectCompiler
             newElement.SetAttribute("multiColumn", "true");
             newElement.SetAttribute("isAllOptionIncluded", "true");
 
-            
-
-
-            var bfieldLayoutNode = ((XmlElement) node).GetElementsByTagName(boa_ui_ns + ":BFieldLayout").ToList().FirstOrDefault() ;
-
-
+            var bfieldLayoutNode = ((XmlElement) node).GetElementsByTagName(boa_ui_ns + ":BFieldLayout").ToList().FirstOrDefault();
 
             if (bfieldLayoutNode != null)
             {
-               var columnNodes =   bfieldLayoutNode.ChildNodes.ToList().ConvertAll(n =>
-               {
-                   var comboBoxColumn = Document.CreateElement("ComboBoxColumn");
+                var columnNodes = bfieldLayoutNode.ChildNodes.ToList().ConvertAll(n =>
+                {
+                    var comboBoxColumn = Document.CreateElement("ComboBoxColumn");
 
-                   if (n.Attributes?.GetNamedItem("Name")?.Value != null)
-                   {
-                       comboBoxColumn.SetAttribute("key", n.Attributes?.GetNamedItem("Name")?.Value);
-                   }
-                   if (n.Attributes?.GetNamedItem("Label")?.Value != null)
-                   {
-                       comboBoxColumn.SetAttribute("Name", n.Attributes?.GetNamedItem("Label")?.Value);
-                   }
+                    if (n.Attributes?.GetNamedItem("Name")?.Value != null)
+                    {
+                        comboBoxColumn.SetAttribute("key", n.Attributes?.GetNamedItem("Name")?.Value);
+                    }
 
-                   return comboBoxColumn;
-               });
+                    if (n.Attributes?.GetNamedItem("Label")?.Value != null)
+                    {
+                        comboBoxColumn.SetAttribute("Name", n.Attributes?.GetNamedItem("Label")?.Value);
+                    }
+
+                    return comboBoxColumn;
+                });
 
                 var BComboBox_Columns = Document.CreateElement("BComboBox.Columns");
 
-                columnNodes.ForEach(x=>BComboBox_Columns.AppendChild(x));
+                columnNodes.ForEach(x => BComboBox_Columns.AppendChild(x));
 
                 newElement.AppendChild(BComboBox_Columns);
             }
@@ -251,7 +236,37 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.RemoveChild(node);
         }
 
+        void Transform_BDateTimeEditorLabeled(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BDateTimePicker");
 
+            TransferAttribute(node, "Value", newElement, "value");
+            TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
+            TransferNameAttribute(node, newElement);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
+
+        void Transform_BDateTimeEditorLabeled()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BDateTimeEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
+        }
+
+        void Transform_BMaskedEditorLabeled()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BMaskedEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
+        }
 
         void Transform_BMaskedEditorLabeled(XmlNode node)
         {
@@ -287,8 +302,6 @@ namespace Bridge.BOAProjectCompiler
                 OnStackPanel(xmlNode);
             }
         }
-        
-      
         #endregion
     }
 }
