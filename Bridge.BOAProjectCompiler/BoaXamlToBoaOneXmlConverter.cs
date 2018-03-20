@@ -75,7 +75,7 @@ namespace Bridge.BOAProjectCompiler
 
             foreach (var fieldNameFieldTypePair in FieldDefinitions)
             {
-                sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key);
+                sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key+";");
             }
 
             sb.AppendLine("void InitializeComponent()");
