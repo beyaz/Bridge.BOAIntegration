@@ -1,20 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BOA.Common.Helpers;
-using Bridge;
 using Bridge.BOAIntegration;
-using Bridge.Html5;
 
 namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
 {
     public partial class View : BrowsePage
     {
+        BOA.UI.BComboEditorMultiSelect MultiSelect;
+
         object _TransactionDateBeginComponent;
 
         #region Methods
-        void ClearMultiSelectComponent()
-        {
-        }
+        
 
         void EvaluateInWhichCaseRenderMethodWillBeCall()
         {
@@ -33,11 +30,7 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
                     {
                         Model.SearchContract.TransactionDateBegin = Model.SearchContract.TransactionDateBegin.AddDays(-1);
 
-
-                        //var c = _TransactionDateBeginComponent;
-                        //var v = Model.SearchContract.TransactionDateBegin;
-
-                        //Script.Write("c.setState({value:v})");
+                        
 
                     });
                 }

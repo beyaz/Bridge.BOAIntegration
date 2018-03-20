@@ -2,10 +2,14 @@
 {
     public class BComboEditorMultiSelect
     {
-        #region Public Methods
-        public void UpdateText()
+       
+    }
+
+    public static class BComboEditorMultiSelect_Extensions
+    {
+        public static void UpdateText(this BComboEditorMultiSelect multiSelect)
         {
+
         }
-        #endregion
     }
 }
