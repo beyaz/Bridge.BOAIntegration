@@ -17,6 +17,10 @@ namespace Bridge.BOAProjectCompiler
         public BridgeProjectCompilerInput Input { get; set; }
         #endregion
 
+        #region Properties
+        string OutputJsFileDirectoryPath => Path.GetDirectoryName(Input.CsprojFilePath) + Path.DirectorySeparatorChar + OutDir + "bridge" + Path.DirectorySeparatorChar;
+        #endregion
+
         #region Public Methods
         public void Compile()
         {
@@ -46,6 +50,11 @@ namespace Bridge.BOAProjectCompiler
 
             processor.Process();
             processor.PostProcess();
+
+            var assemblyName = bridgeOptions.ProjectProperties.AssemblyName;
+
+            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", @"D:\BOA\One\wwwroot\" + assemblyName + ".js", true);
+            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }
         #endregion
     }
