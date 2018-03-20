@@ -75,6 +75,7 @@ namespace Bridge.BOAProjectCompiler
             Transform_BMaskedEditorLabeled();
             Transform_BDateTimeEditorLabeled();
             Transform_AccountComponent();
+            Transform_BComboEditorMultiSelect();
         }
 
         void ApplyLayoutTransforms()
@@ -134,6 +135,16 @@ namespace Bridge.BOAProjectCompiler
 
             Document.GetElementsByTagName(boa_ui_ns + ":" + "BMaskedEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
         }
+        void Transform_BComboEditorMultiSelect()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BComboEditorMultiSelect").ToList().ForEach(Transform_BComboEditorMultiSelect);
+        }
+    
 
         void Transform_BDateTimeEditorLabeled()
         {
@@ -186,6 +197,62 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
+
+        void Transform_BComboEditorMultiSelect(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BComboBox");
+
+            
+
+            TransferAttribute(node, "Label", newElement, "labelText");
+            TransferAttribute(node, "ItemsSource", newElement, "dataSource");
+            TransferAttribute(node, "SelectedItems", newElement, "selectedItems");
+
+            newElement.SetAttribute("displayLabelSeperator", ",");
+            newElement.SetAttribute("multiSelect", "true");
+            newElement.SetAttribute("multiColumn", "true");
+            newElement.SetAttribute("isAllOptionIncluded", "true");
+
+            
+
+
+            var bfieldLayoutNode = ((XmlElement) node).GetElementsByTagName(boa_ui_ns + ":BFieldLayout").ToList().FirstOrDefault() ;
+
+
+
+            if (bfieldLayoutNode != null)
+            {
+               var columnNodes =   bfieldLayoutNode.ChildNodes.ToList().ConvertAll(n =>
+               {
+                   var comboBoxColumn = Document.CreateElement("ComboBoxColumn");
+
+                   if (n.Attributes?.GetNamedItem("Name")?.Value != null)
+                   {
+                       comboBoxColumn.SetAttribute("key", n.Attributes?.GetNamedItem("Name")?.Value);
+                   }
+                   if (n.Attributes?.GetNamedItem("Label")?.Value != null)
+                   {
+                       comboBoxColumn.SetAttribute("Name", n.Attributes?.GetNamedItem("Label")?.Value);
+                   }
+
+                   return comboBoxColumn;
+               });
+
+                var BComboBox_Columns = Document.CreateElement("BComboBox.Columns");
+
+                columnNodes.ForEach(x=>BComboBox_Columns.AppendChild(x));
+
+                newElement.AppendChild(BComboBox_Columns);
+            }
+
+            TransferNameAttribute(node, newElement);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
+
+
+
         void Transform_BMaskedEditorLabeled(XmlNode node)
         {
             var newElement = Document.CreateElement("BInputMask");
