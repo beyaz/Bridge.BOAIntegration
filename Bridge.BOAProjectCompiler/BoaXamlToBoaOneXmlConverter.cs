@@ -354,7 +354,7 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
-            Document.GetElementsByTagName(boa_ui_ns + ":" + "BDateTimeEditorLabeled").ToList().ForEach(Transform_BMaskedEditorLabeled);
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BDateTimeEditorLabeled").ToList().ForEach(Transform_BDateTimeEditorLabeled);
         }
 
         void Transform_BMaskedEditorLabeled()
