@@ -19,21 +19,15 @@ namespace BOA.UI.CardGeneral.DebitCard.CardTransactionListScreen
 
             this.OnPropertyChanged(nameof(Model), () =>
             {
-                if (Model != null)
+                Model?.OnPropertyChanged(nameof(Model.TransactionList), () =>
                 {
-                    Model.OnPropertyChanged(nameof(Model.TransactionList), () =>
-                    {
-                        ControlGridDataSource = Model.TransactionList.ToArray();
-                    });
+                    ControlGridDataSource = Model.TransactionList.ToArray();
+                });
 
-                    Model.SearchContract.OnPropertyChanged(nameof(Model.SearchContract.CardNumber), () =>
-                    {
-                        Model.SearchContract.TransactionDateBegin = Model.SearchContract.TransactionDateBegin.AddDays(-1);
-
-                        
-
-                    });
-                }
+                Model?.SearchContract.OnPropertyChanged(nameof(Model.SearchContract.CardNumber), () =>
+                {
+                    Model.SearchContract.TransactionDateBegin = Model.SearchContract.TransactionDateBegin.AddDays(-1);
+                });
             });
         }
 
