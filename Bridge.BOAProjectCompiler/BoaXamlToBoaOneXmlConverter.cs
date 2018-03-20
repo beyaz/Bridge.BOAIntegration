@@ -76,15 +76,16 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingLength += 4;
 
-            sb.AppendLine("XmlUI = @" + OutputXmlString.Replace('"', '\"') + ";");
+            sb.AppendLine("XmlUI = @" + '"' + OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
 
+            sb.AppendLine("");
             sb.AppendLine("// EvaluateInWhichCaseRenderMethodWillBeCall");
 
             var controlGridDataSourceBindingPath = GetBrowseForm_ControlGridDataSource_BindingPath();
             if (controlGridDataSourceBindingPath.StartsWith("Model."))
             {
-                sb.AppendLine("this.OnPropertyChanged(\"Model\", ForceRender);");
-                sb.AppendLine("this.OnPropertyChanged(\"Model\", () =>");
+                sb.AppendLine("this.OnPropertyChanged(nameof(Model), ForceRender);");
+                sb.AppendLine("this.OnPropertyChanged(nameof(Model), () =>");
 
                 sb.AppendLine("{");
                 sb.PaddingLength += 4;

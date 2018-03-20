@@ -46,7 +46,9 @@ namespace Bridge.BOAProjectCompiler
 
 
                 sourceFiles[i] = OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
-                File.WriteAllText(sourceFiles[i],generatedCode);
+
+                Directory.CreateDirectory(OutputFileDirectory);
+                File.WriteAllText(sourceFiles[i],generatedCode, Encoding.UTF8);
             }
 
             SourceFiles = sourceFiles;
