@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using BOA.BOA.Common.Helpers;
 using BOA.Common.Helpers;
 
 namespace Bridge.BOAProjectCompiler
@@ -51,6 +52,65 @@ namespace Bridge.BOAProjectCompiler
         #endregion
 
         #region Public Methods
+        public string GenerateCsharpCode()
+        {
+            var sb = new PaddedStringBuilder();
+
+            sb.AppendLine("using System.Linq;");
+            sb.AppendLine("using BOA.Common.Helpers;");
+            sb.AppendLine("using Bridge.BOAIntegration;");
+
+            var fullTypeName = GetClassName();
+            var nsName       = fullTypeName.Substring(0, fullTypeName.LastIndexOf(".", StringComparison.Ordinal));
+            var typeName     = fullTypeName.Substring(fullTypeName.LastIndexOf(".", StringComparison.Ordinal) + 1);
+
+            sb.AppendLine("namespace " + nsName);
+            sb.AppendLine("{");
+            sb.PaddingLength = 4;
+
+            sb.AppendLine($"public partial class {typeName} : BrowsePage");
+            sb.AppendLine("{");
+            sb.PaddingLength += 4;
+
+            sb.AppendLine("void InitializeComponent()");
+            sb.AppendLine("{");
+            sb.PaddingLength += 4;
+
+            sb.AppendLine("XmlUI = @" + OutputXmlString.Replace('"', '\"') + ";");
+
+            sb.AppendLine("// EvaluateInWhichCaseRenderMethodWillBeCall");
+
+            var controlGridDataSourceBindingPath = GetBrowseForm_ControlGridDataSource_BindingPath();
+            if (controlGridDataSourceBindingPath.StartsWith("Model."))
+            {
+                sb.AppendLine("this.OnPropertyChanged(\"Model\", ForceRender);");
+                sb.AppendLine("this.OnPropertyChanged(\"Model\", () =>");
+
+                sb.AppendLine("{");
+                sb.PaddingLength += 4;
+
+                sb.AppendLine("Model?.OnPropertyChanged( " + controlGridDataSourceBindingPath.Substring("Model.".Length) + " , () =>");
+
+                sb.AppendLine("{");
+                sb.PaddingLength += 4;
+
+                sb.AppendLine("ControlGridDataSource = " + controlGridDataSourceBindingPath + ".ToArray();");
+
+                sb.PaddingLength -= 4;
+                sb.AppendLine("});");
+
+                sb.PaddingLength -= 4;
+                sb.AppendLine("}");
+            }
+
+            sb.PaddingLength -= 4;
+            sb.AppendLine("}");
+
+            sb.AppendLine("}");
+
+            return sb.ToString();
+        }
+
         public string GetBrowseForm_ControlGridDataSource_BindingPath()
         {
             var value = RootNode.Attributes?.GetNamedItem("ControlGridDataSource")?.Value;
@@ -60,6 +120,17 @@ namespace Bridge.BOAProjectCompiler
             }
 
             return value.Replace("{", "").Replace("}", "").Replace("Binding ", "").Trim();
+        }
+
+        public string GetClassName()
+        {
+            var fullTypeName = RootNode.Attributes?.GetNamedItem("x:Class")?.Value;
+            if (fullTypeName == null)
+            {
+                return null;
+            }
+
+            return fullTypeName;
         }
 
         public bool RootNodeIsBrowseForm()
