@@ -8,6 +8,7 @@
 
             Build_BOA_Types_Kernel_DebitCard();
             Build_BOA_Types_CardGeneral_DebitCard();
+            BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
 
 
             //var bridgeProjectCompiler = new BridgeProjectCompiler
@@ -90,6 +91,43 @@
 
             bridgeProjectCompiler.Compile();
         }
+
+        static void BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen()
+        {
+            var sourceProjectLocation = @"D:\Work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CardTransactionList\CardTransactionListScreen\";
+
+            var csprojFile = new CsprojFile
+            {
+                AssemblyName = "BOA.UI.CardGeneral.DebitCard.CardTransactionList",
+                FileName     = "BOA.UI.CardGeneral.DebitCard.CardTransactionList.csproj",
+                SourceFiles = new []
+                {
+                    sourceProjectLocation+@"Extensions.cs",
+                    sourceProjectLocation+@"Model.cs",
+                    sourceProjectLocation+@"View.xaml.cs",
+                    sourceProjectLocation+@"View.xaml"
+                },
+                ReferenceAssemblyPaths = new[]
+                {
+                    @"D:\Users\beyaztas\Documents\Bridge.BOAProjectCompiler\BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll",
+                    @"D:\Users\beyaztas\Documents\Bridge.BOAProjectCompiler\BOA.Types.CardGeneral.DebitCard\bin\Debug\BOA.Types.CardGeneral.DebitCard.dll"
+                }
+            };
+
+            csprojFile.WriteToFile();
+
+
+            var bridgeProjectCompiler = new BridgeProjectCompiler
+            {
+                Input = new BridgeProjectCompilerInput
+                {
+                    CsprojFilePath = csprojFile.OutputFilePath
+                }
+            };
+
+            bridgeProjectCompiler.Compile();
+        }
+        
         #endregion
     }
 }
