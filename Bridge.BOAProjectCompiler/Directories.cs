@@ -6,12 +6,14 @@ namespace Bridge.BOAProjectCompiler
     static class Directories
     {
         #region Constants
-        public const string KERNEL_DEV                        = @"D:\work\BOA.Kernel\Dev\";
-        public const string KERNEL_DEV_BOA_Kernel_CardGeneral = KERNEL_DEV + @"BOA.Kernel.CardGeneral\";
+        public const string DevelopmentFolderName = @"Dev";
         #endregion
 
         #region Public Properties
-        public static string WorkingDirectory => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + Path.DirectorySeparatorChar + "Bridge.BOAProjectCompiler" + Path.DirectorySeparatorChar;
+        public static string BusinessModules               => @"D:\Work\BOA.BusinessModules\" + DevelopmentFolderName + Path.DirectorySeparatorChar;
+        public static string Kernel                        => @"D:\work\BOA.Kernel\" + DevelopmentFolderName + Path.DirectorySeparatorChar;
+        public static string Kernel_BOA_Kernel_CardGeneral => Kernel + @"BOA.Kernel.CardGeneral\";
+        public static string WorkingDirectory              => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + Path.DirectorySeparatorChar + "Bridge.BOAProjectCompiler" + Path.DirectorySeparatorChar;
         #endregion
     }
 }
