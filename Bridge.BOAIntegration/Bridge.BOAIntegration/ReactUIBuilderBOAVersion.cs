@@ -19,7 +19,17 @@ namespace Bridge.BOAIntegration
                 ComponentName.BAccountComponent.ToString(), new[]
                 {
                     ComponentPropName.isVisibleBalance.ToString(),
-                    ComponentPropName.isVisibleIBAN.ToString()
+                    ComponentPropName.isVisibleIBAN.ToString(),
+
+                    ComponentPropName.showTaxNumberAndMernisVerifiedDialogMessage.ToString(),
+                    ComponentPropName.showMernisServiceHealtyDialogMessage.ToString(),
+                    ComponentPropName.showDialogMessages.ToString(),
+                    ComponentPropName.showCustomerRecordingBranchWarning.ToString(),
+                    ComponentPropName.showCustomerBranchAccountMessage.ToString(),
+                    ComponentPropName.showBlackListDialogMessages.ToString(),
+                    ComponentPropName.allowSharedAccountControl.ToString(),
+                    ComponentPropName.allowDoubleSignatureControl.ToString(),
+                    ComponentPropName.allow18AgeControl.ToString()
                 }
             },
             {
@@ -63,9 +73,7 @@ namespace Bridge.BOAIntegration
             },
             {
                 ComponentName.BInputMask.ToString(), new[]
-                {
-                    ComponentPropName.size.ToString()
-                }
+                    {ComponentPropName.size.ToString()}
             },
             {
                 ComponentName.BParameterComponent.ToString(), new[]

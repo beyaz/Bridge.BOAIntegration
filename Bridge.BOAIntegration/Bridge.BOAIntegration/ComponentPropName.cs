@@ -16,6 +16,17 @@
         rowsMax,
         accountNumber,
         accountSuffix,
-        selectedAccount
+        selectedAccount,
+        showTaxNumberAndMernisVerifiedDialogMessage,
+        showMernisServiceHealtyDialogMessage,
+        showDialogMessages,
+        showCustomerRecordingBranchWarning,
+        showCustomerBranchAccountMessage,
+        showBlackListDialogMessages,
+        allowSharedAccountControl,
+        allowDoubleSignatureControl,
+        allow18AgeControl
+
+
     }
 }
