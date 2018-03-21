@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Data;
+using BOA.Messaging;
 
 namespace Bridge.BOAIntegration
 {
@@ -165,6 +167,16 @@ namespace Bridge.BOAIntegration
 
                 componentProp[attributeName] = Script.Write<object>("intValue");
             }
+        }
+
+        protected internal override object EvaluateAttributeValue(string attributeValue, object prop)
+        {
+            if (MessagingResolver.IsMessagingExpression(attributeValue))
+            {
+                return MessagingResolver.GetMessagingExpressionValue(attributeValue);
+            }
+
+            return base.EvaluateAttributeValue(attributeValue, prop);
         }
 
         protected override void BeforeStartToProcessAttribute(string attributeName, string attributeValue)
@@ -355,5 +367,24 @@ namespace Bridge.BOAIntegration
             AddToRefHandlers(onRef);
         }
         #endregion
+
+        class MessagingResolver
+        {
+            #region Public Methods
+            public static string GetMessagingExpressionValue(string attributeValue)
+            {
+                // example: '{m:Messaging Group=CardGeneral, Property=CampaignStatus}'
+                var value = attributeValue.Trim().Remove("{m:Messaging ").Remove(" Group=").Remove(" Property=").RemoveFromEnd("}");
+                var arr   = value.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                return MessagingHelper.GetMessage(arr[0], arr[1]);
+            }
+
+            public static bool IsMessagingExpression(string attributeValue)
+            {
+                return attributeValue.Trim().StartsWith("{m:Messaging ");
+            }
+            #endregion
+        }
     }
 }

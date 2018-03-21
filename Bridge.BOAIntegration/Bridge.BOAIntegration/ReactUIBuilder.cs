@@ -75,7 +75,7 @@ namespace Bridge.BOAIntegration
             return propertyPath.GetPropertyValue();
         }
 
-        internal object EvaluateAttributeValue(string attributeValue, object prop)
+        protected internal virtual object EvaluateAttributeValue(string attributeValue, object prop)
         {
             var isMethod = attributeValue.StartsWith("this.");
             if (isMethod)

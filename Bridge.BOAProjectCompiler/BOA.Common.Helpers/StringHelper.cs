@@ -8,6 +8,31 @@ namespace BOA.Common.Helpers
     /// </summary>
     public static class StringHelper
     {
+        #region Public Methods
+        /// <summary>
+        ///     Determines whether this instance has value.
+        /// </summary>
+        public static bool HasValue(this string value)
+        {
+            return !string.IsNullOrWhiteSpace(value);
+        }
+
+        /// <summary>
+        ///     Indicates whether the specified string is null or an System.String.Empty
+        /// </summary>
+        public static bool IsNullOrEmpty(this string value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
+
+        /// <summary>
+        ///     Indicates whether a specified string is null, empty, or consists only of white-space characters.
+        /// </summary>
+        public static bool IsNullOrWhiteSpace(this string value)
+        {
+            return string.IsNullOrWhiteSpace(value);
+        }
+
         /// <summary>
         ///     Compare strings using ordinal sort rules.
         /// </summary>
@@ -22,43 +47,16 @@ namespace BOA.Common.Helpers
         }
 
         /// <summary>
-        ///     Returns a copy of this string converted to uppercase, using the casing rules of 'English' culture
+        ///     Removes the specified value.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToUpperEN(this string value)
+        public static string Remove(this string data, string value)
         {
-            return value.ToUpper(new CultureInfo("en-US"));
-        }
+            if (data == null)
+            {
+                return null;
+            }
 
-        /// <summary>
-        ///     Returns a copy of this string converted to lowercase, using the casing rules of 'English' culture
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToLowerEN(this string value)
-        {
-            return value.ToLower(new CultureInfo("en-US"));
-        }
-
-        /// <summary>
-        ///     Returns a copy of this string converted to uppercase, using the casing rules of Turkish culture
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToUpperTR(this string value)
-        {
-            return value.ToUpper(new CultureInfo("tr-TR"));
-        }
-
-        /// <summary>
-        ///     Returns a copy of this string converted to lowercase, using the casing rules of 'Turkish' culture
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToLowerTR(this string value)
-        {
-            return value.ToLower(new CultureInfo("tr-TR"));
+            return data.Replace(value, "");
         }
 
         /// <summary>
@@ -93,28 +91,44 @@ namespace BOA.Common.Helpers
         }
 
         /// <summary>
-        ///     Indicates whether the specified string is null or an System.String.Empty
+        ///     Returns a copy of this string converted to lowercase, using the casing rules of 'English' culture
         /// </summary>
-        public static bool IsNullOrEmpty(this string value)
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToLowerEN(this string value)
         {
-            return string.IsNullOrEmpty(value);
+            return value.ToLower(new CultureInfo("en-US"));
         }
 
         /// <summary>
-        ///     Indicates whether a specified string is null, empty, or consists only of white-space characters.
+        ///     Returns a copy of this string converted to lowercase, using the casing rules of 'Turkish' culture
         /// </summary>
-        public static bool IsNullOrWhiteSpace(this string value)
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToLowerTR(this string value)
         {
-            return string.IsNullOrWhiteSpace(value);
+            return value.ToLower(new CultureInfo("tr-TR"));
         }
-
 
         /// <summary>
-        /// Determines whether this instance has value.
+        ///     Returns a copy of this string converted to uppercase, using the casing rules of 'English' culture
         /// </summary>
-        public static bool HasValue(this string value)
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToUpperEN(this string value)
         {
-            return !string.IsNullOrWhiteSpace(value);
+            return value.ToUpper(new CultureInfo("en-US"));
         }
+
+        /// <summary>
+        ///     Returns a copy of this string converted to uppercase, using the casing rules of Turkish culture
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToUpperTR(this string value)
+        {
+            return value.ToUpper(new CultureInfo("tr-TR"));
+        }
+        #endregion
     }
 }

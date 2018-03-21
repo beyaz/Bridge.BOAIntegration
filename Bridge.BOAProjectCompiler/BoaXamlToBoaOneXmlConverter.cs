@@ -167,13 +167,15 @@ namespace Bridge.BOAProjectCompiler
             ApplyComponentTransforms();
         }
 
-        // ControlGridDataSource = "{Binding Model.TransactionList}"
+        
 
         static void TransferAttribute(XmlNode xamlNode, string xamlPropertyName, XmlElement newElement, string newAttribute)
         {
             if (xamlNode.Attributes?[xamlPropertyName] != null)
             {
-                newElement.SetAttribute(newAttribute, xamlNode.Attributes?[xamlPropertyName]?.Value);
+                var attributeValue = xamlNode.Attributes?[xamlPropertyName]?.Value;
+
+                newElement.SetAttribute(newAttribute, attributeValue);
             }
         }
 
@@ -183,6 +185,7 @@ namespace Bridge.BOAProjectCompiler
             Transform_BDateTimeEditorLabeled();
             Transform_AccountComponent();
             Transform_BComboEditorMultiSelect();
+            Transform_ParameterComponent();
         }
 
         void ApplyLayoutTransforms()
@@ -251,6 +254,34 @@ namespace Bridge.BOAProjectCompiler
             }
 
             Document.GetElementsByTagName(boa_BusinessComponents_ns + ":" + "AccountComponent").ToList().ForEach(Transform_AccountComponent);
+        }
+
+        void Transform_ParameterComponent()
+        {
+            if (boa_BusinessComponents_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_BusinessComponents_ns + ":" + "ParameterComponent").ToList().ForEach(Transform_ParameterComponent);
+        }
+
+        void Transform_ParameterComponent(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BParameterComponent");
+
+            TransferAttribute(node, "Label", newElement, "hintText");
+            TransferAttribute(node, "Label", newElement, "labelText");
+            TransferAttribute(node, "ParamType", newElement, "paramType");
+            TransferAttribute(node, "IsAllOptionIncluded", newElement, "isAllOptionIncluded");
+            TransferAttribute(node, "ParamValuesVisible", newElement, "paramValuesVisible");
+            TransferAttribute(node, "SelectedParamCode", newElement, "selectedParamCode");
+            TransferAttribute(node, "ParamCodeVisible", newElement, "paramCodeVisible");
+            
+            TransferNameAttribute(node, newElement);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
         }
 
         void Transform_AccountComponent(XmlNode node)

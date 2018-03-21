@@ -63,6 +63,19 @@ namespace System
         }
 
         /// <summary>
+        ///     Removes the specified value.
+        /// </summary>
+        public static string Remove(this string data, string value)
+        {
+            if (data == null)
+            {
+                return null;
+            }
+
+            return data.Replace(value, "");
+        }
+
+        /// <summary>
         ///     Removes value from end of str
         /// </summary>
         public static string RemoveFromEnd(this string data, string value)
