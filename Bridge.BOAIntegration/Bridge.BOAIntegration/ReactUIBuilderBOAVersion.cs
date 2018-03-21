@@ -56,6 +56,10 @@ namespace Bridge.BOAIntegration
         static readonly Dictionary<string, string[]> NumberAttributes = new Dictionary<string, string[]>
         {
             {
+                ComponentName.BDateTimePicker.ToString(), new[]
+                    {ComponentPropName.size.ToString()}
+            },
+            {
                 ComponentName.BGridRow.ToString(), new[]
                     {ComponentPropName.columnCount.ToString()}
             },
