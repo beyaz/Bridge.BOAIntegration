@@ -2,6 +2,40 @@
 {
     class Program
     {
+        static void BOA_UI_CardGeneral_DebitCard_CampaignTransactionList()
+        {
+
+            var sourceProjectLocation = Directories.BusinessModules + @"BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CampaignTransactionList\";
+
+            var csprojFile = new CsprojFile
+            {
+                AssemblyName = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionList",
+                FileName     = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionList.csproj",
+                SourceFiles = new[]
+                {
+                    sourceProjectLocation + @"CampaignTransactionList.xaml.cs",
+                    sourceProjectLocation + @"CampaignTransactionList.xaml"
+                },
+                ReferenceAssemblyPaths = new[]
+                {
+                    Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll",
+                    Directories.WorkingDirectory + @"BOA.Types.CardGeneral.DebitCard\bin\Debug\BOA.Types.CardGeneral.DebitCard.dll"
+                }
+            };
+
+            csprojFile.WriteToFile();
+
+            var bridgeProjectCompiler = new BridgeProjectCompiler
+            {
+                Input = new BridgeProjectCompilerInput
+                {
+                    CsprojFilePath = csprojFile.OutputFilePath
+                }
+            };
+
+            bridgeProjectCompiler.Compile();
+        }
+
         #region Methods
         static void BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen()
         {
@@ -37,6 +71,8 @@
 
             bridgeProjectCompiler.Compile();
         }
+
+        
 
         static void Build_BOA_Types_CardGeneral_DebitCard()
         {
@@ -109,7 +145,8 @@
         {
             // Build_BOA_Types_Kernel_DebitCard();
             // Build_BOA_Types_CardGeneral_DebitCard();
-            BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
+            // BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
+            BOA_UI_CardGeneral_DebitCard_CampaignTransactionList();
         }
         #endregion
     }
