@@ -374,7 +374,7 @@ namespace Bridge.BOAIntegration
             public static string GetMessagingExpressionValue(string attributeValue)
             {
                 // example: '{m:Messaging Group=CardGeneral, Property=CampaignStatus}'
-                var value = attributeValue.Trim().Remove("{m:Messaging ").Remove(" Group=").Remove(" Property=").RemoveFromEnd("}");
+                var value = attributeValue.Trim().Remove("{m:Messaging ").Trim().RemoveFromStart("Group=").Remove(" Property=").RemoveFromEnd("}");
                 var arr   = value.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 return MessagingHelper.GetMessage(arr[0], arr[1]);

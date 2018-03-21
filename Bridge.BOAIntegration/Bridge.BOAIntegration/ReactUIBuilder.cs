@@ -267,7 +267,7 @@ namespace Bridge.BOAIntegration
 
                 if (componentClass == null)
                 {
-                    throw new ArgumentNullException("ComponentClassFinder returned null value.");
+                    throw new ArgumentNullException("ComponentClassFinder returned null value.->"+ nodeTagName);
                 }
 
                 return componentClass;

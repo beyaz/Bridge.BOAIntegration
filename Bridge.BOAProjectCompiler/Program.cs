@@ -9,8 +9,8 @@
 
             var csprojFile = new CsprojFile
             {
-                AssemblyName = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionList",
-                FileName     = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionList.csproj",
+                AssemblyName = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly",
+                FileName     = "BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.csproj",
                 SourceFiles = new[]
                 {
                     sourceProjectLocation + @"CampaignTransactionList.xaml.cs",
