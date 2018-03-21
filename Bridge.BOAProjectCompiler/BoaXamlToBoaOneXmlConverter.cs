@@ -186,6 +186,7 @@ namespace Bridge.BOAProjectCompiler
             Transform_AccountComponent();
             Transform_BComboEditorMultiSelect();
             Transform_ParameterComponent();
+            Transform_BTextEditorLabeled();
         }
 
         void ApplyLayoutTransforms()
@@ -265,7 +266,28 @@ namespace Bridge.BOAProjectCompiler
 
             Document.GetElementsByTagName(boa_BusinessComponents_ns + ":" + "ParameterComponent").ToList().ForEach(Transform_ParameterComponent);
         }
+        void Transform_BTextEditorLabeled()
+        {
+            if (boa_ui_ns == null)
+            {
+                return;
+            }
 
+            Document.GetElementsByTagName(boa_ui_ns + ":" + "BTextEditorLabeled").ToList().ForEach(Transform_BTextEditorLabeled);
+        }
+        void Transform_BTextEditorLabeled(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BInput");
+
+            TransferAttribute(node, "Label", newElement, "hintText");
+            TransferAttribute(node, "Text", newElement, "value");
+
+            TransferNameAttribute(node, newElement);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
+        
         void Transform_ParameterComponent(XmlNode node)
         {
             var newElement = Document.CreateElement("BParameterComponent");
