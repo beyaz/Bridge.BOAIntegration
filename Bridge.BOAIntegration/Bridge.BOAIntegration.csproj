@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\BOA.Common.Helpers\ReflectionHelper2.cs">
+      <Link>BOA.Common.Helpers\ReflectionHelper2.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\BOA.UI\DataGridColumnInfoContract.cs">
       <Link>Bridge.BOAIntegration\DataGridColumnInfoContract.cs</Link>
     </Compile>
