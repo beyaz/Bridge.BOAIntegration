@@ -86,7 +86,9 @@
                 {
                     typesDebitCard + @"Labels.cs",
                     typesDebitCard + @"CardTransaction\CardTransactionRequest.cs",
-                    typesDebitCard + @"CardTransaction\CardTransactionRequest.designer.cs"
+                    typesDebitCard + @"CardTransaction\CardTransactionRequest.designer.cs",
+                    typesDebitCard +  "CampaignDefinitionRequest.cs",
+                    typesDebitCard +  "CampaignDefinitionRequest.designer.cs"
                 },
                 ReferenceAssemblyPaths = new[]
                     {Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll"}
@@ -143,9 +145,9 @@
 
         static void Main()
         {
-            // Build_BOA_Types_Kernel_DebitCard();
-            // Build_BOA_Types_CardGeneral_DebitCard();
-            // BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
+             Build_BOA_Types_Kernel_DebitCard();
+             Build_BOA_Types_CardGeneral_DebitCard();
+            BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
             BOA_UI_CardGeneral_DebitCard_CampaignTransactionList();
         }
         #endregion
