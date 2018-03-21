@@ -108,6 +108,14 @@ namespace Bridge.BOAIntegration
 
             Script.Write("dialogHelper.showStatusMessage(message); ");
         }
+        public void ShowStatusMessage(string message, DialogTypes dialogType, Result[] resultList)
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+        }
+        
         #endregion
 
         #region Methods
