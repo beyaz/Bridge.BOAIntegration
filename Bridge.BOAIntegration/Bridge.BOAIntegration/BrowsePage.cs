@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BOA.Common.Types;
 using BOA.Messaging;
@@ -93,6 +94,14 @@ namespace Bridge.BOAIntegration
 
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         public void ShowStatusMessage(string message, DialogTypes dialogType)
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+        }
+
+        public void ShowStatusMessage(string message, DialogTypes dialogType, List<Result> resultList)
         {
             // ReSharper disable once UnusedVariable
             var dialogHelper = NodeModules.BFormManager();
