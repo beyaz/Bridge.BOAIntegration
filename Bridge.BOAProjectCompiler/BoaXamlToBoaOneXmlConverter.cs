@@ -339,8 +339,9 @@ namespace Bridge.BOAProjectCompiler
 
         void Transform_BDateTimeEditorLabeled(XmlNode node)
         {
-            var newElement = Document.CreateElement("BDatePicker");
+            var newElement = Document.CreateElement("BDateTimePicker");
 
+            newElement.SetAttribute("format", "DDMMYYYY");
             TransferAttribute(node, "Value", newElement, "value");
             TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
             TransferNameAttribute(node, newElement);

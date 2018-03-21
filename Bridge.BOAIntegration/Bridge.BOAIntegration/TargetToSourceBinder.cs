@@ -26,7 +26,7 @@ namespace Bridge.BOAIntegration
             var me = this;
 
             if (attributeName == AttributeName.value &&
-                (nodeName == ComponentName.BDateTimePicker.ToString() || nodeName == ComponentName.BDatePicker.ToString()))
+                (nodeName == ComponentName.BDateTimePicker.ToString() ))
             {
                 elementProps["onChange"] = (Action<jQueryEvent, DateTime?>) ((queryEvent, value) => { me.BDateTimePicker_onChange_Handler(value, bindingPath); });
 

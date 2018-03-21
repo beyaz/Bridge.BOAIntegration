@@ -9,7 +9,6 @@
         BParameterComponent,
         BCheckBox,
         BDateTimePicker,
-        BDatePicker,
         BInputNumeric
     }
 }
