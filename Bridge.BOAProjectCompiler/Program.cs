@@ -71,7 +71,8 @@
 
         static void Build_BOA_Types_Kernel_DebitCard()
         {
-            var tables = Directories.Kernel_BOA_Kernel_CardGeneral + @"DebitCard\BOA.Types.Kernel.DebitCard\Tables\";
+            var typesFolder = Directories.Kernel_BOA_Kernel_CardGeneral + @"DebitCard\BOA.Types.Kernel.DebitCard\";
+            var tables = typesFolder + @"Tables\";
             var csprojFile = new CsprojFile
             {
                 AssemblyName = "BOA.Types.Kernel.DebitCard",
@@ -85,7 +86,9 @@
                     tables + @"DebitTransactionContract.designer.cs",
 
                     tables + @"DebitTransactionSearchContract.cs",
-                    tables + @"DebitTransactionSearchResultContract.cs"
+                    tables + @"DebitTransactionSearchResultContract.cs",
+
+                    typesFolder + "DebitCampaignContractMain.cs"
                 }
             };
 
@@ -104,8 +107,8 @@
 
         static void Main()
         {
-            //Build_BOA_Types_Kernel_DebitCard();
-            //Build_BOA_Types_CardGeneral_DebitCard();
+            // Build_BOA_Types_Kernel_DebitCard();
+            // Build_BOA_Types_CardGeneral_DebitCard();
             BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
         }
         #endregion
