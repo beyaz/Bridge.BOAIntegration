@@ -9,6 +9,7 @@
         BParameterComponent,
         BCheckBox,
         BDateTimePicker,
-        BInputNumeric
+        BInputNumeric,
+        BGridRow
     }
 }

@@ -56,6 +56,10 @@ namespace Bridge.BOAIntegration
         static readonly Dictionary<string, string[]> NumberAttributes = new Dictionary<string, string[]>
         {
             {
+                ComponentName.BGridRow.ToString(), new[]
+                    {ComponentPropName.columnCount.ToString()}
+            },
+            {
                 ComponentName.BCheckBox.ToString(), new[]
                     {ComponentPropName.size.ToString()}
             },

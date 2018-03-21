@@ -25,8 +25,7 @@
         showBlackListDialogMessages,
         allowSharedAccountControl,
         allowDoubleSignatureControl,
-        allow18AgeControl
-
-
+        allow18AgeControl,
+        columnCount
     }
 }
