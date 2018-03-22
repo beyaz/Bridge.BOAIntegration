@@ -59,7 +59,7 @@ namespace Bridge.BOAProjectCompiler
             var destFileName = @"D:\BOA\One\wwwroot\" + assemblyName + ".js";
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
-            BOA.Common.Helpers.FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL = " + assemblyName + ".js");
+            BOA.Common.Helpers.FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL=" + assemblyName + ".js");
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }
