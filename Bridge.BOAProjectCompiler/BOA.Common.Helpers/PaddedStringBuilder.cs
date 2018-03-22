@@ -16,9 +16,14 @@ namespace BOA.BOA.Common.Helpers
 
         #region Public Properties
         /// <summary>
+        ///     Gets or sets the padding count.
+        /// </summary>
+        public int PaddingCount { get; set; }
+
+        /// <summary>
         ///     Gets or sets the length of the padding.
         /// </summary>
-        public int PaddingLength { get; set; }
+        public int PaddingLength { get; set; } = 4;
         #endregion
 
         #region Properties
@@ -27,7 +32,7 @@ namespace BOA.BOA.Common.Helpers
         /// </summary>
         string Padding
         {
-            get { return "".PadRight(PaddingLength); }
+            get { return "".PadRight(PaddingLength * PaddingCount); }
         }
         #endregion
 

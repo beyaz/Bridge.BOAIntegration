@@ -67,11 +67,11 @@ namespace Bridge.BOAProjectCompiler
 
             sb.AppendLine("namespace " + nsName);
             sb.AppendLine("{");
-            sb.PaddingLength = 4;
+            sb.PaddingCount++;
 
             sb.AppendLine($"public partial class {typeName} : BrowsePage");
             sb.AppendLine("{");
-            sb.PaddingLength += 4;
+            sb.PaddingCount++;
 
             foreach (var fieldNameFieldTypePair in FieldDefinitions)
             {
@@ -80,7 +80,7 @@ namespace Bridge.BOAProjectCompiler
 
             sb.AppendLine("void InitializeComponent()");
             sb.AppendLine("{");
-            sb.PaddingLength += 4;
+            sb.PaddingCount++;
 
             sb.AppendLine("XmlUI = @" + '"' + OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
 
@@ -96,19 +96,19 @@ namespace Bridge.BOAProjectCompiler
                 sb.AppendLine("this.OnPropertyChanged(nameof(Model), () =>");
 
                 sb.AppendLine("{");
-                sb.PaddingLength += 4;
+                sb.PaddingCount++;
 
                 sb.AppendLine("Model?.OnPropertyChanged( \"" + controlGridDataSourceBindingPath.Substring("Model.".Length) + "\" , () =>");
 
                 sb.AppendLine("{");
-                sb.PaddingLength += 4;
+                sb.PaddingCount++;
 
                 sb.AppendLine("ControlGridDataSource = " + controlGridDataSourceBindingPath + ".ToArray();");
 
-                sb.PaddingLength -= 4;
+                sb.PaddingCount--;
                 sb.AppendLine("});");
 
-                sb.PaddingLength -= 4;
+                sb.PaddingCount--;
                 sb.AppendLine("});");
             }
             else
@@ -120,23 +120,23 @@ namespace Bridge.BOAProjectCompiler
 
                 sb.AppendLine("this.OnPropertyChanged(nameof("+ controlGridDataSourceBindingPath + "), () =>");
                 sb.AppendLine("{");
-                sb.PaddingLength += 4;
+                sb.PaddingCount++;
 
                 sb.AppendLine("ControlGridDataSource = " + controlGridDataSourceBindingPath + "?.ToArray();");
 
-                sb.PaddingLength -= 4;
+                sb.PaddingCount--;
                 sb.AppendLine("});");
 
 
             }
 
-            sb.PaddingLength -= 4;
+            sb.PaddingCount--;
             sb.AppendLine("}"); // end of method
 
-            sb.PaddingLength -= 4;
+            sb.PaddingCount--;
             sb.AppendLine("}"); // end of class
 
-            sb.PaddingLength -= 4;
+            sb.PaddingCount--;
             sb.AppendLine("}"); // end of namespace
 
             return sb.ToString();
