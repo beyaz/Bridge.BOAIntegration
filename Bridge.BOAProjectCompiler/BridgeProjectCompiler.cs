@@ -53,9 +53,18 @@ namespace Bridge.BOAProjectCompiler
 
             var assemblyName = bridgeOptions.ProjectProperties.AssemblyName;
 
-            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", @"D:\BOA\One\wwwroot\" + assemblyName + ".js", true);
+
+            // //# sourceURL=BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.js
+
+            var destFileName = @"D:\BOA\One\wwwroot\" + assemblyName + ".js";
+
+            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
+            BOA.Common.Helpers.FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL = " + assemblyName + ".js");
+
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }
+
+
         #endregion
     }
 }
