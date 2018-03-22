@@ -75,11 +75,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="BridgeConfigFiles\bridge.UIProjects.json" />
+    <None Include="BridgeConfigFiles\bridge.default.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Bridge_BOAIntegration_Loader.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(ProjectDir)Bridge_BOAIntegration_Loader.js" "D:\BOA\One\wwwroot\"</PostBuildEvent>
