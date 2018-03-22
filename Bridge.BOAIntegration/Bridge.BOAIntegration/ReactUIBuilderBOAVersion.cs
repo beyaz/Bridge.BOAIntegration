@@ -51,7 +51,13 @@ namespace Bridge.BOAIntegration
             },
             {
                 ComponentName.BParameterComponent.ToString(), new[]
-                    {ComponentPropName.disabled.ToString()}
+                {
+                    ComponentPropName.disabled.ToString(),
+                    ComponentPropName.paramValuesVisible.ToString(),
+                    ComponentPropName.paramCodeVisible.ToString(),
+                    ComponentPropName.isAllOptionIncluded.ToString(),
+
+                }
             }
         };
 

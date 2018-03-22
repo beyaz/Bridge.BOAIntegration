@@ -27,6 +27,10 @@
         allowDoubleSignatureControl,
         allow18AgeControl,
         columnCount,
-        selectedBranchId
+        selectedBranchId,
+
+
+        paramValuesVisible,
+        paramCodeVisible
     }
 }
