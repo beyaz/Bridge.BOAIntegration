@@ -75,6 +75,7 @@
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderBOAVersion.cs" />
     <Compile Include="Bridge.BOAIntegration\TargetToSourceBinder.cs" />
+    <Compile Include="Bridge.BOAIntegration\Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include=".Net Override\System\MissingMemberException.cs" />
     <Compile Include=".Net Override\System.Reflection\ReflectionHelper.cs" />

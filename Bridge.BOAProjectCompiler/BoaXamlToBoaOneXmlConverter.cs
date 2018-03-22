@@ -187,6 +187,7 @@ namespace Bridge.BOAProjectCompiler
             Transform_BComboEditorMultiSelect();
             Transform_ParameterComponent();
             Transform_BTextEditorLabeled();
+            Transform_BBranchComponent();
         }
 
         void ApplyLayoutTransforms()
@@ -332,6 +333,35 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
+
+        void Transform_BBranchComponent(XmlNode node)
+        {
+            var newElement = Document.CreateElement("BBranchComponent");
+
+            TransferAttribute(node, "SelectedBranchId", newElement, "selectedBranchId");
+
+            newElement.SetAttribute("mode", "horizontal");
+
+
+
+            TransferAttribute(node, "Label", newElement, "labelText");
+
+            TransferNameAttribute(node, newElement);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
+
+        void Transform_BBranchComponent()
+        {
+            if (boa_BusinessComponents_ns == null)
+            {
+                return;
+            }
+
+            Document.GetElementsByTagName(boa_BusinessComponents_ns + ":" + "BranchComponent").ToList().ForEach(Transform_BBranchComponent);
+        }
+
 
         void Transform_BComboEditorMultiSelect()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
+using BOA.Common.Types;
 using BOA.Types.Kernel.Account;
 using Bridge.jQuery2;
 
@@ -40,6 +41,15 @@ namespace Bridge.BOAIntegration
 
                 return true;
             }
+            if (attributeName == ComponentPropName.selectedBranchId.ToString() &&
+                (nodeName == ComponentName.BBranchComponent.ToString()))
+            {
+                elementProps["onBranchSelect"] = (Action<BranchContract>)((selectedBranchContract) => { me.BBranchComponent_onBranchSelect_Handler(selectedBranchContract, bindingPath, ComponentPropName.selectedBranchId.ToString()); });
+
+                return true;
+            }
+
+            
 
             if (attributeName == AttributeName.value && nodeName == ComponentName.BInputNumeric.ToString())
             {
@@ -81,6 +91,26 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Methods
+
+
+        void BBranchComponent_onBranchSelect_Handler(BranchContract selectedBranchContract, string bindingPath, string propName)
+        {
+            var propertyPath = new PropertyPath(bindingPath);
+
+            propertyPath.Walk(DataContext);
+
+            if (propName == ComponentPropName.selectedBranchId.ToString())
+            {
+                selectedBranchContract = Utility.ConvertToBridgeGeneratedType<BranchContract>(selectedBranchContract);
+                propertyPath.SetPropertyValue(selectedBranchContract.BranchId);
+                return;
+            }
+            
+            throw new ArgumentException(propName);
+        }
+
+        
+
         void BAccountComponent_onAccountSelect_Handler(AccountComponentAccountsContract selectedAccount, string bindingPath, string propName)
         {
             var propertyPath = new PropertyPath(bindingPath);

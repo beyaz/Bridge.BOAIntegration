@@ -10,6 +10,7 @@
         BCheckBox,
         BDateTimePicker,
         BInputNumeric,
-        BGridRow
+        BGridRow,
+        BBranchComponent
     }
 }

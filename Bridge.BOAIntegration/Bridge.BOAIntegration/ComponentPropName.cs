@@ -26,6 +26,7 @@
         allowSharedAccountControl,
         allowDoubleSignatureControl,
         allow18AgeControl,
-        columnCount
+        columnCount,
+        selectedBranchId
     }
 }
