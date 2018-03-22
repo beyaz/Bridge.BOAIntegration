@@ -7,6 +7,9 @@ namespace Bridge.BOAProjectCompiler
     {
         #region Constants
         public const string DevelopmentFolderName = @"Dev";
+        public const string SolutionPath          = @"D:\github\Bridge.BOAIntegration\";
+
+        public const  string BridgeConfigFiles = SolutionPath +  @"Bridge.BOAProjectCompiler\BridgeConfigFiles\";
         #endregion
 
         #region Public Properties

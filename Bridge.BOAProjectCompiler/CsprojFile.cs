@@ -10,11 +10,11 @@ namespace Bridge.BOAProjectCompiler
         const string BridgeVersionNumber = "16.8.2";
         #region Public Properties
         public string                AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
-        public string                Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
+        public string                Bridge_BOAIntegration_dll_Path { get; set; } = Directories.SolutionPath + @"Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
         public string                FileName                       { get; set; }
         public string                OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
         public string                OutputFilePath                 => OutputFileDirectory + FileName;
-        public string                PackagesDirectory              { get; set; } = @"D:\github\Bridge.BOAIntegration\packages\";
+        public string                PackagesDirectory              { get; set; } = Directories.SolutionPath + @"packages\";
         public IReadOnlyList<string> SourceFiles                    { get; set; }
 
         public IReadOnlyList<string> ReferenceAssemblyPaths { get; set; }

@@ -2,6 +2,7 @@
 using Bridge.Contract;
 using Bridge.Translator;
 using Bridge.Translator.Logging;
+using FileHelper = BOA.Common.Helpers.FileHelper;
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -10,7 +11,7 @@ namespace Bridge.BOAProjectCompiler
         #region Constants
         const string BridgeVersion         = "16.8.2";
         const string OutDir                = @"bin\Debug\";
-        const string PackagesDirectoryPath = @"D:\github\Bridge.BOAIntegration\packages\";
+        const string PackagesDirectoryPath = Directories.SolutionPath + @"packages\";
         #endregion
 
         #region Public Properties
@@ -18,12 +19,15 @@ namespace Bridge.BOAProjectCompiler
         #endregion
 
         #region Properties
-        string OutputJsFileDirectoryPath => Path.GetDirectoryName(Input.CsprojFilePath) + Path.DirectorySeparatorChar + OutDir + "bridge" + Path.DirectorySeparatorChar;
+        string CsProjFileDirectory       => Path.GetDirectoryName(Input.CsprojFilePath) + Path.DirectorySeparatorChar;
+        string OutputJsFileDirectoryPath => CsProjFileDirectory + OutDir + "bridge" + Path.DirectorySeparatorChar;
         #endregion
 
         #region Public Methods
         public void Compile()
         {
+            CopyBridgeConfigJsonFile();
+
             var bridgeLocation = PackagesDirectoryPath + $@"Bridge.Core.{BridgeVersion}\lib\net40\Bridge.dll";
 
             var bridgeOptions = new BridgeOptions
@@ -53,18 +57,34 @@ namespace Bridge.BOAProjectCompiler
 
             var assemblyName = bridgeOptions.ProjectProperties.AssemblyName;
 
-
             // //# sourceURL=BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.js
 
             var destFileName = @"D:\BOA\One\wwwroot\" + assemblyName + ".js";
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
-            BOA.Common.Helpers.FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL=" + assemblyName + ".js");
+            FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL=" + assemblyName + ".js");
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }
+        #endregion
 
+        #region Methods
+        void CopyBridgeConfigJsonFile()
+        {
+            if (IsBOAUIProject())
+            {
+                File.Copy(Directories.BridgeConfigFiles + "bridge.UIProjects.json", CsProjFileDirectory + "bridge.json", true);
+            }
+            else
+            {
+                File.Copy(Directories.BridgeConfigFiles + "bridge.default.json", CsProjFileDirectory + "bridge.json", true);
+            }
+        }
 
+        bool IsBOAUIProject()
+        {
+            return Input.CsprojFilePath.StartsWith("BOA.UI.");
+        }
         #endregion
     }
 }
