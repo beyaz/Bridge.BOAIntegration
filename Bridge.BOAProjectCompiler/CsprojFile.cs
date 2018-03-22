@@ -7,6 +7,7 @@ namespace Bridge.BOAProjectCompiler
 {
     class CsprojFile
     {
+        const string BridgeVersionNumber = "16.8.2";
         #region Public Properties
         public string                AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
         public string                Bridge_BOAIntegration_dll_Path { get; set; } = @"D:\github\Bridge.BOAIntegration\Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
@@ -111,8 +112,8 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"  </ItemGroup>");
             sb.AppendLine(@"  <ItemGroup>");
 
-            sb.AppendLine(@"    <Reference Include=""Bridge, Version=16.8.0.0, Culture=neutral, processorArchitecture=MSIL"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core.16.8.2\lib\net40\Bridge.dll</HintPath>");
+            sb.AppendLine(@"    <Reference Include=""Bridge"">");
+            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core."+ BridgeVersionNumber + @"\lib\net40\Bridge.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
 
 
@@ -128,26 +129,26 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"      <HintPath>" + Bridge_BOAIntegration_dll_Path + @"</HintPath>");
             sb.AppendLine(@"    </Reference>");
 
-            sb.AppendLine(@"    <Reference Include=""Bridge.Html5, Version=16.8.0.0, Culture=neutral, processorArchitecture=MSIL"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Html5.16.8.2\lib\net40\Bridge.Html5.dll</HintPath>");
+            sb.AppendLine(@"    <Reference Include=""Bridge.Html5"">");
+            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Html5." + BridgeVersionNumber + @"\lib\net40\Bridge.Html5.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
-            sb.AppendLine(@"    <Reference Include=""Bridge.jQuery2, Version=2.13.0.0, Culture=neutral, processorArchitecture=MSIL"">");
+            sb.AppendLine(@"    <Reference Include=""Bridge.jQuery2"">");
             sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.jQuery.2.13.0\lib\net40\Bridge.jQuery2.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
-            sb.AppendLine(@"    <Reference Include=""Newtonsoft.Json, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL"">");
+            sb.AppendLine(@"    <Reference Include=""Newtonsoft.Json"">");
             sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Newtonsoft.Json.1.6.0\lib\net40\Newtonsoft.Json.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
             sb.AppendLine(@"  </ItemGroup>");
             sb.AppendLine(@"  <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />");
-            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min.16.7.1\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min.16.7.1\build\Bridge.Min.targets')"" />");
+            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
             sb.AppendLine(@"  <Target Name=""EnsureNuGetPackageBuildImports"" BeforeTargets=""PrepareForBuild"">");
             sb.AppendLine(@"    <PropertyGroup>");
             sb.AppendLine(@"      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>");
             sb.AppendLine(@"    </PropertyGroup>");
-            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min.16.7.1\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min.16.7.1\build\Bridge.Min.targets'))"" />");
-            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets'))"" />");
+            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
+            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
             sb.AppendLine(@"  </Target>");
-            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min.16.8.2\build\Bridge.Min.targets')"" />");
+            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
             sb.AppendLine(@"</Project>");
 
             Directory.CreateDirectory(OutputFileDirectory);
