@@ -83,7 +83,7 @@ namespace Bridge.BOAProjectCompiler
 
         bool IsBOAUIProject()
         {
-            return Input.CsprojFilePath.StartsWith("BOA.UI.");
+            return Path.GetFileName(Input.CsprojFilePath)?.StartsWith("BOA.UI.") == true;
         }
         #endregion
     }
