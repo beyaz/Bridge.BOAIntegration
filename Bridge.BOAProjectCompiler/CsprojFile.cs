@@ -58,10 +58,7 @@ namespace Bridge.BOAProjectCompiler
         #region Public Methods
         public void WriteToFile()
         {
-            if (Directory.Exists(OutputFileDirectory))
-            {
-                Directory.Delete(OutputFileDirectory, true);
-            }
+            CleanProjectFolders();
 
             ConvertXamlFiles();
 
@@ -119,11 +116,11 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"    </Reference>");
 
 
-            if (ReferenceAssemblyPaths!= null)
+            if (ReferenceAssemblyPaths != null)
             {
                 foreach (var assemblyPath in ReferenceAssemblyPaths)
                 {
-                    sb.AppendLine(@"    <Reference Include="+ '"' + assemblyPath + '"'+"/>");
+                    sb.AppendLine(@"    <Reference Include=" + '"' + assemblyPath + '"' + "/>");
                 }
             }
 
@@ -155,6 +152,18 @@ namespace Bridge.BOAProjectCompiler
 
             Directory.CreateDirectory(OutputFileDirectory);
             File.WriteAllText(OutputFilePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void CleanProjectFolders()
+        {
+            if (Directory.Exists(OutputFileDirectory+"bin"))
+            {
+                Directory.Delete(OutputFileDirectory+"bin", true);
+            }
+            if (Directory.Exists(OutputFileDirectory + "obj"))
+            {
+                Directory.Delete(OutputFileDirectory + "obj", true);
+            }
         }
         #endregion
     }

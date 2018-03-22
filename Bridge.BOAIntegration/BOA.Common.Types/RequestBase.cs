@@ -132,7 +132,7 @@ namespace BOA.Common.Types
 }
 namespace BOA.Common.Types
 {
-    [ObjectLiteral]
+    [Serializable]
     public class RequestBase : BOAMessageBase
     {
 
@@ -148,104 +148,71 @@ namespace BOA.Common.Types
         #endregion
 
         #region Public Properties
-        [Name("actionId")]
         public short? ActionId { get; set; }
 
-        [Name("customerId")]
         public int? CustomerId { get; set; }
 
-        [Name("languageId")]
         public int? LanguageId { get; set; }
 
-        [Name("mainAccountNumber")]
         public int? MainAccountNumber { get; set; }
 
-        [Name("mainSuffix")]
         public short? MainSuffix { get; set; }
 
-        [Name("methodName")]
         public string MethodName { get; set; }
 
-        [Name("resourceCode")]
         public string ResourceCode { get; set; }
 
-        [Name("resourceId")]
         public int? ResourceId { get; set; }
 
-        [Name("transactionCode")]
         public string TransactionCode { get; set; }
 
-        [Name("windowInstanceId")]
         public object WindowInstanceId { get; set; }
         #endregion
     }
 
     [Serializable]
-    [ObjectLiteral]
     public class TransactionRequestBase : RequestBase
     {
         #region Public Properties
-        [Name("branchId")]
         public short BranchId { get; set; }
 
-        [Name("callByFutureDated")]
         public bool CallByFutureDated { get; set; }
 
-        [Name("customerName")]
         public string CustomerName { get; set; }
 
-        [Name("description")]
         public string Description { get; set; }
 
-        [Name("fEC")]
         public short? FEC { get; set; }
 
-        [Name("hasAccounting")]
         public bool HasAccounting { get; set; }
 
-        [Name("hasAuthorization")]
         public bool HasAuthorization { get; set; }
 
-        [Name("hasCommission")]
         public bool HasCommission { get; set; }
 
-        [Name("hasFutureDated")]
         public bool HasFutureDated { get; set; }
 
-        [Name("hasRevokableTransaction")]
         public bool HasRevokableTransaction { get; set; }
 
-        [Name("hasSlip")]
         public bool HasSlip { get; set; }
 
-        [Name("hasTellerTransaction")]
         public bool HasTellerTransaction { get; set; }
 
-        [Name("hasWorkflow")]
         public bool HasWorkflow { get; set; }
 
-        [Name("mainAmount")]
         public decimal? MainAmount { get; set; }
 
-        [Name("toAccountNumber")]
         public int? ToAccountNumber { get; set; }
 
-        [Name("toBranchId")]
         public short? ToBranchId { get; set; }
 
-        [Name("toSuffix")]
         public short? ToSuffix { get; set; }
 
-        [Name("tranBranchId")]
         public short TranBranchId { get; set; }
-
-        [Name("tranDate")]
         public DateTime TranDate { get; set; }
 
-        [Name("tranRef")]
         public string TranRef { get; set; }
 
-        [Name("tranUnitId")]
         public int? TranUnitId { get; set; }
         #endregion
     }

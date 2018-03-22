@@ -14,21 +14,24 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Public Methods
-        public Task<TResponse> Execute<TResponse>(object proxyRequest)
-        {
-            return ServiceCallExecuter.Call(proxyRequest, this).As<Task<TResponse>>();
-        }
 
-        public Task<Response> ExecuteAsync<Request, Response>(Request request) where Request : RequestBase, new() where Response : ResponseBase
+        public async Task<Response> ExecuteAsync<Request, Response>(Request request) where Request : RequestBase, new() where Response : ResponseBase
         {
-            var proxyRequest = new ProxyRequest<Request>
+            var responseType = typeof(Response);
+
+            var proxyRequest = new ProxyRequest
             {
                 RequestClass = request.GetType().FullName,
                 RequestBody  = request,
                 Key          = request.MethodName + "-" + Guid.NewGuid()
             };
 
-            return ServiceCallExecuter.Call(proxyRequest, this).As<Task<Response>>();
+            var response = await ServiceCallExecuter.Call(proxyRequest, this);
+
+            var responseAsDotnetInstance = Utility.ConvertBOAJsonObjectToDotnetInstance(response, responseType);
+
+
+            return responseAsDotnetInstance.As<Response>();
         }
 
         public async Task<TResponseValueType> ExecuteAsync<TResponseValueType>(RequestBase request)
@@ -36,7 +39,7 @@ namespace Bridge.BOAIntegration
             var response = await ExecuteAsync<RequestBase, GenericResponse<TResponseValueType>>(request);
             if (response.Success)
             {
-                return Utility.ConvertToBridgeGeneratedType<TResponseValueType>(response.Value);
+                return response.Value;
             }
 
             throw new InvalidOperationException(string.Join(Environment.NewLine, response.Results.Select(r => r.ErrorMessage)));
@@ -60,10 +63,15 @@ namespace Bridge.BOAIntegration
 
         [Template("$TypeScriptVersion.proxyExecute({0})")]
         public extern void ProxyExecute(object requestContainer);
+
+        [Template("$TypeScriptVersion.proxyTransactionExecute({0})")]
+        public extern void ProxyTransactionExecute(object requestContainer);
+
+        
         #endregion
 
         #region Methods
-        
+
 
         void proxyDidRespond(dynamic proxyResponse)
         {
@@ -79,7 +87,7 @@ namespace Bridge.BOAIntegration
         {
             #region Fields
             Delegate _fulfilledHandler;
-            dynamic  _request;
+            ProxyRequest _request;
             dynamic  _response;
             dynamic  _view;
             #endregion
@@ -98,12 +106,21 @@ namespace Bridge.BOAIntegration
 
                 View.OnProxyDidRespond += proxyDidRespondHandler;
 
-                View.ProxyExecute(_request);
+
+                var boaJsonObject = Utility.ConvertDotnetInstanceToBOAJsonObject(_request);
+
+                if (_request.RequestBody is TransactionRequestBase)
+                {
+                    View.ProxyTransactionExecute(boaJsonObject);
+                    return;
+                }
+
+                View.ProxyExecute(boaJsonObject);
             }
             #endregion
 
             #region Methods
-            internal static async Task<object> Call(object request, object view)
+            internal static async Task<object> Call(ProxyRequest request, object view)
             {
                 var promise = new ServiceCallExecuter
                 {
@@ -125,7 +142,7 @@ namespace Bridge.BOAIntegration
 
             void proxyDidRespondHandler(string key, object response)
             {
-                if (key == _request.key)
+                if (key == _request.Key)
                 {
                     _response = response;
                     if (View.OnProxyDidRespond != null)

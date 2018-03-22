@@ -111,6 +111,24 @@ namespace Bridge.BOAProjectCompiler
                 sb.PaddingLength -= 4;
                 sb.AppendLine("});");
             }
+            else
+            {
+                if (controlGridDataSourceBindingPath.Contains("."))
+                {
+                    throw new ArgumentException("controlGridDataSourceBindingPath.Contains('.')");
+                }
+
+                sb.AppendLine("this.OnPropertyChanged(nameof("+ controlGridDataSourceBindingPath + "), () =>");
+                sb.AppendLine("{");
+                sb.PaddingLength += 4;
+
+                sb.AppendLine("ControlGridDataSource = " + controlGridDataSourceBindingPath + "?.ToArray();");
+
+                sb.PaddingLength -= 4;
+                sb.AppendLine("});");
+
+
+            }
 
             sb.PaddingLength -= 4;
             sb.AppendLine("}"); // end of method

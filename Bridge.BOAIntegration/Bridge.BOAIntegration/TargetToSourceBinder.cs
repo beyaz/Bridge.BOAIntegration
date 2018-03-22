@@ -101,7 +101,7 @@ namespace Bridge.BOAIntegration
 
             if (propName == ComponentPropName.selectedBranchId.ToString())
             {
-                selectedBranchContract = Utility.ConvertToBridgeGeneratedType<BranchContract>(selectedBranchContract);
+                selectedBranchContract = Utility.ConvertBOAJsonObjectToDotnetInstance<BranchContract>(selectedBranchContract);
                 propertyPath.SetPropertyValue(selectedBranchContract.BranchId);
                 return;
             }

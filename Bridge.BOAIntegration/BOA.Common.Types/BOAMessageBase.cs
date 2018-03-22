@@ -1,11 +1,11 @@
-﻿using Bridge;
+﻿using System;
+
 
 namespace BOA.Common.Types
 {
-    [ObjectLiteral]
+    [Serializable]
     public class BOAMessageBase
     {
-        [Name("businessKey")]
         public decimal? BusinessKey { get; set; }
     }
 }

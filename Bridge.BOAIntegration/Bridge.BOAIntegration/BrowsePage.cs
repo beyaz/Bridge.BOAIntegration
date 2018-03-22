@@ -28,10 +28,21 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Properties
+
+        bool StateIsReadyToUpdate()
+        {
+            return  (TypeScriptVersion != null) ;
+        }
+
         public IEnumerable ControlGridDataSource 
         {
             set
             {
+                if (StateIsReadyToUpdate() == false)
+                {
+                    return;
+                }
+
                 var newState = ObjectLiteral.Create<object>();
 
                 newState["dataSource"] = value;
@@ -40,6 +51,7 @@ namespace Bridge.BOAIntegration
             }
             get
             {
+                
                 return Script.Write<IEnumerable>("this.$TypeScriptVersion.state.dataSource");
             }
         }
@@ -136,6 +148,9 @@ namespace Bridge.BOAIntegration
         {
             forceUpdate();
         }
+
+
+     
 
         [Template("$TypeScriptVersion.forceUpdate()")]
         protected extern void forceUpdate();
