@@ -62,11 +62,6 @@ namespace BOA.UI
         }
         #endregion
 
-        static class AttributeName
-        {
-            #region Constants
-            internal const string DolarColumns = "$columns";
-            #endregion
-        }
+        
     }
 }

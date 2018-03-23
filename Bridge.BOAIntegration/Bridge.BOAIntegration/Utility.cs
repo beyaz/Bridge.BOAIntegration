@@ -5,8 +5,24 @@ using Newtonsoft.Json.Serialization;
 
 namespace Bridge.BOAIntegration
 {
-    class Utility
+    static class Utility
     {
+        const string  DotNetVersion = "$DotNetVersion";
+
+        const string TypeScriptVersion = "$TypeScriptVersion";
+
+        internal static void Connect_Typescript_And_Dotnet_Instances_for_BrowsePage(object typescriptWrittenInstance,Type bridgeWrittenType)
+        {
+            if (bridgeWrittenType == null)
+            {
+                throw new ArgumentNullException(nameof(bridgeWrittenType));
+            }
+
+            typescriptWrittenInstance[DotNetVersion] = Activator.CreateInstance(bridgeWrittenType);
+            typescriptWrittenInstance[DotNetVersion][TypeScriptVersion] = typescriptWrittenInstance;
+            typescriptWrittenInstance[AttributeName.state][AttributeName.columns]= typescriptWrittenInstance[DotNetVersion][AttributeName.DolarColumns];
+        }
+
         #region Public Methods
         public static object ConvertDotnetInstanceToBOAJsonObject(object dotnetInstance)
         {

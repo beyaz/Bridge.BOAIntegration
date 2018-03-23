@@ -54,18 +54,8 @@
 
             Bridge.BOAIntegration.$__webpack_require__ = __webpack_require__;
             window.React = React;
-        },
+        },       
 
-        $Connect_Typescript_And_Dotnet_Instances_for_BrowsePage: function(typescriptWrittenInstance,
-            bridgeWrittenClassConstructor) {
-
-            AssertParameterNotNull(bridgeWrittenClassConstructor, 'bridgeWrittenClassConstructor');
-
-            typescriptWrittenInstance.$DotNetVersion = new bridgeWrittenClassConstructor();
-            typescriptWrittenInstance.$DotNetVersion.$TypeScriptVersion = typescriptWrittenInstance;
-            typescriptWrittenInstance.state.columns = typescriptWrittenInstance.$DotNetVersion.$columns;
-        },
-        
         RequireDll: function(assemblyName) {
             AssertParameterNotNull(assemblyName, 'assemblyName');
             if (LoadedAssemblyNames[assemblyName]) {
@@ -87,3 +77,6 @@
 
 
 })();
+
+
+//# sourceURL=Bridge_BOAIntegration_Loader.js

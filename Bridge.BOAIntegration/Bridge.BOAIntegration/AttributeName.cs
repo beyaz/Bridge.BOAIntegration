@@ -15,6 +15,7 @@
         internal const string state             = nameof(state);
         internal const string TypeScriptVersion = "$TypeScriptVersion";
         internal const string value             = nameof(value);
+        internal const string columns = nameof(columns); 
         #endregion
     }
 }
