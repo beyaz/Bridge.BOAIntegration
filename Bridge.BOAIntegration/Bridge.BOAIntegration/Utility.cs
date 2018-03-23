@@ -11,6 +11,8 @@ namespace Bridge.BOAIntegration
 
         const string TypeScriptVersion = "$TypeScriptVersion";
 
+        static readonly object DotnetInstanceCache = ObjectLiteral.Create<object>();
+
         internal static void Connect_Typescript_And_Dotnet_Instances_for_BrowsePage(object typescriptWrittenInstance,Type bridgeWrittenType)
         {
             if (bridgeWrittenType == null)
@@ -18,9 +20,21 @@ namespace Bridge.BOAIntegration
                 throw new ArgumentNullException(nameof(bridgeWrittenType));
             }
 
-            typescriptWrittenInstance[DotNetVersion] = Activator.CreateInstance(bridgeWrittenType);
-            typescriptWrittenInstance[DotNetVersion][TypeScriptVersion] = typescriptWrittenInstance;
-            typescriptWrittenInstance[AttributeName.state][AttributeName.columns]= typescriptWrittenInstance[DotNetVersion][AttributeName.DolarColumns];
+            var pageId = typescriptWrittenInstance[AttributeName.pageId].As<int>().ToString();
+
+            var dotnetInstance = DotnetInstanceCache[pageId];
+            if (dotnetInstance == null)
+            {
+                dotnetInstance = Activator.CreateInstance(bridgeWrittenType);
+
+                DotnetInstanceCache[pageId] = dotnetInstance;
+            }
+
+            // TODO: clear memory formun close eventinde burası   DotnetInstanceCache[pageId] delete edilmelidir. 
+
+            typescriptWrittenInstance[DotNetVersion] = dotnetInstance;
+            dotnetInstance[TypeScriptVersion] = typescriptWrittenInstance;
+            typescriptWrittenInstance[AttributeName.state][AttributeName.columns]= dotnetInstance[AttributeName.DolarColumns];
         }
 
         #region Public Methods
