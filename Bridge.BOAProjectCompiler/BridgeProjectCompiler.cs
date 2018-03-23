@@ -2,7 +2,6 @@
 using Bridge.Contract;
 using Bridge.Translator;
 using Bridge.Translator.Logging;
-using FileHelper = BOA.Common.Helpers.FileHelper;
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -59,10 +58,11 @@ namespace Bridge.BOAProjectCompiler
 
             // //# sourceURL=BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.js
 
-            var destFileName = @"D:\BOA\One\wwwroot\" + assemblyName + ".js";
+            var destFileName = Directories.IIS + assemblyName + ".js";
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
-            FileHelper.AppendToEndOfFile(destFileName, "//# sourceURL=" + assemblyName + ".js");
+
+            Utility.UpdateSourceURL(destFileName, assemblyName + ".js");
 
             File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }

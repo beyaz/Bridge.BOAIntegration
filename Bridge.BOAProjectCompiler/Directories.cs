@@ -6,10 +6,10 @@ namespace Bridge.BOAProjectCompiler
     static class Directories
     {
         #region Constants
+        public const string BridgeConfigFiles     = SolutionPath + @"Bridge.BOAProjectCompiler\BridgeConfigFiles\";
         public const string DevelopmentFolderName = @"Dev";
+        public const string IIS                   = @"D:\BOA\One\wwwroot\";
         public const string SolutionPath          = @"D:\github\Bridge.BOAIntegration\";
-
-        public const  string BridgeConfigFiles = SolutionPath +  @"Bridge.BOAProjectCompiler\BridgeConfigFiles\";
         #endregion
 
         #region Public Properties

@@ -145,6 +145,8 @@
 
         static void Main()
         {
+            Utility.Update_Bridge_BOAIntegration_sourceURL();
+
             Build_BOA_Types_Kernel_DebitCard();
             Build_BOA_Types_CardGeneral_DebitCard();
             BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
