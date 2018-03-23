@@ -39,6 +39,10 @@ namespace Bridge.BOAIntegration
         public string               XmlUI                { get; set; }
         #endregion
 
+        #region Properties
+        protected bool IsFirstBuild => _buildCount == 1;
+        #endregion
+
         #region Public Methods
         public ReactElement Build()
         {
@@ -267,7 +271,7 @@ namespace Bridge.BOAIntegration
 
                 if (componentClass == null)
                 {
-                    throw new ArgumentNullException("ComponentClassFinder returned null value.->"+ nodeTagName);
+                    throw new ArgumentNullException("ComponentClassFinder returned null value.->" + nodeTagName);
                 }
 
                 return componentClass;
