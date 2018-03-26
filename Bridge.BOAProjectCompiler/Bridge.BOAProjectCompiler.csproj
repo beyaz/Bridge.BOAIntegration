@@ -73,6 +73,7 @@
     <Compile Include="CsprojFile.cs" />
     <Compile Include="Directories.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectConfigurations\BOAProjectConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transformer.cs" />
     <Compile Include="TransformerInput.cs" />
@@ -83,6 +84,7 @@
     <None Include="BridgeConfigFiles\bridge.UIProjects.json" />
     <None Include="BridgeConfigFiles\bridge.default.json" />
     <None Include="packages.config" />
+    <None Include="ProjectConfigurations\BOA.Types.Kernel.DebitCard.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Bridge_BOAIntegration_Loader.js" />

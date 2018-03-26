@@ -88,7 +88,9 @@
                     typesDebitCard + "CampaignDefinitionRequest.designer.cs"
                 },
                 ReferenceAssemblyPaths = new[]
-                    {Directories.GetDllPath("BOA.Types.Kernel.DebitCard")}
+                {
+                    Directories.GetDllPath("BOA.Types.Kernel.DebitCard")
+                }
             };
 
             csprojFile.WriteToFile();

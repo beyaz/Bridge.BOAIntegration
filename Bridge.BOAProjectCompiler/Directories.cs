@@ -26,6 +26,12 @@ namespace Bridge.BOAProjectCompiler
                                                               Path.DirectorySeparatorChar;
 
 
+
+        public static string ProjectConfigurations => SolutionPath + @"Bridge.BOAProjectCompiler\ProjectConfigurations\";
+
+       
+
+
         public static string GetDllPath(string assemblyName)
         {
             return WorkingDirectory + $@"{assemblyName}\bin\Debug\{assemblyName}.dll";
