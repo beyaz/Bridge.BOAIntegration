@@ -16,6 +16,11 @@ namespace Bridge.BOAProjectCompiler
         public static string BusinessModules               => @"D:\Work\BOA.BusinessModules\" + DevelopmentFolderName + Path.DirectorySeparatorChar;
         public static string Kernel                        => @"D:\work\BOA.Kernel\" + DevelopmentFolderName + Path.DirectorySeparatorChar;
         public static string Kernel_BOA_Kernel_CardGeneral => Kernel + @"BOA.Kernel.CardGeneral\";
+
+        public static string BOA_Types_Kernel_General=> Kernel + @"BOA.Kernel.Technology\General\BOA.Types.Kernel.General\";
+
+
+
         public static string WorkingDirectory              => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + 
                                                               Path.DirectorySeparatorChar + "Bridge.BOAProjectCompiler" + 
                                                               Path.DirectorySeparatorChar;

@@ -107,6 +107,33 @@
             bridgeProjectCompiler.Compile();
         }
 
+        
+        static void Build_BOA_Types_Kernel_General()
+        {
+            var typesFolder = Directories.BOA_Types_Kernel_General ;
+         
+            var csprojFile = new CsprojFile
+            {
+                AssemblyName = "BOA.Types.Kernel.General",
+                FileName     = "BOA.Types.Kernel.General.csproj",
+                SourceFiles = new[]
+                {
+                    typesFolder + @"Parameter.cs"
+                }
+            };
+
+            csprojFile.WriteToFile();
+
+            var bridgeProjectCompiler = new BridgeProjectCompiler
+            {
+                Input = new BridgeProjectCompilerInput
+                {
+                    CsprojFilePath = csprojFile.OutputFilePath
+                }
+            };
+
+            bridgeProjectCompiler.Compile();
+        }
         static void Build_BOA_Types_Kernel_DebitCard()
         {
             var typesFolder = Directories.Kernel_BOA_Kernel_CardGeneral + @"DebitCard\BOA.Types.Kernel.DebitCard\";
@@ -147,6 +174,7 @@
         {
             Utility.Update_Bridge_BOAIntegration_sourceURL();
 
+            Build_BOA_Types_Kernel_General();
             Build_BOA_Types_Kernel_DebitCard();
             Build_BOA_Types_CardGeneral_DebitCard();
             BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen();
