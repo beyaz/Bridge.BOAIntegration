@@ -91,6 +91,7 @@
     </None>
     <None Include="ProjectConfigurations\BOA.Types.CardGeneral.CreditCard.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.json" />
+    <None Include="ProjectConfigurations\BOA.UI.CardGeneral.CreditCard.SwapTranList.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CardTransactionList.json" />
     <None Include="ProjectConfigurations\BOA.Types.CardGeneral.DebitCard.json" />
     <None Include="ProjectConfigurations\BOA.Types.Kernel.General.json" />

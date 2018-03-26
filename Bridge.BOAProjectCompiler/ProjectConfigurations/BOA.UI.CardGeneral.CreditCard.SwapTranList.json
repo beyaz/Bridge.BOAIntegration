@@ -1,0 +1,12 @@
+﻿{
+  "AssemblyName": "BOA.UI.CardGeneral.CreditCard.SwapTranList",
+  "SourceFiles": [
+    "BusinessModules->BOA.CardGeneral.CreditCard\\UI\\Swap\\BOA.UI.CardGeneral.CreditCard.SwapTranList\\SwapTranList.xaml.cs",
+    "BusinessModules->BOA.CardGeneral.CreditCard\\UI\\Swap\\BOA.UI.CardGeneral.CreditCard.SwapTranList\\SwapTranList.xaml"
+
+  ],
+  "References": [
+    "BOA.Types.CardGeneral.CreditCard",
+    "BOA.Types.Kernel.General"
+  ]
+}
