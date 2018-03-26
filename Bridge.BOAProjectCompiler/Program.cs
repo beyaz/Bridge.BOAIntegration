@@ -171,6 +171,9 @@
         {
             Utility.Update_Bridge_BOAIntegration_sourceURL();
 
+
+            new BOAProjectCompiler().CompileAll();
+
             Build_BOA_Types_Kernel_General();
             Build_BOA_Types_Kernel_DebitCard();
             Build_BOA_Types_CardGeneral_DebitCard();

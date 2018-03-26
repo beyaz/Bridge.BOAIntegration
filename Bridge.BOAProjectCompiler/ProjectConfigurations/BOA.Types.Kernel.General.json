@@ -1,0 +1,7 @@
+﻿{
+  "AssemblyName": "BOA.Types.Kernel.General",
+  "SourceFiles": [
+    "BOA.Kernel->BOA.Kernel.Technology\\General\\BOA.Types.Kernel.General\\Parameter.cs"
+
+  ]
+}

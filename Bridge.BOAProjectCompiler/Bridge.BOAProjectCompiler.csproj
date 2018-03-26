@@ -83,14 +83,12 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="BridgeConfigFiles\bridge.UIProjects.json" />
     <None Include="BridgeConfigFiles\bridge.default.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ProjectConfigurations\BOA.Types.Kernel.General.json" />
     <None Include="ProjectConfigurations\BOA.Types.Kernel.DebitCard.json" />
   </ItemGroup>
   <ItemGroup>
