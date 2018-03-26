@@ -91,7 +91,9 @@
                     typesDebitCard +  "CampaignDefinitionRequest.designer.cs"
                 },
                 ReferenceAssemblyPaths = new[]
-                    {Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll"}
+                {
+                    Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll"
+                }
             };
 
             csprojFile.WriteToFile();
