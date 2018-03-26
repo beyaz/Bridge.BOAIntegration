@@ -1,0 +1,14 @@
+﻿{
+  "AssemblyName": "BOA.Types.CardGeneral.DebitCard",
+  "SourceFiles": [
+    "BusinessModules->BOA.CardGeneral.DebitCard\\BOA.Types.CardGeneral.DebitCard\\Labels.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\BOA.Types.CardGeneral.DebitCard\\CampaignDefinitionRequest.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\BOA.Types.CardGeneral.DebitCard\\CampaignDefinitionRequest.designer.cs",
+
+    "BusinessModules->BOA.CardGeneral.DebitCard\\\\BOA.Types.CardGeneral.DebitCard\\CardTransaction\\CardTransactionRequest.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\\\BOA.Types.CardGeneral.DebitCard\\CardTransaction\\CardTransactionRequest.designer.cs"
+  ],
+  "References": [
+    "BOA.Types.Kernel.DebitCard"
+  ]
+}

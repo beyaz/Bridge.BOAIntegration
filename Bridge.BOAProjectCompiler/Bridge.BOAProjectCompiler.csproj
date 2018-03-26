@@ -88,6 +88,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ProjectConfigurations\BOA.Types.CardGeneral.DebitCard.json" />
     <None Include="ProjectConfigurations\BOA.Types.Kernel.General.json" />
     <None Include="ProjectConfigurations\BOA.Types.Kernel.DebitCard.json" />
   </ItemGroup>

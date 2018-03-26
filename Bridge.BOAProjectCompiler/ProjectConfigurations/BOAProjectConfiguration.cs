@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Bridge.BOAProjectCompiler
@@ -11,6 +12,8 @@ namespace Bridge.BOAProjectCompiler
         #region Public Properties
         public string   AssemblyName { get; set; }
         public string[] SourceFiles  { get; set; }
+        public string[] References { get; set; }
+        
         #endregion
     }
 
@@ -27,6 +30,11 @@ namespace Bridge.BOAProjectCompiler
                     FileName     = configuration.AssemblyName + ".csproj",
                     SourceFiles  = configuration.SourceFiles
                 };
+
+                if (configuration.References!= null)
+                {
+                    csprojFile.ReferenceAssemblyPaths = configuration.References.ToList().ConvertAll(Directories.GetDllPath);
+                }
 
                 csprojFile.WriteToFile();
 
@@ -48,7 +56,11 @@ namespace Bridge.BOAProjectCompiler
         {
             for (var i = 0; i < configuration.SourceFiles.Length; i++)
             {
-                configuration.SourceFiles[i] = configuration.SourceFiles[i].Replace("BOA.Kernel->", Directories.Kernel);
+                configuration.SourceFiles[i] = configuration.SourceFiles[i]
+                                                            .Replace("BOA.Kernel->", Directories.Kernel)
+                                                            .Replace("BusinessModules->", Directories.BusinessModules)
+
+                    ;
             }
 
             return configuration;
