@@ -2,9 +2,9 @@
 {
     class Program
     {
+        #region Methods
         static void BOA_UI_CardGeneral_DebitCard_CampaignTransactionList()
         {
-
             var sourceProjectLocation = Directories.BusinessModules + @"BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CampaignTransactionList\";
 
             var csprojFile = new CsprojFile
@@ -18,8 +18,8 @@
                 },
                 ReferenceAssemblyPaths = new[]
                 {
-                    Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll",
-                    Directories.WorkingDirectory + @"BOA.Types.CardGeneral.DebitCard\bin\Debug\BOA.Types.CardGeneral.DebitCard.dll"
+                    Directories.GetDllPath("BOA.Types.Kernel.DebitCard"),
+                    Directories.GetDllPath("BOA.Types.CardGeneral.DebitCard")
                 }
             };
 
@@ -36,7 +36,6 @@
             bridgeProjectCompiler.Compile();
         }
 
-        #region Methods
         static void BOA_UI_CardGeneral_DebitCard_CardTransactionListScreen()
         {
             var sourceProjectLocation = Directories.BusinessModules + @"BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.CardTransactionList\CardTransactionListScreen\";
@@ -54,8 +53,8 @@
                 },
                 ReferenceAssemblyPaths = new[]
                 {
-                    Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll",
-                    Directories.WorkingDirectory + @"BOA.Types.CardGeneral.DebitCard\bin\Debug\BOA.Types.CardGeneral.DebitCard.dll"
+                    Directories.GetDllPath("BOA.Types.Kernel.DebitCard"),
+                    Directories.GetDllPath("BOA.Types.CardGeneral.DebitCard")
                 }
             };
 
@@ -71,8 +70,6 @@
 
             bridgeProjectCompiler.Compile();
         }
-
-        
 
         static void Build_BOA_Types_CardGeneral_DebitCard()
         {
@@ -87,13 +84,11 @@
                     typesDebitCard + @"Labels.cs",
                     typesDebitCard + @"CardTransaction\CardTransactionRequest.cs",
                     typesDebitCard + @"CardTransaction\CardTransactionRequest.designer.cs",
-                    typesDebitCard +  "CampaignDefinitionRequest.cs",
-                    typesDebitCard +  "CampaignDefinitionRequest.designer.cs"
+                    typesDebitCard + "CampaignDefinitionRequest.cs",
+                    typesDebitCard + "CampaignDefinitionRequest.designer.cs"
                 },
                 ReferenceAssemblyPaths = new[]
-                {
-                    Directories.WorkingDirectory + @"BOA.Types.Kernel.DebitCard\bin\Debug\BOA.Types.Kernel.DebitCard.dll"
-                }
+                    {Directories.GetDllPath("BOA.Types.Kernel.DebitCard")}
             };
 
             csprojFile.WriteToFile();
@@ -109,37 +104,10 @@
             bridgeProjectCompiler.Compile();
         }
 
-        
-        static void Build_BOA_Types_Kernel_General()
-        {
-            var typesFolder = Directories.BOA_Types_Kernel_General ;
-         
-            var csprojFile = new CsprojFile
-            {
-                AssemblyName = "BOA.Types.Kernel.General",
-                FileName     = "BOA.Types.Kernel.General.csproj",
-                SourceFiles = new[]
-                {
-                    typesFolder + @"Parameter.cs"
-                }
-            };
-
-            csprojFile.WriteToFile();
-
-            var bridgeProjectCompiler = new BridgeProjectCompiler
-            {
-                Input = new BridgeProjectCompilerInput
-                {
-                    CsprojFilePath = csprojFile.OutputFilePath
-                }
-            };
-
-            bridgeProjectCompiler.Compile();
-        }
         static void Build_BOA_Types_Kernel_DebitCard()
         {
             var typesFolder = Directories.Kernel_BOA_Kernel_CardGeneral + @"DebitCard\BOA.Types.Kernel.DebitCard\";
-            var tables = typesFolder + @"Tables\";
+            var tables      = typesFolder + @"Tables\";
             var csprojFile = new CsprojFile
             {
                 AssemblyName = "BOA.Types.Kernel.DebitCard",
@@ -157,6 +125,31 @@
 
                     typesFolder + "DebitCampaignContractMain.cs"
                 }
+            };
+
+            csprojFile.WriteToFile();
+
+            var bridgeProjectCompiler = new BridgeProjectCompiler
+            {
+                Input = new BridgeProjectCompilerInput
+                {
+                    CsprojFilePath = csprojFile.OutputFilePath
+                }
+            };
+
+            bridgeProjectCompiler.Compile();
+        }
+
+        static void Build_BOA_Types_Kernel_General()
+        {
+            var typesFolder = Directories.BOA_Types_Kernel_General;
+
+            var csprojFile = new CsprojFile
+            {
+                AssemblyName = "BOA.Types.Kernel.General",
+                FileName     = "BOA.Types.Kernel.General.csproj",
+                SourceFiles = new[]
+                    {typesFolder + @"Parameter.cs"}
             };
 
             csprojFile.WriteToFile();

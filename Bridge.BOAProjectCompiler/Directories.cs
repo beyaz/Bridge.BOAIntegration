@@ -24,6 +24,12 @@ namespace Bridge.BOAProjectCompiler
         public static string WorkingDirectory              => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + 
                                                               Path.DirectorySeparatorChar + "Bridge.BOAProjectCompiler" + 
                                                               Path.DirectorySeparatorChar;
+
+
+        public static string GetDllPath(string assemblyName)
+        {
+            return WorkingDirectory + $@"{assemblyName}\bin\Debug\{assemblyName}.dll";
+        }
         #endregion
     }
 }
