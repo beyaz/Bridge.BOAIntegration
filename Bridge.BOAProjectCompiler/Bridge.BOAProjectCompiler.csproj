@@ -68,10 +68,14 @@
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
     <Compile Include="BridgeProjectCompiler.cs" />
     <Compile Include="BridgeProjectCompilerInput.cs" />
+    <Compile Include="CSharpCodeGenerator.cs" />
+    <Compile Include="CSharpCodeGeneratorInput.cs" />
     <Compile Include="CsprojFile.cs" />
     <Compile Include="Directories.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transformer.cs" />
+    <Compile Include="TransformerInput.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -41,8 +41,6 @@ namespace Bridge.BOAProjectCompiler
                     InputXamlString = File.ReadAllText(filePath)
                 };
 
-                converter.TransformNodes();
-
                 var generatedCode = converter.GenerateCsharpCode();
 
 
