@@ -1,0 +1,14 @@
+﻿{
+  "AssemblyName": "BOA.UI.CardGeneral.DebitCard.CardTransactionList",
+  "SourceFiles": [
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CardTransactionList\\CardTransactionListScreen\\Extensions.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CardTransactionList\\CardTransactionListScreen\\Model.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CardTransactionList\\CardTransactionListScreen\\View.xaml.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CardTransactionList\\CardTransactionListScreen\\View.xaml"
+
+  ],
+  "References": [
+    "BOA.Types.Kernel.DebitCard",
+    "BOA.Types.CardGeneral.DebitCard"
+  ]
+}

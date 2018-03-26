@@ -1,0 +1,12 @@
+﻿{
+  "AssemblyName": "BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly",
+  "SourceFiles": [
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CampaignTransactionList\\CampaignTransactionList.xaml.cs",
+    "BusinessModules->BOA.CardGeneral.DebitCard\\UI\\BOA.UI.CardGeneral.DebitCard.CampaignTransactionList\\CampaignTransactionList.xaml"
+
+  ],
+  "References": [
+    "BOA.Types.Kernel.DebitCard",
+    "BOA.Types.CardGeneral.DebitCard"
+  ]
+}
