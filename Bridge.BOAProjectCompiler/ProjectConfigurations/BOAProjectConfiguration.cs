@@ -57,7 +57,7 @@ namespace Bridge.BOAProjectCompiler
             for (var i = 0; i < configuration.SourceFiles.Length; i++)
             {
                 configuration.SourceFiles[i] = configuration.SourceFiles[i]
-                                                            .Replace("BOA.Kernel->", Directories.Kernel)
+                                                            .Replace("Kernel->", Directories.Kernel)
                                                             .Replace("BusinessModules->", Directories.BusinessModules)
 
                     ;

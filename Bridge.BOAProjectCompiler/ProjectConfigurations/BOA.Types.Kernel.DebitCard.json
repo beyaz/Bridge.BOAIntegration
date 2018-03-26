@@ -1,14 +1,14 @@
 ﻿{
   "AssemblyName": "BOA.Types.Kernel.DebitCard",
   "SourceFiles": [
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\ExternalResponseCodeContract.cs",
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\ExternalResponseCodeContract.designer.cs",
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionContract.cs",
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionContract.designer.cs",
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionSearchContract.cs",
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionSearchResultContract.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\ExternalResponseCodeContract.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\ExternalResponseCodeContract.designer.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionContract.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionContract.designer.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionSearchContract.cs",
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\Tables\\DebitTransactionSearchResultContract.cs",
 
-    "BOA.Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\DebitCampaignContractMain.cs"
+    "Kernel->BOA.Kernel.CardGeneral\\DebitCard\\BOA.Types.Kernel.DebitCard\\DebitCampaignContractMain.cs"
 
   ]
 }

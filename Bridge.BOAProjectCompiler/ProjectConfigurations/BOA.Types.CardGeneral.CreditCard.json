@@ -1,0 +1,10 @@
+﻿{
+  "AssemblyName": "BOA.Types.CardGeneral.CreditCard",
+  "SourceFiles": [
+    "BusinessModules->BOA.CardGeneral.CreditCard\\BOA.Types.CardGeneral.CreditCard\\Swap\\ExchangeTransactionContract.cs",
+    "BusinessModules->BOA.CardGeneral.CreditCard\\BOA.Types.CardGeneral.CreditCard\\Swap\\ExchangeTransactionContract.designer.cs",
+    "BusinessModules->BOA.CardGeneral.CreditCard\\BOA.Types.CardGeneral.CreditCard\\Swap\\ExchangeTransactionRequest.cs",
+    "BusinessModules->BOA.CardGeneral.CreditCard\\BOA.Types.CardGeneral.CreditCard\\Swap\\ExchangeTransactionRequest.designer.cs"
+
+  ]
+}

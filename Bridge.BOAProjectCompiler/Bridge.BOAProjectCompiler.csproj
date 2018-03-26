@@ -88,6 +88,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ProjectConfigurations\BOA.Types.CardGeneral.CreditCard.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CardTransactionList.json" />
     <None Include="ProjectConfigurations\BOA.Types.CardGeneral.DebitCard.json" />
