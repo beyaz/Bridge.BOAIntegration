@@ -274,10 +274,9 @@ namespace Bridge.BOAProjectCompiler
         #endregion
 
         #region Methods
-        static string GetNamespaceName(XmlNode xamlNode)
-        {
-            return xamlNode.NamespaceURI.Split(';').FirstOrDefault(x => x != null && x.Contains("clr-namespace:"))?.RemoveFromStart("clr-namespace:");
-        }
+       
+
+        
 
         static void TransferAttribute(XmlNode xamlNode, string xamlPropertyName, XmlElement newElement, string newAttribute)
         {
@@ -301,7 +300,7 @@ namespace Bridge.BOAProjectCompiler
 
             var fieldName = xamlNode.Attributes?[xamlPropertyName]?.Value;
 
-            FieldDefinitions[fieldName] = GetNamespaceName(xamlNode) + "." + xamlNode.LocalName;
+            FieldDefinitions[fieldName] = XamlHelper.GetClassFullName(xamlNode);
 
             newElement.SetAttribute(newAttribute, fieldName);
         }

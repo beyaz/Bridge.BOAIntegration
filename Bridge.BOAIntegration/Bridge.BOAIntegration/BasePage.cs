@@ -1,14 +1,78 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BOA.Common.Types;
+using Bridge;
+using Bridge.BOAIntegration;
+using Bridge.jQuery2;
 
-namespace Bridge.BOAIntegration
+namespace BOA.UI
 {
-    public class BasePage : INotifyPropertyChanged
+    public class WindowBase : INotifyPropertyChanged
     {
+        public void SetState<T>(T state) where T : BState
+        {
+            setState(state);
+        }
+        protected void ForceRender()
+        {
+            forceUpdate();
+        }
+
+        [Template("$TypeScriptVersion.forceUpdate()")]
+        protected extern void forceUpdate();
+
+        [Template("$TypeScriptVersion.setState({0})")]
+        protected extern void setState(object state);
+
+        public bool CanExecuteAction(string commandName)
+        {
+            return true;
+        }
+        public object Data => State.PageParams.Data;
+
+
+
+        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
+        public BState State { [Template("$TypeScriptVersion.state")] get; }
+
+        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
+        public object TypeScriptVersion { [Template("$TypeScriptVersion")] get; }
+
+
+        public event EventHandler LoadCompleted;
+        protected string XmlUI { get; set; }
+        public virtual void LoadData() 
+        {
+        }
+        public int RenderCount { get; private set; }
+        public ReactElement render()
+        {
+            if (RenderCount == 0)
+            {
+                jQuery.Ready(() => { LoadCompleted?.Invoke(this, null); });
+            }
+
+            RenderCount++;
+
+            return BuildUI(XmlUI);
+        }
+        protected ReactElement BuildUI(string xmlUI)
+        {
+            var reactUiBuilder = new ReactUIBuilderBOAVersion
+            {
+                XmlUI                     = xmlUI,
+                DataContext               = this,
+                Caller                    = this,
+                TypeScriptWrittenJsObject = TypeScriptVersion
+            };
+
+            return reactUiBuilder.Build();
+        }
+
         #region Events
         internal event Action<string, object> OnProxyDidRespond;
         #endregion
@@ -93,7 +157,7 @@ namespace Bridge.BOAIntegration
             #endregion
 
             #region Properties
-            BasePage View
+            WindowBase View
             {
                 get { return _view; }
             }

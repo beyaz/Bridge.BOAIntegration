@@ -7,7 +7,7 @@ namespace BOA.UI
     public static class BrowsePageExtensions
     {
         #region Public Methods
-        public static void ConfigureColumns(this BrowsePage browseForm, IEnumerable<DataGridColumnInfoContract> columns, bool isSelectionTypeSingle)
+        public static void ConfigureColumns(this BrowseForm browseForm, IEnumerable<DataGridColumnInfoContract> columns, bool isSelectionTypeSingle)
         {
             var fields = new object[0];
             foreach (var item in columns)

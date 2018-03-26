@@ -1,40 +1,25 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using BOA.Common.Types;
 using BOA.Messaging;
 using BOA.UI.Types;
-using Bridge.jQuery2;
+using Bridge;
+using Bridge.BOAIntegration;
 
-namespace Bridge.BOAIntegration
+namespace BOA.UI
 {
-    public class BrowsePage : BasePage
+    public class FormBase : WindowBase
     {
-        #region Public Events
-        public event EventHandler LoadCompleted;
-        #endregion
+    }
+}
 
+namespace BOA.UI
+{
+    public class BrowseForm : FormBase
+    {
         #region Public Properties
-        public object Data => State.PageParams.Data;
-
-        public int RenderCount { get; private set; }
-
-        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-        public BState State { [Template("$TypeScriptVersion.state")] get; }
-
-        [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-        public object TypeScriptVersion { [Template("$TypeScriptVersion")] get; }
-        #endregion
-
-        #region Properties
-
-        bool StateIsReadyToUpdate()
-        {
-            return  (TypeScriptVersion != null) ;
-        }
-
-        public IEnumerable ControlGridDataSource 
+        public IEnumerable ControlGridDataSource
         {
             set
             {
@@ -49,22 +34,11 @@ namespace Bridge.BOAIntegration
 
                 setState(newState);
             }
-            get
-            {
-                
-                return Script.Write<IEnumerable>("this.$TypeScriptVersion.state.dataSource");
-            }
+            get { return Script.Write<IEnumerable>("this.$TypeScriptVersion.state.dataSource"); }
         }
-
-        protected string XmlUI { get; set; }
         #endregion
 
         #region Public Methods
-        public bool CanExecuteAction(string commandName)
-        {
-            return true;
-        }
-
         public void ClearStatusMessage()
         {
             // ReSharper disable once UnusedVariable
@@ -76,23 +50,6 @@ namespace Bridge.BOAIntegration
         public virtual string GetMessage(string groupName, string propertyName)
         {
             return MessagingHelper.GetMessage(groupName, propertyName);
-        }
-
-        public ReactElement render()
-        {
-            if (RenderCount == 0)
-            {
-                jQuery.Ready(() => { LoadCompleted?.Invoke(this, null); });
-            }
-
-            RenderCount++;
-
-            return BuildUI(XmlUI);
-        }
-
-        public void SetState<T>(T state) where T : BState
-        {
-            setState(state);
         }
 
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
@@ -120,6 +77,7 @@ namespace Bridge.BOAIntegration
 
             Script.Write("dialogHelper.showStatusMessage(message); ");
         }
+
         public void ShowStatusMessage(string message, DialogTypes dialogType, Result[] resultList)
         {
             // ReSharper disable once UnusedVariable
@@ -127,36 +85,13 @@ namespace Bridge.BOAIntegration
 
             Script.Write("dialogHelper.showStatusMessage(message); ");
         }
-        
         #endregion
 
         #region Methods
-        protected ReactElement BuildUI(string xmlUI)
+        bool StateIsReadyToUpdate()
         {
-            var reactUiBuilder = new ReactUIBuilderBOAVersion
-            {
-                XmlUI                     = xmlUI,
-                DataContext               = this,
-                Caller                    = this,
-                TypeScriptWrittenJsObject = TypeScriptVersion
-            };
-
-            return reactUiBuilder.Build();
+            return TypeScriptVersion != null;
         }
-
-        protected void ForceRender()
-        {
-            forceUpdate();
-        }
-
-
-     
-
-        [Template("$TypeScriptVersion.forceUpdate()")]
-        protected extern void forceUpdate();
-
-        [Template("$TypeScriptVersion.setState({0})")]
-        extern void setState(object state);
         #endregion
     }
 }

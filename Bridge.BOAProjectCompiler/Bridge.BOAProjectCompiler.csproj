@@ -82,6 +82,7 @@
     <Compile Include="Transformer.cs" />
     <Compile Include="TransformerInput.cs" />
     <Compile Include="Utility.cs" />
+    <Compile Include="XamlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BridgeConfigFiles\bridge.UIProjects.json" />
