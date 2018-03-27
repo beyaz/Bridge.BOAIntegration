@@ -69,6 +69,7 @@
     <Compile Include="BOA.Common.Helpers\StringHelper.cs" />
     <Compile Include="BOA.Common.Helpers\XmlHelper.cs" />
     <Compile Include="BOAProjectCompiler.cs" />
+    <Compile Include="BOAXamlHelper.cs" />
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
     <Compile Include="BridgeProjectCompiler.cs" />
     <Compile Include="BridgeProjectCompilerInput.cs" />

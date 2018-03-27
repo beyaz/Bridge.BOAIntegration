@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using BOA.BOA.Common.Helpers;
+using BOA.Common.Helpers;
 
 namespace Bridge.BOAProjectCompiler
 {

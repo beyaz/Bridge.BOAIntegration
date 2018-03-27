@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BOA.BOA.Common.Helpers
+namespace BOA.Common.Helpers
 {
     /// <summary>
     ///     The padded string builder
