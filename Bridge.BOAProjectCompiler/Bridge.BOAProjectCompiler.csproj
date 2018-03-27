@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\work\BOA.BusinessModules\Dev\BOA.CardGeneral.DebitCard\UI\BOA.UI.CardGeneral.DebitCard.Common\BOA.UI\DataGridColumnInfoContract.cs">
+      <Link>BOA.UI\DataGridColumnInfoContract.cs</Link>
+    </Compile>
     <Compile Include="BOA.Common.Helpers\FileHelper.cs" />
     <Compile Include="BOA.Common.Helpers\PaddedStringBuilder.cs" />
     <Compile Include="BOA.Common.Helpers\StringHelper.cs" />

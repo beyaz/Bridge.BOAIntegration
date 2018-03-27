@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using BOA.Common.Helpers;
+using BOA.UI;
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -70,6 +71,40 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.RemoveChild(node);
         }
 
+
+        public static void BOAControls_BField(TransformerInput input)
+        {
+            var node = input.XmlNode;
+
+            if (node.Name == "BOAControls:BrowseForm.ControlGridFieldSettings" ||
+                node.Name == "BOAControls:BrowseForm.ControlGridFieldLayout")
+            {
+                node.ParentNode?.RemoveChild(node);
+                return;
+            }
+
+            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BField")
+            {
+                return;
+            }
+            
+            var dataGridColumnInfoContract = new DataGridColumnInfoContract();
+
+            if (node.Attributes?["Name"] != null)
+            {
+                dataGridColumnInfoContract.BindingPath = node.Attributes?["Name"]?.Value;
+            }
+            if (node.Attributes?["Label"] != null)
+            {
+                dataGridColumnInfoContract.Label = node.Attributes?["Label"]?.Value;
+            }
+
+            input.DataGridColumnInfoContracts.Add(dataGridColumnInfoContract);
+
+            node.ParentNode?.RemoveChild(node);
+
+        }
+        
         public static void BComboEditorMultiSelect(TransformerInput input)
         {
             var node = input.XmlNode;
