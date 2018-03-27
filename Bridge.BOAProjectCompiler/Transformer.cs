@@ -88,6 +88,13 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
+            if (XamlHelper.GetClassFullName(node?.ParentNode?.ParentNode?.ParentNode) != "BOA.UI.BrowseForm.ControlGridFieldLayout")
+            {
+                return;
+            }
+
+            
+
             input.InfragisticsDataPresenterFields.Add(node);
 
             node.ParentNode?.RemoveChild(node);
