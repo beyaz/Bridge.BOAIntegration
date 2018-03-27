@@ -31,7 +31,7 @@ namespace BOA.UI
 
         public static DialogResponses Show(string message, DialogTypes dialogType, Result[] resultList)
         {
-            // TODO: fix error message
+            // TODO: fix error message resultList :  readonly collection olmalı
             // ReSharper disable once UnusedVariable
             var dialogHelper = NodeModules.BFormManager();
 
