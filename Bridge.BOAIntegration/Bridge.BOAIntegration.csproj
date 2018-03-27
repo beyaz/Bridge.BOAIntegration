@@ -50,6 +50,7 @@
     <Compile Include="BOA.Common.Types\BOAMessageBase.cs" />
     <Compile Include="BOA.Common.Types\ContractBase.cs" />
     <Compile Include="BOA.Common.Types\GenericResponse.cs" />
+    <Compile Include="BOA.Common.Types\ICacheable.cs" />
     <Compile Include="BOA.Common.Types\ProxyRequest.cs" />
     <Compile Include="BOA.Common.Types\RequestBase.cs" />
     <Compile Include="BOA.Common.Types\ResponseBase.cs" />
