@@ -46,7 +46,36 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("XmlUI = @" + '"' + Input.OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
 
             sb.AppendLine("");
+
+
+            if (Input.RootNodeIsBrowseForm)
+            {
+                if (Input.InfragisticsDataPresenterFields.Count > 0)
+                {
+                    sb.AppendLine("this.ConfigureColumns(new []{");
+
+                    for (var i = 0; i < Input.InfragisticsDataPresenterFields.Count; i++)
+                    {
+                        if (i>0)
+                        {
+                            sb.AppendLine(",");
+                        }
+
+                        var node = Input.InfragisticsDataPresenterFields[i];
+                        BOAXamlHelper.WriteAsDataGridColumnInfoContract(sb,node);
+                    }
+
+                    sb.AppendLine("},true);");
+                }
+            }
+
+            sb.AppendLine("PropertyChanged += (s,e)=>{ ForceRender();}; // Model yapısı kullanılmış ise bu gibi şeylere gerek yok aslında.belki de var incelemek lazım");
+            
+
+            sb.AppendLine("");
             sb.AppendLine("// EvaluateInWhichCaseRenderMethodWillBeCall");
+
+
 
             var controlGridDataSourceBindingPath = GetBrowseForm_ControlGridDataSource_BindingPath(Input.RootNode);
             if (controlGridDataSourceBindingPath.StartsWith("Model."))

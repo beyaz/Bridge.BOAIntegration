@@ -36,12 +36,22 @@ namespace BOA.UI
 
     public class BDataGrid
     {
-        public event MouseButtonEventHandler MouseDoubleClick; // TODO invoke here
+        // TODO invoke here
+        public event MouseButtonEventHandler MouseDoubleClick;
 
         public T GetActiveDataItem<T>()
         {
             // TODO: implement here
             throw new NotImplementedException();
         }
+    }
+}
+
+
+namespace BOA.UI
+{
+    public class BComboEditorLabeled
+    {
+        public object SelectedIndex { get; set; }
     }
 }

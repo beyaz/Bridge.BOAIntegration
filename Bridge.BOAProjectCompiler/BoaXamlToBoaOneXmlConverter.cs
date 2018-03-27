@@ -65,7 +65,8 @@ namespace Bridge.BOAProjectCompiler
                 {
                     RootNode             = rootNode,
                     FieldDefinitions     = FieldDefinitions,
-                    RootNodeIsBrowseForm = rootNode.Name == boa_ui_ns + ":BrowseForm"
+                    RootNodeIsBrowseForm = rootNode.Name == boa_ui_ns + ":BrowseForm",
+                    InfragisticsDataPresenterFields = transformerInput.InfragisticsDataPresenterFields
                 }
             };
 

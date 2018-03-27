@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using BOA.Common.Helpers;
-using BOA.UI;
+
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -87,19 +87,8 @@ namespace Bridge.BOAProjectCompiler
             {
                 return;
             }
-            
-            var dataGridColumnInfoContract = new DataGridColumnInfoContract();
 
-            if (node.Attributes?["Name"] != null)
-            {
-                dataGridColumnInfoContract.BindingPath = node.Attributes?["Name"]?.Value;
-            }
-            if (node.Attributes?["Label"] != null)
-            {
-                dataGridColumnInfoContract.Label = node.Attributes?["Label"]?.Value;
-            }
-
-            input.DataGridColumnInfoContracts.Add(dataGridColumnInfoContract);
+            input.InfragisticsDataPresenterFields.Add(node);
 
             node.ParentNode?.RemoveChild(node);
 

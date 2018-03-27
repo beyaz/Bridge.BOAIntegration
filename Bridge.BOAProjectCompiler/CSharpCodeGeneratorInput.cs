@@ -2,6 +2,7 @@
 using System.Xml;
 using BOA.Common.Helpers;
 
+
 namespace Bridge.BOAProjectCompiler
 {
     class CSharpCodeGeneratorInput
@@ -26,6 +27,7 @@ namespace Bridge.BOAProjectCompiler
 
         public XmlNode RootNode             { get; set; }
         public bool    RootNodeIsBrowseForm { get; set; }
+        public List<XmlNode> InfragisticsDataPresenterFields { get; set; }
         #endregion
     }
 }

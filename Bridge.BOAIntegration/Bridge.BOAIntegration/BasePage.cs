@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using BOA.Common.Types;
+using BOA.UI.Utils;
 using Bridge;
 using Bridge.BOAIntegration;
 using Bridge.jQuery2;
@@ -13,12 +14,22 @@ namespace BOA.UI
 {
     public class WindowBase : INotifyPropertyChanged
     {
+        public FormManager FormManager
+        {
+            get { return Utils.FormManager.Instance; }
+        }
+
         public void SetState<T>(T state) where T : BState
         {
             setState(state);
         }
         protected void ForceRender()
         {
+            if (TypeScriptVersion == null)
+            {
+                return;
+            }
+
             forceUpdate();
         }
 
@@ -53,7 +64,11 @@ namespace BOA.UI
         {
             if (RenderCount == 0)
             {
-                jQuery.Ready(() => { LoadCompleted?.Invoke(this, null); });
+                jQuery.Ready(() =>
+                {
+                    LoadData();
+                    LoadCompleted?.Invoke(this, null);
+                });
             }
 
             RenderCount++;

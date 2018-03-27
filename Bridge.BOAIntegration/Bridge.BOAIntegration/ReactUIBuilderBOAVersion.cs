@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Data;
 using BOA.Messaging;
 
@@ -179,7 +178,10 @@ namespace Bridge.BOAIntegration
         {
             if (MessagingResolver.IsMessagingExpression(attributeValue))
             {
-                return MessagingResolver.GetMessagingExpressionValue(attributeValue);
+                var pair = MessagingResolver.GetMessagingExpressionValue(attributeValue);
+
+                return MessagingHelper.GetMessage(pair.Key, pair.Value);
+                
             }
 
             return base.EvaluateAttributeValue(attributeValue, prop);
@@ -374,23 +376,6 @@ namespace Bridge.BOAIntegration
         }
         #endregion
 
-        class MessagingResolver
-        {
-            #region Public Methods
-            public static string GetMessagingExpressionValue(string attributeValue)
-            {
-                // example: '{m:Messaging Group=CardGeneral, Property=CampaignStatus}'
-                var value = attributeValue.Trim().Remove("{m:Messaging ").Trim().RemoveFromStart("Group=").Remove(" Property=").RemoveFromEnd("}");
-                var arr   = value.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-
-                return MessagingHelper.GetMessage(arr[0], arr[1]);
-            }
-
-            public static bool IsMessagingExpression(string attributeValue)
-            {
-                return attributeValue.Trim().StartsWith("{m:Messaging ");
-            }
-            #endregion
-        }
+        
     }
 }

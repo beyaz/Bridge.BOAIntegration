@@ -1,5 +1,5 @@
 ﻿{
-  "AssemblyName": "BOA.UI.CardGeneral.CreditCard.SwapTranList",
+  "AssemblyName": "BOA.UI.CardGeneral.CreditCard.SwapTranListAssembly",
   "SourceFiles": [
     "BusinessModules->BOA.CardGeneral.CreditCard\\UI\\Swap\\BOA.UI.CardGeneral.CreditCard.SwapTranList\\SwapTranList.xaml.cs",
     "BusinessModules->BOA.CardGeneral.CreditCard\\UI\\Swap\\BOA.UI.CardGeneral.CreditCard.SwapTranList\\SwapTranList.xaml"

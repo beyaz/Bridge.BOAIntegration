@@ -59,6 +59,7 @@
     <Compile Include="BOA.Messaging\MessagingHelper.cs" />
     <Compile Include="BOA.Types.Kernel.Account\AccountComponentAccountsContract.cs" />
     <Compile Include="BOA.UI.Types\DelegateCommand.cs" />
+    <Compile Include="BOA.UI.Utils\FormManager.cs" />
     <Compile Include="BOA.UI\BComboEditorMultiSelect.cs" />
     <Compile Include="BOA.UI\BrowsePageExtensions.cs" />
     <Compile Include="Bridge.BOAIntegration\AttributeName.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Bridge.BOAIntegration\ComboBoxColumn.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentName.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentPropName.cs" />
+    <Compile Include="Bridge.BOAIntegration\MessagingResolver.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactApi.cs" />
     <Compile Include="Bridge.BOAIntegration\GridColumnInfo.cs" />
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
