@@ -111,7 +111,7 @@ namespace Bridge.BOAProjectCompiler
                 return null;
             }
 
-            return value.Replace("{", "").Replace("}", "").Replace("Binding ", "").Trim();
+            return value.Replace("{", "").Replace("}", "").Replace("Binding ", "").Remove(",Mode=OneWay").Remove(",Mode=TwoWay").Trim();
         }
 
         static string GetClassName(XmlNode RootNode)
