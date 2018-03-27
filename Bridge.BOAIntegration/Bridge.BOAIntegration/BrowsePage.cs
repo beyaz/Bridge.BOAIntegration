@@ -28,6 +28,17 @@ namespace BOA.UI
 
             return DialogResponses.Ok;
         }
+
+        public static DialogResponses Show(string message, DialogTypes dialogType, Result[] resultList)
+        {
+            // TODO: fix error message
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+
+            return DialogResponses.Ok;
+        }
     }
     public class BrowseForm : FormBase
     {
