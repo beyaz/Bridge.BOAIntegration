@@ -16,6 +16,19 @@ namespace BOA.UI
 
 namespace BOA.UI
 {
+    public class BDialogBox
+    {
+        public static DialogResponses Show(string message, DialogTypes dialogType, List<Result> resultList)
+        {
+            // TODO: fix error message
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+
+            return DialogResponses.Ok;
+        }
+    }
     public class BrowseForm : FormBase
     {
         public BDataGrid ControlGrid { get; set; }
@@ -65,6 +78,15 @@ namespace BOA.UI
 
         [SuppressMessage("ReSharper", "UnusedParameter.Global")]
         public void ShowStatusMessage(string message, DialogTypes dialogType)
+        {
+            // ReSharper disable once UnusedVariable
+            var dialogHelper = NodeModules.BFormManager();
+
+            Script.Write("dialogHelper.showStatusMessage(message); ");
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Global")]
+        public void ShowStatusMessage(string message)
         {
             // ReSharper disable once UnusedVariable
             var dialogHelper = NodeModules.BFormManager();

@@ -34,7 +34,7 @@ namespace BOA.UI
         }
         public object Data => State.PageParams.Data;
 
-
+         public ApplicationContext ApplicationContext => State?.Context?.ApplicationContext;
 
         [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
         public BState State { [Template("$TypeScriptVersion.state")] get; }

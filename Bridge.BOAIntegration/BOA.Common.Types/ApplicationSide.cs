@@ -2,6 +2,15 @@
 
 namespace BOA.Common.Types
 {
+    public enum DialogResponses
+    {
+        None,
+        Ok,
+        Yes,
+        No,
+        Cancel,
+    }
+
     public enum ApplicationSide
     {
         Client                   = 0,
@@ -33,7 +42,7 @@ namespace BOA.Common.Types
     public class ApplicationContext
     {
         [Name("user")]
-        public UserContract user { get; set; }
+        public UserContract User { get; set; }
     }
 
 
@@ -41,7 +50,8 @@ namespace BOA.Common.Types
     [ObjectLiteral]
     public class UserContract
     {
-
+        [Name("branchId")]
+        public short BranchId { get; set; }
     }
 
     [External]
