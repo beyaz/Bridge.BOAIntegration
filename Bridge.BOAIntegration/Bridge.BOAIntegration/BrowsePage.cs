@@ -18,6 +18,8 @@ namespace BOA.UI
 {
     public class BrowseForm : FormBase
     {
+        public BDataGrid ControlGrid { get; set; }
+
         #region Public Properties
         public IEnumerable ControlGridDataSource
         {

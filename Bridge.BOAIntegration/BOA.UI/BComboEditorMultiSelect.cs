@@ -1,4 +1,25 @@
-﻿namespace BOA.UI
+﻿using System;
+using System.Windows.Input;
+
+namespace System.Windows.Input
+{
+    /// <summary>Represents the method that will handle mouse button related routed events, for example <see cref="E:System.Windows.UIElement.MouseLeftButtonDown" />. </summary>
+    /// <param name="sender">The object where the event handler is attached.</param>
+    /// <param name="e">The event data.</param>
+    public delegate void MouseButtonEventHandler(object sender, MouseButtonEventArgs e);
+}
+
+namespace System.Windows.Input
+{
+    /// <summary>Provides data for mouse button related events. </summary>
+    public class MouseButtonEventArgs :EventArgs
+    {
+       
+    }
+}
+
+
+namespace BOA.UI
 {
     public class BComboEditorMultiSelect
     {
@@ -10,6 +31,17 @@
         public static void UpdateText(this BComboEditorMultiSelect multiSelect)
         {
 
+        }
+    }
+
+    public class BDataGrid
+    {
+        public event MouseButtonEventHandler MouseDoubleClick; // TODO invoke here
+
+        public T GetActiveDataItem<T>()
+        {
+            // TODO: implement here
+            throw new NotImplementedException();
         }
     }
 }
