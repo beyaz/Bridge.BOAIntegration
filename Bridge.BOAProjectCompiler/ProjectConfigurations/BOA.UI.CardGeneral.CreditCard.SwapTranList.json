@@ -7,6 +7,7 @@
   ],
   "References": [
     "BOA.Types.CardGeneral.CreditCard",
-    "BOA.Types.Kernel.General"
+    "BOA.Types.Kernel.General",
+    "BOA.Types.Kernel.BusinessHelper"
   ]
 }

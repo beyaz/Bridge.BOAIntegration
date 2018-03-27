@@ -91,13 +91,14 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ProjectConfigurations\1.2.BOA.Types.Kernel.BusinessHelper.json" />
     <None Include="ProjectConfigurations\BOA.Types.CardGeneral.CreditCard.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.CreditCard.SwapTranList.json" />
     <None Include="ProjectConfigurations\BOA.UI.CardGeneral.DebitCard.CardTransactionList.json" />
     <None Include="ProjectConfigurations\BOA.Types.CardGeneral.DebitCard.json" />
-    <None Include="ProjectConfigurations\BOA.Types.Kernel.General.json" />
-    <None Include="ProjectConfigurations\BOA.Types.Kernel.DebitCard.json" />
+    <None Include="ProjectConfigurations\1.1.BOA.Types.Kernel.General.json" />
+    <None Include="ProjectConfigurations\1.3.BOA.Types.Kernel.DebitCard.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Bridge_BOAIntegration_Loader.js" />

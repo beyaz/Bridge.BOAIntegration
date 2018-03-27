@@ -19,7 +19,7 @@ namespace Bridge.BOAProjectCompiler
                     SourceFiles  = configuration.SourceFiles
                 };
 
-                if (configuration.References!= null)
+                if (configuration.References != null)
                 {
                     csprojFile.ReferenceAssemblyPaths = configuration.References.ToList().ConvertAll(Directories.GetDllPath);
                 }
@@ -46,8 +46,8 @@ namespace Bridge.BOAProjectCompiler
             {
                 configuration.SourceFiles[i] = configuration.SourceFiles[i]
                                                             .Replace("Kernel->", Directories.Kernel)
+                                                            .Replace("BOA->", Directories.BOA)
                                                             .Replace("BusinessModules->", Directories.BusinessModules)
-
                     ;
             }
 

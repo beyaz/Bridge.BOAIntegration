@@ -1,0 +1,10 @@
+﻿{
+  "AssemblyName": "BOA.Types.Kernel.BusinessHelper",
+  "SourceFiles": [
+    "BOA->BOA.Kernel\\UI\\BOA.Types.Kernel.BusinessHelper\\Parameter.cs"
+
+  ],
+  "References": [
+    "BOA.Types.Kernel.General"
+  ]
+}
