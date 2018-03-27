@@ -104,12 +104,36 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.RemoveChild(node);
 
         }
-        
+        public static void BComboEditorLabeled(TransformerInput input)
+        {
+            var node = input.XmlNode;
+
+            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BComboEditorLabeled")
+            {
+                
+                return;
+            }
+
+            var Document = input.Document;
+
+            var newElement = Document.CreateElement("BComboBox");
+
+            TransferAttribute(node, "Label", newElement, "labelText");
+            TransferAttribute(node, "ItemsSource", newElement, "dataSource");
+            TransferAttribute(node, "DisplayMemberPath", newElement, "displayMemberPath");
+            TransferAttribute(node, "ValuePath", newElement, "valuePath");
+            TransferAttribute(node, "Value", newElement, "value");
+
+            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
         public static void BComboEditorMultiSelect(TransformerInput input)
         {
             var node = input.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BComboEditorMultiSelect")
+            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BComboEditorMultiSelect" )
             {
                 return;
             }
@@ -181,6 +205,32 @@ namespace Bridge.BOAProjectCompiler
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
+        public static void BNumericEditorLabeled(TransformerInput input)
+        {
+            var node = input.XmlNode;
+
+            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BNumericEditorLabeled")
+            {
+                return;
+            }
+
+            var Document   = input.Document;
+            var newElement = Document.CreateElement("BInputNumeric");
+
+            if (node.Attributes?["ValueType"]?.Value == "{x:Type sys:Decimal}")
+            {
+                newElement.SetAttribute("format", "M");
+            }
+
+            
+            TransferAttribute(node, "Value", newElement, "value");
+            TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
+            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+
+            node.ParentNode?.InsertBefore(newElement, node);
+            node.ParentNode?.RemoveChild(node);
+        }
+        
 
         public static void BMaskedEditorLabeled(TransformerInput input)
         {

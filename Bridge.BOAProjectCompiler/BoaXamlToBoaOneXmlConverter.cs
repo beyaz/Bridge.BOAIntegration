@@ -18,7 +18,9 @@ namespace Bridge.BOAProjectCompiler
             Transformer.BBranchComponent,
             Transformer.ParameterComponent,
             Transformer.BTextEditorLabeled,
-            Transformer.BOAControls_BField
+            Transformer.BOAControls_BField,
+            Transformer.BNumericEditorLabeled,
+            Transformer.BComboEditorLabeled
         };
         #endregion
 
