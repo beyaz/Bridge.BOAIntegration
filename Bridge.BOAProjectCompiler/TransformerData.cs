@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace Bridge.BOAProjectCompiler
 {
-    public  class TransformerInput
+    public  class TransformerData
     {
         public List<XmlNode> InfragisticsDataPresenterFields { get; set; } = new List<XmlNode>();
         public Dictionary<string, string>  FieldDefinitions          { get; set; }

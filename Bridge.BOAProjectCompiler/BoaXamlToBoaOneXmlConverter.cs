@@ -8,7 +8,7 @@ namespace Bridge.BOAProjectCompiler
     class BoaXamlToBoaOneXmlConverter
     {
         #region Fields
-        readonly List<Action<TransformerInput>> XmlNodeTransformers = new List<Action<TransformerInput>>
+        readonly List<Action<TransformerData>> XmlNodeTransformers = new List<Action<TransformerData>>
         {
             Transformer.StackPanel,
             Transformer.BMaskedEditorLabeled,
@@ -42,7 +42,7 @@ namespace Bridge.BOAProjectCompiler
             var boa_ui_ns                 = BOAXamlHelper.GetNamespacePrefix_boa_ui_ns(namespaces);
 
             var elements = document.GetElementsByTagName("*").ToList();
-            var transformerInput = new TransformerInput
+            var transformerInput = new TransformerData
             {
                 FieldDefinitions          = FieldDefinitions,
                 Document                  = document,

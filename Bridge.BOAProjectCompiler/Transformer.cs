@@ -11,12 +11,12 @@ namespace Bridge.BOAProjectCompiler
     public class Transformer
     {
         #region Public Methods
-        public static void AccountComponent(TransformerInput input)
+        public static void AccountComponent(TransformerData data)
         {
-            var node     = input.XmlNode;
-            var Document = input.Document;
+            var node     = data.XmlNode;
+            var Document = data.Document;
 
-            if (input.boa_BusinessComponents_ns == null || node.Name != input.boa_BusinessComponents_ns + ":" + "AccountComponent")
+            if (data.boa_BusinessComponents_ns == null || node.Name != data.boa_BusinessComponents_ns + ":" + "AccountComponent")
             {
                 return;
             }
@@ -40,22 +40,22 @@ namespace Bridge.BOAProjectCompiler
             TransferAttribute(node, "AllowDoubleSignatureControl", newElement, "allowDoubleSignatureControl");
             TransferAttribute(node, "Allow18AgeControl", newElement, "allow18AgeControl");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
-        public static void BBranchComponent(TransformerInput input)
+        public static void BBranchComponent(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_BusinessComponents_ns == null || node.Name != input.boa_BusinessComponents_ns + ":" + "BranchComponent")
+            if (data.boa_BusinessComponents_ns == null || node.Name != data.boa_BusinessComponents_ns + ":" + "BranchComponent")
             {
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BBranchComponent");
 
@@ -65,16 +65,16 @@ namespace Bridge.BOAProjectCompiler
 
             TransferAttribute(node, "Label", newElement, "labelText");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
 
-        public static void BOAControls_BField(TransformerInput input)
+        public static void BOAControls_BField(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
             if (node.Name == "BOAControls:BrowseForm.ControlGridFieldSettings" ||
                 node.Name == "BOAControls:BrowseForm.ControlGridFieldLayout")
@@ -83,7 +83,7 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BField")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BField")
             {
                 return;
             }
@@ -95,22 +95,22 @@ namespace Bridge.BOAProjectCompiler
 
             
 
-            input.InfragisticsDataPresenterFields.Add(node);
+            data.InfragisticsDataPresenterFields.Add(node);
 
             node.ParentNode?.RemoveChild(node);
 
         }
-        public static void BComboEditorLabeled(TransformerInput input)
+        public static void BComboEditorLabeled(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BComboEditorLabeled")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BComboEditorLabeled")
             {
                 
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BComboBox");
 
@@ -120,21 +120,21 @@ namespace Bridge.BOAProjectCompiler
             TransferAttribute(node, "ValuePath", newElement, "valuePath");
             TransferAttribute(node, "Value", newElement, "value");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
-        public static void BComboEditorMultiSelect(TransformerInput input)
+        public static void BComboEditorMultiSelect(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BComboEditorMultiSelect" )
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BComboEditorMultiSelect" )
             {
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BComboBox");
 
@@ -147,7 +147,7 @@ namespace Bridge.BOAProjectCompiler
             newElement.SetAttribute("multiColumn", "true");
             newElement.SetAttribute("isAllOptionIncluded", "true");
 
-            var bfieldLayoutNode = ((XmlElement) node).GetElementsByTagName(input.boa_ui_ns + ":BFieldLayout").ToList().FirstOrDefault();
+            var bfieldLayoutNode = ((XmlElement) node).GetElementsByTagName(data.boa_ui_ns + ":BFieldLayout").ToList().FirstOrDefault();
 
             if (bfieldLayoutNode != null)
             {
@@ -175,42 +175,42 @@ namespace Bridge.BOAProjectCompiler
                 newElement.AppendChild(BComboBox_Columns);
             }
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
-        public static void BDateTimeEditorLabeled(TransformerInput input)
+        public static void BDateTimeEditorLabeled(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BDateTimeEditorLabeled")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BDateTimeEditorLabeled")
             {
                 return;
             }
 
-            var Document   = input.Document;
+            var Document   = data.Document;
             var newElement = Document.CreateElement("BDateTimePicker");
 
             newElement.SetAttribute("format", "DDMMYYYY");
             TransferAttribute(node, "Value", newElement, "value");
             TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
-        public static void BNumericEditorLabeled(TransformerInput input)
+        public static void BNumericEditorLabeled(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BNumericEditorLabeled")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BNumericEditorLabeled")
             {
                 return;
             }
 
-            var Document   = input.Document;
+            var Document   = data.Document;
             var newElement = Document.CreateElement("BInputNumeric");
 
             if (node.Attributes?["ValueType"]?.Value == "{x:Type sys:Decimal}")
@@ -221,23 +221,23 @@ namespace Bridge.BOAProjectCompiler
             
             TransferAttribute(node, "Value", newElement, "value");
             TransferAttribute(node, "Label", newElement, "floatingLabelTextDate");
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
         
 
-        public static void BMaskedEditorLabeled(TransformerInput input)
+        public static void BMaskedEditorLabeled(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BMaskedEditorLabeled")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BMaskedEditorLabeled")
             {
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BInputMask");
 
@@ -256,44 +256,44 @@ namespace Bridge.BOAProjectCompiler
             TransferAttribute(node, "Label", newElement, "hintText");
             TransferAttribute(node, "Label", newElement, "floatingLabelText");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
-        public static void BTextEditorLabeled(TransformerInput input)
+        public static void BTextEditorLabeled(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_ui_ns == null || node.Name != input.boa_ui_ns + ":" + "BTextEditorLabeled")
+            if (data.boa_ui_ns == null || node.Name != data.boa_ui_ns + ":" + "BTextEditorLabeled")
             {
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BInput");
 
             TransferAttribute(node, "Label", newElement, "hintText");
             TransferAttribute(node, "Text", newElement, "value");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
-        public static void ParameterComponent(TransformerInput input)
+        public static void ParameterComponent(TransformerData data)
         {
-            var node = input.XmlNode;
+            var node = data.XmlNode;
 
-            if (input.boa_BusinessComponents_ns == null || node.Name != input.boa_BusinessComponents_ns + ":" + "ParameterComponent")
+            if (data.boa_BusinessComponents_ns == null || node.Name != data.boa_BusinessComponents_ns + ":" + "ParameterComponent")
             {
                 return;
             }
 
-            var Document = input.Document;
+            var Document = data.Document;
 
             var newElement = Document.CreateElement("BParameterComponent");
 
@@ -305,15 +305,15 @@ namespace Bridge.BOAProjectCompiler
             TransferAttribute(node, "SelectedParamCode", newElement, "selectedParamCode");
             TransferAttribute(node, "ParamCodeVisible", newElement, "paramCodeVisible");
 
-            TransferNameAttribute(node, newElement, input.FieldDefinitions);
+            TransferNameAttribute(node, newElement, data.FieldDefinitions);
 
             node.ParentNode?.InsertBefore(newElement, node);
             node.ParentNode?.RemoveChild(node);
         }
 
-        public static void StackPanel(TransformerInput input)
+        public static void StackPanel(TransformerData data)
         {
-            var XmlNode = input.XmlNode;
+            var XmlNode = data.XmlNode;
 
             if (XmlNode.LocalName != "StackPanel")
             {
