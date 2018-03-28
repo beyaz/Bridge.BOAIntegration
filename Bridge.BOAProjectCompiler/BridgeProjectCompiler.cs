@@ -46,7 +46,7 @@ namespace Bridge.BOAProjectCompiler
                 FromTask        = true
             };
 
-            var logger    = new Logger(null, false, LoggerLevel.Info, true, new ConsoleLoggerWriter(), new FileLoggerWriter());
+            var logger    = new Logger(null, false, LoggerLevel.Error, true, new ConsoleLoggerWriter(), new FileLoggerWriter());
             var processor = new TranslatorProcessor(bridgeOptions, logger);
 
             processor.PreProcess();
