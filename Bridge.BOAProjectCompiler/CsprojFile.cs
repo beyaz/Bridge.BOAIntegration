@@ -7,52 +7,22 @@ namespace Bridge.BOAProjectCompiler
 {
     class CsprojFile
     {
+        #region Constants
         const string BridgeVersionNumber = "16.8.2";
-        #region Public Properties
-        public string                AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
-        public string                Bridge_BOAIntegration_dll_Path { get; set; } = Directories.SolutionPath + @"Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
-        public string                FileName                       { get; set; }
-        public string                OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
-        public string                OutputFilePath                 => OutputFileDirectory + FileName;
-        public string                PackagesDirectory              { get; set; } = Directories.SolutionPath + @"packages\";
-        public IReadOnlyList<string> SourceFiles                    { get; set; }
-
-        public IReadOnlyList<string> ReferenceAssemblyPaths { get; set; }
-        public string                WorkingDirectory               { get; set; } = Directories.WorkingDirectory;
         #endregion
 
-        void ConvertXamlFiles()
-        {
-            var sourceFiles = SourceFiles.ToList();
+        #region Public Properties
+        public string AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
+        public string Bridge_BOAIntegration_dll_Path { get; set; } = Directories.SolutionPath + @"Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
+        public string FileName                       { get; set; }
+        public string OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
+        public string OutputFilePath                 => OutputFileDirectory + FileName;
+        public string PackagesDirectory              { get; set; } = Directories.SolutionPath + @"packages\";
 
-
-            for (var i = 0; i < sourceFiles.Count; i++)
-            {
-                var filePath = sourceFiles[i];
-
-                if (!filePath.EndsWith(".xaml"))
-                {
-                    continue;
-                }
-
-
-                var converter = new BoaXamlToBoaOneXmlConverter
-                {
-                    InputXamlString = File.ReadAllText(filePath)
-                };
-
-                var generatedCode = converter.GenerateCsharpCode();
-
-
-                sourceFiles[i] = OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
-
-                Directory.CreateDirectory(OutputFileDirectory);
-                File.WriteAllText(sourceFiles[i],generatedCode, Encoding.UTF8);
-            }
-
-            SourceFiles = sourceFiles;
-        }
-
+        public IReadOnlyList<string> ReferenceAssemblyPaths { get; set; }
+        public IReadOnlyList<string> SourceFiles            { get; set; }
+        public string                WorkingDirectory       { get; set; } = Directories.WorkingDirectory;
+        #endregion
 
         #region Public Methods
         public void WriteToFile()
@@ -111,9 +81,8 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"  <ItemGroup>");
 
             sb.AppendLine(@"    <Reference Include=""Bridge"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core."+ BridgeVersionNumber + @"\lib\net40\Bridge.dll</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core." + BridgeVersionNumber + @"\lib\net40\Bridge.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
-
 
             if (ReferenceAssemblyPaths != null)
             {
@@ -152,17 +121,49 @@ namespace Bridge.BOAProjectCompiler
             Directory.CreateDirectory(OutputFileDirectory);
             File.WriteAllText(OutputFilePath, sb.ToString(), Encoding.UTF8);
         }
+        #endregion
 
-        private void CleanProjectFolders()
+        #region Methods
+        void CleanProjectFolders()
         {
-            if (Directory.Exists(OutputFileDirectory+"bin"))
+            if (Directory.Exists(OutputFileDirectory + "bin"))
             {
-                Directory.Delete(OutputFileDirectory+"bin", true);
+                Directory.Delete(OutputFileDirectory + "bin", true);
             }
+
             if (Directory.Exists(OutputFileDirectory + "obj"))
             {
                 Directory.Delete(OutputFileDirectory + "obj", true);
             }
+        }
+
+        void ConvertXamlFiles()
+        {
+            var sourceFiles = SourceFiles.ToList();
+
+            for (var i = 0; i < sourceFiles.Count; i++)
+            {
+                var filePath = sourceFiles[i];
+
+                if (!filePath.EndsWith(".xaml"))
+                {
+                    continue;
+                }
+
+                var converter = new BoaXamlToBoaOneXmlConverter
+                {
+                    InputXamlString = File.ReadAllText(filePath)
+                };
+
+                var generatedCode = converter.GenerateCsharpCode();
+
+                sourceFiles[i] = OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
+
+                Directory.CreateDirectory(OutputFileDirectory);
+                File.WriteAllText(sourceFiles[i], generatedCode, Encoding.UTF8);
+            }
+
+            SourceFiles = sourceFiles;
         }
         #endregion
     }
