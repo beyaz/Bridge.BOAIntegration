@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Bridge.BOAProjectCompiler
 {
-    class CsprojFileData
+    class CsprojFileCreatorData
     {
         #region Public Properties
         public string AssemblyName { get; set; }
@@ -24,14 +24,14 @@ namespace Bridge.BOAProjectCompiler
         #endregion
     }
 
-    class CsprojFile
+    class CsprojFileCreator
     {
         #region Public Properties
-        public CsprojFileData Data { get; set; }
+        public CsprojFileCreatorData Data { get; set; }
         #endregion
 
         #region Public Methods
-        public void WriteToFile()
+        public void CreateFile()
         {
             CleanProjectFolders();
 

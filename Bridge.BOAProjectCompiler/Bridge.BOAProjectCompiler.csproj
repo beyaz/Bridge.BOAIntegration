@@ -78,7 +78,7 @@
     <Compile Include="BridgeProjectCompilerData.cs" />
     <Compile Include="CSharpCodeGenerator.cs" />
     <Compile Include="CSharpCodeGeneratorInput.cs" />
-    <Compile Include="CsprojFile.cs" />
+    <Compile Include="CsprojFileCreator.cs" />
     <Compile Include="Directories.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="BOAProjectConfiguration.cs" />

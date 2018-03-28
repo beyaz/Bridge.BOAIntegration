@@ -12,7 +12,7 @@ namespace Bridge.BOAProjectCompiler
         {
             foreach (var configuration in GetAllConfigurations())
             {
-                var data = new CsprojFileData
+                var data = new CsprojFileCreatorData
                 {
                     AssemblyName = configuration.AssemblyName,
                     FileName     = configuration.AssemblyName + ".csproj",
@@ -26,13 +26,13 @@ namespace Bridge.BOAProjectCompiler
                     data.ReferenceAssemblyPaths = configuration.References.ToList().ConvertAll(Directories.GetDllPath);
                 }
 
-                var csprojFile = new CsprojFile
+                var csprojFile = new CsprojFileCreator
                 {
                     Data = data
 
                 };
 
-                csprojFile.WriteToFile();
+                csprojFile.CreateFile();
 
                 var bridgeProjectCompiler = new BridgeProjectCompiler
                 {
