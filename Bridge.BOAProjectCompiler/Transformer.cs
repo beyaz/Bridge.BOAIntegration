@@ -88,7 +88,7 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
-            if (XamlHelper.GetCSharpClassFullName(node?.ParentNode?.ParentNode?.ParentNode) != "BOA.UI.BrowseForm.ControlGridFieldLayout")
+            if (XamlHelper.GetCSharpClassFullName(node.ParentNode?.ParentNode?.ParentNode) != "BOA.UI.BrowseForm.ControlGridFieldLayout")
             {
                 return;
             }

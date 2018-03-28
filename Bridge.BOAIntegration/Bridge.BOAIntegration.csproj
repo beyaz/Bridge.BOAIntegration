@@ -61,13 +61,15 @@
     <Compile Include="BOA.UI.Types\DelegateCommand.cs" />
     <Compile Include="BOA.UI.Utils\FormManager.cs" />
     <Compile Include="BOA.UI\BComboEditorMultiSelect.cs" />
+    <Compile Include="BOA.UI\BDialogBox.cs" />
     <Compile Include="BOA.UI\BrowsePageExtensions.cs" />
+    <Compile Include="BOA.UI\FormBase.cs" />
     <Compile Include="Bridge.BOAIntegration\AttributeName.cs" />
     <Compile Include="Bridge.BOAIntegration\BState.cs" />
     <Compile Include="Bridge.BOAIntegration\BContext.cs" />
     <Compile Include="Bridge.BOAIntegration\BPageParams.cs" />
-    <Compile Include="Bridge.BOAIntegration\BasePage.cs" />
-    <Compile Include="Bridge.BOAIntegration\BrowsePage.cs" />
+    <Compile Include="BOA.UI\WindowBase.cs" />
+    <Compile Include="BOA.UI\BrowseForm.cs" />
     <Compile Include="Bridge.BOAIntegration\ComboBoxColumn.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentName.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentPropName.cs" />
