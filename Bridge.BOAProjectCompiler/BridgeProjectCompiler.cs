@@ -14,11 +14,11 @@ namespace Bridge.BOAProjectCompiler
         #endregion
 
         #region Public Properties
-        public BridgeProjectCompilerInput Input { get; set; }
+        public BridgeProjectCompilerData Data { get; set; }
         #endregion
 
         #region Properties
-        string CsProjFileDirectory       => Path.GetDirectoryName(Input.CsprojFilePath) + Path.DirectorySeparatorChar;
+        string CsProjFileDirectory       => Path.GetDirectoryName(Data.CsprojFilePath) + Path.DirectorySeparatorChar;
         string OutputJsFileDirectoryPath => CsProjFileDirectory + OutDir + "bridge" + Path.DirectorySeparatorChar;
         #endregion
 
@@ -34,13 +34,13 @@ namespace Bridge.BOAProjectCompiler
                 Name = "",
                 ProjectProperties = new ProjectProperties
                 {
-                    AssemblyName = Path.GetFileNameWithoutExtension(Input.CsprojFilePath),
+                    AssemblyName = Path.GetFileNameWithoutExtension(Data.CsprojFilePath),
                     OutputPath   = OutDir,
                     OutDir       = OutDir
                 },
-                ProjectLocation = Input.CsprojFilePath,
+                ProjectLocation = Data.CsprojFilePath,
                 OutputLocation  = OutDir,
-                DefaultFileName = Path.GetFileNameWithoutExtension(Input.CsprojFilePath) + ".dll",
+                DefaultFileName = Path.GetFileNameWithoutExtension(Data.CsprojFilePath) + ".dll",
                 BridgeLocation  = bridgeLocation,
                 ExtractCore     = true,
                 FromTask        = true
@@ -83,7 +83,7 @@ namespace Bridge.BOAProjectCompiler
 
         bool IsBOAUIProject()
         {
-            return Path.GetFileName(Input.CsprojFilePath)?.StartsWith("BOA.UI.") == true;
+            return Path.GetFileName(Data.CsprojFilePath)?.StartsWith("BOA.UI.") == true;
         }
         #endregion
     }

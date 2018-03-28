@@ -5,24 +5,36 @@ using System.Text;
 
 namespace Bridge.BOAProjectCompiler
 {
-    class CsprojFile
+    class CsprojFileData
     {
+        public string AssemblyName { get; set; }
+        public string OutputFileDirectory => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
+        public string OutputFilePath => OutputFileDirectory + FileName;
+
         #region Constants
-        const string BridgeVersionNumber = "16.8.2";
+        public  string BridgeVersionNumber = "16.8.2";
         #endregion
 
         #region Public Properties
-        public string AssemblyName                   { get; set; } = @"Bridge.BOAIntegration2";
+
         public string Bridge_BOAIntegration_dll_Path { get; set; } = Directories.SolutionPath + @"Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
         public string FileName                       { get; set; }
-        public string OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
-        public string OutputFilePath                 => OutputFileDirectory + FileName;
-        public string PackagesDirectory              { get; set; } = Directories.SolutionPath + @"packages\";
+
+
+        public string PackagesDirectory { get; set; } = Directories.SolutionPath + @"packages\";
 
         public IReadOnlyList<string> ReferenceAssemblyPaths { get; set; }
         public IReadOnlyList<string> SourceFiles            { get; set; }
         public string                WorkingDirectory       { get; set; } = Directories.WorkingDirectory;
         #endregion
+    }
+
+    class CsprojFile
+    {
+        public CsprojFileData Data { get; set; }
+
+
+        
 
         #region Public Methods
         public void WriteToFile()
@@ -48,8 +60,8 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"    <ProjectGuid>{501100EC-6824-494B-89ED-8EC8ED9873D2}</ProjectGuid>");
             sb.AppendLine(@"    <OutputType>Library</OutputType>");
             sb.AppendLine(@"    <AppDesignerFolder>Properties</AppDesignerFolder>");
-            sb.AppendLine(@"    <RootNamespace>" + AssemblyName + "</RootNamespace>");
-            sb.AppendLine(@"    <AssemblyName>" + AssemblyName + "</AssemblyName>");
+            sb.AppendLine(@"    <RootNamespace>" + Data.AssemblyName + "</RootNamespace>");
+            sb.AppendLine(@"    <AssemblyName>" + Data.AssemblyName + "</AssemblyName>");
             sb.AppendLine(@"    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>");
             sb.AppendLine(@"    <FileAlignment>512</FileAlignment>");
             sb.AppendLine(@"  </PropertyGroup>");
@@ -72,7 +84,7 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"  </PropertyGroup>");
             sb.AppendLine(@"  <ItemGroup>");
 
-            foreach (var sourceFile in SourceFiles)
+            foreach (var sourceFile in Data.SourceFiles)
             {
                 sb.AppendLine(@"    <Compile Include=" + '"' + sourceFile + '"' + "/>");
             }
@@ -81,65 +93,65 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine(@"  <ItemGroup>");
 
             sb.AppendLine(@"    <Reference Include=""Bridge"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Core." + BridgeVersionNumber + @"\lib\net40\Bridge.dll</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + Data.PackagesDirectory + @"Bridge.Core." + Data.BridgeVersionNumber + @"\lib\net40\Bridge.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
 
-            if (ReferenceAssemblyPaths != null)
+            if (Data.ReferenceAssemblyPaths != null)
             {
-                foreach (var assemblyPath in ReferenceAssemblyPaths)
+                foreach (var assemblyPath in Data.ReferenceAssemblyPaths)
                 {
                     sb.AppendLine(@"    <Reference Include=" + '"' + assemblyPath + '"' + "/>");
                 }
             }
 
             sb.AppendLine(@"    <Reference Include=""Bridge.BOAIntegration.dll"">");
-            sb.AppendLine(@"      <HintPath>" + Bridge_BOAIntegration_dll_Path + @"</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + Data.Bridge_BOAIntegration_dll_Path + @"</HintPath>");
             sb.AppendLine(@"    </Reference>");
 
             sb.AppendLine(@"    <Reference Include=""Bridge.Html5"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Html5." + BridgeVersionNumber + @"\lib\net40\Bridge.Html5.dll</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + Data.PackagesDirectory + @"Bridge.Html5." + Data.BridgeVersionNumber + @"\lib\net40\Bridge.Html5.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
             sb.AppendLine(@"    <Reference Include=""Bridge.jQuery2"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.jQuery.2.13.0\lib\net40\Bridge.jQuery2.dll</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + Data.PackagesDirectory + @"Bridge.jQuery.2.13.0\lib\net40\Bridge.jQuery2.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
             sb.AppendLine(@"    <Reference Include=""Newtonsoft.Json"">");
-            sb.AppendLine(@"      <HintPath>" + PackagesDirectory + @"Bridge.Newtonsoft.Json.1.6.0\lib\net40\Newtonsoft.Json.dll</HintPath>");
+            sb.AppendLine(@"      <HintPath>" + Data.PackagesDirectory + @"Bridge.Newtonsoft.Json.1.6.0\lib\net40\Newtonsoft.Json.dll</HintPath>");
             sb.AppendLine(@"    </Reference>");
             sb.AppendLine(@"  </ItemGroup>");
             sb.AppendLine(@"  <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />");
-            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
+            sb.AppendLine(@"  <Import Project=""" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
             sb.AppendLine(@"  <Target Name=""EnsureNuGetPackageBuildImports"" BeforeTargets=""PrepareForBuild"">");
             sb.AppendLine(@"    <PropertyGroup>");
             sb.AppendLine(@"      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>");
             sb.AppendLine(@"    </PropertyGroup>");
-            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
-            sb.AppendLine(@"    <Error Condition=""!Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
+            sb.AppendLine(@"    <Error Condition=""!Exists('" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
+            sb.AppendLine(@"    <Error Condition=""!Exists('" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets')"" Text=""$([System.String]::Format('$(ErrorText)', '" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets'))"" />");
             sb.AppendLine(@"  </Target>");
-            sb.AppendLine(@"  <Import Project=""" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + PackagesDirectory + @"Bridge.Min." + BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
+            sb.AppendLine(@"  <Import Project=""" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets"" Condition=""Exists('" + Data.PackagesDirectory + @"Bridge.Min." + Data.BridgeVersionNumber + @"\build\Bridge.Min.targets')"" />");
             sb.AppendLine(@"</Project>");
 
-            Directory.CreateDirectory(OutputFileDirectory);
-            File.WriteAllText(OutputFilePath, sb.ToString(), Encoding.UTF8);
+            Directory.CreateDirectory(Data.OutputFileDirectory);
+            File.WriteAllText(Data.OutputFilePath, sb.ToString(), Encoding.UTF8);
         }
         #endregion
 
         #region Methods
         void CleanProjectFolders()
         {
-            if (Directory.Exists(OutputFileDirectory + "bin"))
+            if (Directory.Exists(Data.OutputFileDirectory + "bin"))
             {
-                Directory.Delete(OutputFileDirectory + "bin", true);
+                Directory.Delete(Data.OutputFileDirectory + "bin", true);
             }
 
-            if (Directory.Exists(OutputFileDirectory + "obj"))
+            if (Directory.Exists(Data.OutputFileDirectory + "obj"))
             {
-                Directory.Delete(OutputFileDirectory + "obj", true);
+                Directory.Delete(Data.OutputFileDirectory + "obj", true);
             }
         }
 
         void ConvertXamlFiles()
         {
-            var sourceFiles = SourceFiles.ToList();
+            var sourceFiles = Data.SourceFiles.ToList();
 
             for (var i = 0; i < sourceFiles.Count; i++)
             {
@@ -157,13 +169,13 @@ namespace Bridge.BOAProjectCompiler
 
                 var generatedCode = converter.GenerateCsharpCode();
 
-                sourceFiles[i] = OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
+                sourceFiles[i] = Data.OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
 
-                Directory.CreateDirectory(OutputFileDirectory);
+                Directory.CreateDirectory(Data.OutputFileDirectory);
                 File.WriteAllText(sourceFiles[i], generatedCode, Encoding.UTF8);
             }
 
-            SourceFiles = sourceFiles;
+            Data.SourceFiles = sourceFiles;
         }
         #endregion
     }

@@ -1,6 +1,6 @@
 ﻿namespace Bridge.BOAProjectCompiler
 {
-    public class BridgeProjectCompilerInput
+    public class BridgeProjectCompilerData
     {
         public string CsprojFilePath { get; set; }
     }

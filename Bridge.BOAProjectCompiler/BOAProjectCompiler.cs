@@ -12,25 +12,33 @@ namespace Bridge.BOAProjectCompiler
         {
             foreach (var configuration in GetAllConfigurations())
             {
-                var csprojFile = new CsprojFile
+                var data = new CsprojFileData
                 {
                     AssemblyName = configuration.AssemblyName,
                     FileName     = configuration.AssemblyName + ".csproj",
                     SourceFiles  = configuration.SourceFiles
                 };
 
+               
+
                 if (configuration.References != null)
                 {
-                    csprojFile.ReferenceAssemblyPaths = configuration.References.ToList().ConvertAll(Directories.GetDllPath);
+                    data.ReferenceAssemblyPaths = configuration.References.ToList().ConvertAll(Directories.GetDllPath);
                 }
+
+                var csprojFile = new CsprojFile
+                {
+                    Data = data
+
+                };
 
                 csprojFile.WriteToFile();
 
                 var bridgeProjectCompiler = new BridgeProjectCompiler
                 {
-                    Input = new BridgeProjectCompilerInput
+                    Data = new BridgeProjectCompilerData
                     {
-                        CsprojFilePath = csprojFile.OutputFilePath
+                        CsprojFilePath = data.OutputFilePath
                     }
                 };
 

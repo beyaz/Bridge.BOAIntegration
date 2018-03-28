@@ -75,7 +75,7 @@
     <Compile Include="BOAXamlHelper.cs" />
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
     <Compile Include="BridgeProjectCompiler.cs" />
-    <Compile Include="BridgeProjectCompilerInput.cs" />
+    <Compile Include="BridgeProjectCompilerData.cs" />
     <Compile Include="CSharpCodeGenerator.cs" />
     <Compile Include="CSharpCodeGeneratorInput.cs" />
     <Compile Include="CsprojFile.cs" />
