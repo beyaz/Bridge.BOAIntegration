@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -37,8 +37,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Bridge.BOAIntegration\Component.cs" />
     <Compile Include="Bridge.BOAIntegration\Component_1.cs" />
     <Compile Include="Bridge.BOAIntegration\Component_1_Prop.cs" />
+    <Compile Include="Bridge.BOAIntegration\ReactDOM.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderBOAVersionTest.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderTest.Helper.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderTest.cs" />
