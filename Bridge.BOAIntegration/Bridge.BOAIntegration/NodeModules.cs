@@ -59,6 +59,11 @@ namespace Bridge.BOAIntegration
 
                 if (module == null)
                 {
+                    if (i < ExpectedEntryCount)
+                    {
+                        continue;
+                    }
+
                     return null;
                 }
 
@@ -76,6 +81,8 @@ namespace Bridge.BOAIntegration
                 }
             }
         }
+
+        const int ExpectedEntryCount = 2100;
 
         internal static object FindComponent(string nodeTagName)
         {
@@ -98,7 +105,7 @@ namespace Bridge.BOAIntegration
 
                 if (module == null)
                 {
-                    if (i < 2000)
+                    if (i < ExpectedEntryCount)
                     {
                         continue;
                     }
