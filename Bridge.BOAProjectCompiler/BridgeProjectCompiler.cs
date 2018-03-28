@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Bridge.Contract;
 using Bridge.Translator;
 using Bridge.Translator.Logging;
@@ -8,9 +9,23 @@ namespace Bridge.BOAProjectCompiler
     class BridgeProjectCompiler
     {
         #region Constants
-        const string BridgeVersion         = "16.8.2";
-        const string OutDir                = @"bin\Debug\";
-        const string PackagesDirectoryPath = Directories.SolutionPath + @"packages\";
+        public const string BridgeVersion         = "16.8.2";
+        const        string OutDir                = @"bin\Debug\";
+        const        string PackagesDirectoryPath = Directories.SolutionPath + @"packages\";
+        #endregion
+
+        #region Constructors
+        public BridgeProjectCompiler()
+        {
+            BeforeCompile += CopyBridgeConfigJsonFile;
+            AfterSuccess  += CopyOutputJsFileToIISFolder;
+        }
+        #endregion
+
+        #region Public Events
+        public event Action AfterSuccess;
+
+        public event Action BeforeCompile;
         #endregion
 
         #region Public Properties
@@ -25,7 +40,7 @@ namespace Bridge.BOAProjectCompiler
         #region Public Methods
         public void Compile()
         {
-            CopyBridgeConfigJsonFile();
+            BeforeCompile?.Invoke();
 
             var bridgeLocation = PackagesDirectoryPath + $@"Bridge.Core.{BridgeVersion}\lib\net40\Bridge.dll";
 
@@ -34,13 +49,13 @@ namespace Bridge.BOAProjectCompiler
                 Name = "",
                 ProjectProperties = new ProjectProperties
                 {
-                    AssemblyName = Path.GetFileNameWithoutExtension(Data.CsprojFilePath),
+                    AssemblyName = Data.AssemblyName,
                     OutputPath   = OutDir,
                     OutDir       = OutDir
                 },
                 ProjectLocation = Data.CsprojFilePath,
                 OutputLocation  = OutDir,
-                DefaultFileName = Path.GetFileNameWithoutExtension(Data.CsprojFilePath) + ".dll",
+                DefaultFileName = Data.AssemblyName + ".dll",
                 BridgeLocation  = bridgeLocation,
                 ExtractCore     = true,
                 FromTask        = true
@@ -54,17 +69,7 @@ namespace Bridge.BOAProjectCompiler
             processor.Process();
             processor.PostProcess();
 
-            var assemblyName = bridgeOptions.ProjectProperties.AssemblyName;
-
-            // //# sourceURL=BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.js
-
-            var destFileName = Directories.IIS + assemblyName + ".js";
-
-            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
-
-            Utility.UpdateSourceURL(destFileName, assemblyName + ".js");
-
-            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
+            AfterSuccess?.Invoke();
         }
         #endregion
 
@@ -79,6 +84,21 @@ namespace Bridge.BOAProjectCompiler
             {
                 File.Copy(Directories.BridgeConfigFiles + "bridge.default.json", CsProjFileDirectory + "bridge.json", true);
             }
+        }
+
+        void CopyOutputJsFileToIISFolder()
+        {
+            var assemblyName = Data.AssemblyName;
+
+            // //# sourceURL=BOA.UI.CardGeneral.DebitCard.CampaignTransactionListAssembly.js
+
+            var destFileName = Directories.IIS + assemblyName + ".js";
+
+            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".js", destFileName, true);
+
+            Utility.UpdateSourceURL(destFileName, assemblyName + ".js");
+
+            File.Copy(OutputJsFileDirectoryPath + assemblyName + ".meta.js", @"D:\BOA\One\wwwroot\" + assemblyName + ".meta.js", true);
         }
 
         bool IsBOAUIProject()

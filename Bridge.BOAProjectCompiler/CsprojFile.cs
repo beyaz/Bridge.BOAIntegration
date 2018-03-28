@@ -7,19 +7,14 @@ namespace Bridge.BOAProjectCompiler
 {
     class CsprojFileData
     {
-        public string AssemblyName { get; set; }
-        public string OutputFileDirectory => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
-        public string OutputFilePath => OutputFileDirectory + FileName;
-
-        #region Constants
-        public  string BridgeVersionNumber = "16.8.2";
-        #endregion
-
         #region Public Properties
+        public string AssemblyName { get; set; }
 
         public string Bridge_BOAIntegration_dll_Path { get; set; } = Directories.SolutionPath + @"Bridge.BOAIntegration\bin\Debug\Bridge.BOAIntegration.dll";
+        public string BridgeVersionNumber            => BridgeProjectCompiler.BridgeVersion;
         public string FileName                       { get; set; }
-
+        public string OutputFileDirectory            => WorkingDirectory + AssemblyName + Path.DirectorySeparatorChar;
+        public string OutputFilePath                 => OutputFileDirectory + FileName;
 
         public string PackagesDirectory { get; set; } = Directories.SolutionPath + @"packages\";
 
@@ -31,10 +26,9 @@ namespace Bridge.BOAProjectCompiler
 
     class CsprojFile
     {
+        #region Public Properties
         public CsprojFileData Data { get; set; }
-
-
-        
+        #endregion
 
         #region Public Methods
         public void WriteToFile()
