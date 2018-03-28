@@ -61,7 +61,7 @@ namespace Bridge.BOAProjectCompiler
 
             var generator = new CSharpCodeGenerator
             {
-                Input = new CSharpCodeGeneratorInput
+                Data = new CSharpCodeGeneratorData
                 {
                     RootNode             = rootNode,
                     FieldDefinitions     = FieldDefinitions,

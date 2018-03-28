@@ -5,7 +5,7 @@ using BOA.Common.Helpers;
 
 namespace Bridge.BOAProjectCompiler
 {
-    class CSharpCodeGeneratorInput
+    class CSharpCodeGeneratorData
     {
         #region Fields
         public IReadOnlyDictionary<string, string> FieldDefinitions;

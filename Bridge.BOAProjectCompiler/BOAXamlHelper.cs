@@ -25,25 +25,24 @@ namespace Bridge.BOAProjectCompiler
             builder.AppendLine("{");
             builder.PaddingCount++;
 
-
-            var name = node.Attributes?["Name"]?.Value;
+            var name  = node.Attributes?["Name"]?.Value;
             var label = node.Attributes?["Label"]?.Value;
 
             bool? isFirst = null;
 
-            if (name!= null)
+            if (name != null)
             {
                 name = '"' + name + '"';
-                builder.AppendLine("BindingPath = "+name);
+                builder.AppendLine("BindingPath = " + name);
 
                 isFirst = true;
             }
 
             if (label != null)
             {
-                if (isFirst==true)
+                if (isFirst == true)
                 {
-                    builder.AppendLine("," );
+                    builder.AppendLine(",");
                 }
 
                 if (MessagingResolver.IsMessagingExpression(label))
@@ -59,7 +58,6 @@ namespace Bridge.BOAProjectCompiler
 
                 builder.AppendLine("Label = " + label);
             }
-
 
             builder.PaddingCount--;
             builder.AppendLine("}");

@@ -7,9 +7,8 @@ namespace Bridge.BOAProjectCompiler
     {
         #region Public Properties
         public string   AssemblyName { get; set; }
+        public string[] References   { get; set; }
         public string[] SourceFiles  { get; set; }
-        public string[] References { get; set; }
-        
         #endregion
     }
 }

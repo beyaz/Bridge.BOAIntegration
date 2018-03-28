@@ -7,7 +7,7 @@ namespace Bridge.BOAProjectCompiler
     class CSharpCodeGenerator
     {
         #region Public Properties
-        public CSharpCodeGeneratorInput Input { get; set; }
+        public CSharpCodeGeneratorData Data { get; set; }
         #endregion
 
         #region Public Methods
@@ -19,7 +19,7 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("using BOA.Common.Helpers;");
             sb.AppendLine("using Bridge.BOAIntegration;");
 
-            var fullTypeName = GetClassName(Input.RootNode);
+            var fullTypeName = GetClassName(Data.RootNode);
             var nsName       = fullTypeName.Substring(0, fullTypeName.LastIndexOf(".", StringComparison.Ordinal));
             var typeName     = fullTypeName.Substring(fullTypeName.LastIndexOf(".", StringComparison.Ordinal) + 1);
 
@@ -27,14 +27,13 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingCount++;
 
-            var baseClassFullName = XamlHelper.GetCSharpClassFullName(Input.RootNode);
-
+            var baseClassFullName = XamlHelper.GetCSharpClassFullName(Data.RootNode);
 
             sb.AppendLine($"public partial class {typeName} : " + baseClassFullName);
             sb.AppendLine("{");
             sb.PaddingCount++;
 
-            foreach (var fieldNameFieldTypePair in Input.FieldDefinitions)
+            foreach (var fieldNameFieldTypePair in Data.FieldDefinitions)
             {
                 sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key + ";");
             }
@@ -43,26 +42,25 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingCount++;
 
-            sb.AppendLine("XmlUI = @" + '"' + Input.OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
+            sb.AppendLine("XmlUI = @" + '"' + Data.OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
 
             sb.AppendLine("");
 
-
-            if (Input.RootNodeIsBrowseForm)
+            if (Data.RootNodeIsBrowseForm)
             {
-                if (Input.InfragisticsDataPresenterFields.Count > 0)
+                if (Data.InfragisticsDataPresenterFields.Count > 0)
                 {
                     sb.AppendLine("this.ConfigureColumns(new []{");
 
-                    for (var i = 0; i < Input.InfragisticsDataPresenterFields.Count; i++)
+                    for (var i = 0; i < Data.InfragisticsDataPresenterFields.Count; i++)
                     {
-                        if (i>0)
+                        if (i > 0)
                         {
                             sb.AppendLine(",");
                         }
 
-                        var node = Input.InfragisticsDataPresenterFields[i];
-                        BOAXamlHelper.WriteAsDataGridColumnInfoContract(sb,node);
+                        var node = Data.InfragisticsDataPresenterFields[i];
+                        BOAXamlHelper.WriteAsDataGridColumnInfoContract(sb, node);
                     }
 
                     sb.AppendLine("},true);");
@@ -70,14 +68,11 @@ namespace Bridge.BOAProjectCompiler
             }
 
             sb.AppendLine("PropertyChanged += (s,e)=>{ ForceRender();}; // Model yapısı kullanılmış ise bu gibi şeylere gerek yok aslında.belki de var incelemek lazım");
-            
 
             sb.AppendLine("");
             sb.AppendLine("// EvaluateInWhichCaseRenderMethodWillBeCall");
 
-
-
-            var controlGridDataSourceBindingPath = GetBrowseForm_ControlGridDataSource_BindingPath(Input.RootNode);
+            var controlGridDataSourceBindingPath = GetBrowseForm_ControlGridDataSource_BindingPath(Data.RootNode);
             if (controlGridDataSourceBindingPath.StartsWith("Model."))
             {
                 sb.AppendLine("this.OnPropertyChanged(nameof(Model), ForceRender);");
