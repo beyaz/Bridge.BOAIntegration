@@ -163,7 +163,7 @@ namespace Bridge.BOAProjectCompiler
 
                 var generatedCode = converter.GenerateCsharpCode();
 
-                sourceFiles[i] = Data.OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".One.cs";
+                sourceFiles[i] = Data.OutputFileDirectory + Path.GetFileNameWithoutExtension(filePath) + ".DOM.cs";
 
                 Directory.CreateDirectory(Data.OutputFileDirectory);
                 File.WriteAllText(sourceFiles[i], generatedCode, Encoding.UTF8);
