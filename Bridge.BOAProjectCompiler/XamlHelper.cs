@@ -6,14 +6,14 @@ namespace Bridge.BOAProjectCompiler
 {
     public static class XamlHelper
     {
-        static string GetNamespaceName(XmlNode xamlNode)
+        static string GetCSharpNamespaceName(XmlNode xamlNode)
         {
             return xamlNode.NamespaceURI.Split(';').FirstOrDefault(x => x != null && x.Contains("clr-namespace:"))?.RemoveFromStart("clr-namespace:");
         }
 
-        public static string GetClassFullName(XmlNode xamlNode)
+        public static string GetCSharpClassFullName(XmlNode xamlNode)
         {
-            return GetNamespaceName(xamlNode) + "." + xamlNode.LocalName;
+            return GetCSharpNamespaceName(xamlNode) + "." + xamlNode.LocalName;
         }
     }
 }

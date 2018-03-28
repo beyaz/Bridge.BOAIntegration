@@ -27,7 +27,7 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingCount++;
 
-            var baseClassFullName = XamlHelper.GetClassFullName(Input.RootNode);
+            var baseClassFullName = XamlHelper.GetCSharpClassFullName(Input.RootNode);
 
 
             sb.AppendLine($"public partial class {typeName} : " + baseClassFullName);

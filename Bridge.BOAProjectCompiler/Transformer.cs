@@ -88,7 +88,7 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
-            if (XamlHelper.GetClassFullName(node?.ParentNode?.ParentNode?.ParentNode) != "BOA.UI.BrowseForm.ControlGridFieldLayout")
+            if (XamlHelper.GetCSharpClassFullName(node?.ParentNode?.ParentNode?.ParentNode) != "BOA.UI.BrowseForm.ControlGridFieldLayout")
             {
                 return;
             }
@@ -381,7 +381,7 @@ namespace Bridge.BOAProjectCompiler
 
             var fieldName = xamlNode.Attributes?[xamlPropertyName]?.Value;
 
-            FieldDefinitions[fieldName] = XamlHelper.GetClassFullName(xamlNode);
+            FieldDefinitions[fieldName] = XamlHelper.GetCSharpClassFullName(xamlNode);
 
             newElement.SetAttribute(newAttribute, fieldName);
         }
