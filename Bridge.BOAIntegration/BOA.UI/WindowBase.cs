@@ -82,7 +82,8 @@ namespace BOA.UI
                 XmlUI                     = xmlUI,
                 DataContext               = this,
                 Caller                    = this,
-                TypeScriptWrittenJsObject = TypeScriptVersion
+                TypeScriptWrittenJsObject = TypeScriptVersion,
+                RenderCount = RenderCount
             };
 
             return reactUiBuilder.Build();

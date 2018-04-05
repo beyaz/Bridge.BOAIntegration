@@ -28,7 +28,6 @@ namespace Bridge.BOAIntegration
 
         protected Action<object>[] RefHandlers;
 
-        int _buildCount;
         #endregion
 
         #region Public Properties
@@ -37,19 +36,14 @@ namespace Bridge.BOAIntegration
         public object               DataContext          { get; set; }
         public Element              XmlRootElement       { get; set; }
         public string               XmlUI                { get; set; }
-        #endregion
 
-        #region Properties
-        protected bool IsFirstBuild => _buildCount == 1;
+        public int RenderCount { get; set; }
         #endregion
+        
 
         #region Public Methods
         public ReactElement Build()
         {
-            
-
-            _buildCount++;
-
             if (XmlRootElement == null)
             {
                 XmlRootElement = GetRootNode(XmlUI);
@@ -114,7 +108,7 @@ namespace Bridge.BOAIntegration
 
         protected void AddToRefHandlers(Action<object> item)
         {
-            if (_buildCount > 1)
+            if (RenderCount > 1)
             {
                 return;
             }
