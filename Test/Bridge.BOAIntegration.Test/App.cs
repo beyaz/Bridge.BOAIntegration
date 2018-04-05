@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using System;
+using Bridge.Html5;
 
 namespace Bridge.BOAIntegration
 {
@@ -9,6 +10,7 @@ namespace Bridge.BOAIntegration
         public static void RunAll()
         {
             ReactUIBuilderTest.Register();
+
 
             ReactUIBuilderBOAVersionTest.Register();
         }

@@ -23,7 +23,6 @@ namespace Bridge.BOAProjectCompiler
         #endregion
     }
 
-
     [TestClass]
     public class UIBuilderCodeGeneratorTest
     {
@@ -54,43 +53,37 @@ namespace Bridge.BOAProjectCompiler
         #endregion
     }
 
-
-
     class UIBuilderCodeGenerator
     {
-        public XmlNode RootNode { get; set; }
-        public PaddedStringBuilder Output { get; set; }
-        public string Caller { get; set; }
-        public string DataContext { get; set; }
+        #region Public Properties
+        public string              Caller      { get; set; }
+        public string              DataContext { get; set; }
+        public PaddedStringBuilder Output      { get; set; }
+        public XmlNode             RootNode    { get; set; }
+        #endregion
 
+        #region Public Methods
         public void Generate()
         {
-
             Output.AppendLine("object attributes = null;");
 
             Output.AppendLine("var builder = new UIBuilder");
             Output.AppendLine("{");
             Output.PaddingCount++;
 
-            Output.AppendLine("Caller      = "+Caller+",");
-            Output.AppendLine("DataContext = " + DataContext );
+            Output.AppendLine("Caller      = " + Caller + ",");
+            Output.AppendLine("DataContext = " + DataContext);
 
             Output.PaddingCount--;
             Output.AppendLine("};");
 
             Output.AppendLine("");
 
-
             WriteNode(RootNode);
-
-
-
-
-
         }
+        #endregion
 
-        
-
+        #region Methods
         void WriteNode(XmlNode node)
         {
             var nodeName = node.Name;
@@ -101,6 +94,7 @@ namespace Bridge.BOAProjectCompiler
                 foreach (XmlAttribute attribute in node.Attributes)
                 {
                     var attributeValue = attribute.Value;
+                    // using System -> .As<object>()
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
                 }
             }
@@ -110,7 +104,6 @@ namespace Bridge.BOAProjectCompiler
             }
 
             Output.AppendLine($"builder.Create(\"{nodeName}\" , attributes);");
-
 
             if (!node.HasChildNodes)
             {
@@ -125,10 +118,10 @@ namespace Bridge.BOAProjectCompiler
                 WriteNode(childNode);
                 Output.AppendLine("");
             }
+
             Output.PaddingCount--;
             Output.AppendLine("builder.EndOf();");
-
         }
-
+        #endregion
     }
 }
