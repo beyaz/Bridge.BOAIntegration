@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using BOA.Common.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,6 +25,10 @@ namespace Bridge.BOAProjectCompiler
         }
         #endregion
     }
+
+
+    
+
 
     [TestClass]
     public class UIBuilderCodeGeneratorTest

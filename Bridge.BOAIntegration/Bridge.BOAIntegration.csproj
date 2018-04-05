@@ -79,6 +79,7 @@
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderBOAVersion.cs" />
+    <Compile Include="Bridge.BOAIntegration\ReactUIBuilderNewVersionNotFinishedYet.cs" />
     <Compile Include="Bridge.BOAIntegration\TargetToSourceBinder.cs" />
     <Compile Include="Bridge.BOAIntegration\Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
