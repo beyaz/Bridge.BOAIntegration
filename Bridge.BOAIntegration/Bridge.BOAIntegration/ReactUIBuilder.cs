@@ -46,6 +46,8 @@ namespace Bridge.BOAIntegration
         #region Public Methods
         public ReactElement Build()
         {
+            
+
             _buildCount++;
 
             if (XmlRootElement == null)
@@ -220,6 +222,7 @@ namespace Bridge.BOAIntegration
             {
                 return ReactElement.Create(componentConstructor, EvaluateProps(componentConstructor, node, DataContext, nodeLocation));
             }
+
 
             var componentProp = EvaluateProps(componentConstructor, node, DataContext, nodeLocation);
 

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -69,6 +68,16 @@ namespace BOA.Common.Helpers
         }
 
         /// <summary>
+        ///     Gets the root node.
+        /// </summary>
+        public static XmlNode GetRootNode(string xml)
+        {
+            var document = new XmlDocument();
+            document.LoadXml(xml);
+            return document.FirstChild;
+        }
+
+        /// <summary>
         ///     Pretties the XML.
         /// </summary>
         public static string PrettyXml(string xml)
@@ -95,7 +104,7 @@ namespace BOA.Common.Helpers
         /// <summary>
         ///     To the list.
         /// </summary>
-        public static List<XmlNode> ToList(this IEnumerable nodeList)
+        public static List<XmlNode> ToList(this XmlNodeList nodeList)
         {
             var xmlNodes = new List<XmlNode>();
 

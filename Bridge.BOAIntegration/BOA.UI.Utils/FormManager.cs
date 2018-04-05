@@ -1,4 +1,5 @@
 ﻿using System;
+using Bridge;
 
 namespace BOA.UI.Utils
 {
@@ -8,6 +9,8 @@ namespace BOA.UI.Utils
 
         public bool ShowWithResourceCode(string resourceCode, string formNameSuffix, object data, bool showAsNewWindow)
         {
+           
+
             throw new NotImplementedException("TODO implement here.");
         }
     }
