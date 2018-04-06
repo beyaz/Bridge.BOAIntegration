@@ -57,12 +57,12 @@ namespace Bridge.BOAIntegration
 
             var topComponentInfo = Stack.Peek();
 
-            if (topComponentInfo.children == null)
+            if (topComponentInfo.Children == null)
             {
-                topComponentInfo.children = new ComponentInfo[0];
+                topComponentInfo.Children = new ComponentInfo[0];
             }
 
-            topComponentInfo.children.Push(componentInfo);
+            topComponentInfo.Children.Push(componentInfo);
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace Bridge.BOAIntegration
                 throw new ArgumentNullException(nameof(componentInfo));
             }
 
-            var children = componentInfo.children;
+            var children = componentInfo.Children;
 
             if (children == null)
             {
@@ -122,7 +122,7 @@ namespace Bridge.BOAIntegration
         class ComponentInfo
         {
             #region Fields
-            internal ComponentInfo[] children;
+            internal ComponentInfo[] Children;
             internal object          ConstructorFunction;
             internal object          Properties;
             #endregion
