@@ -6,11 +6,7 @@ namespace Bridge.BOAIntegration
 {
     class ReactUIBuilderBOAVersion : ReactUIBuilder
     {
-        #region Constants
-        const string FALSE = "FALSE";
-
-        const string TRUE = "TRUE";
-        #endregion
+       
 
         #region Fields
         internal object TypeScriptWrittenJsObject;
@@ -47,15 +43,15 @@ namespace Bridge.BOAIntegration
                     continue;
                 }
 
-                if (stringValue.ToUpper() == FALSE)
+                if (stringValue.ToUpper() == "FALSE")
                 {
-                    componentProp[attributeName] = Script.Write<object>("false");
+                    componentProp[attributeName] = false.As<object>();
                     continue;
                 }
 
-                if (stringValue.ToUpper() == TRUE)
+                if (stringValue.ToUpper() == "TRUE")
                 {
-                    componentProp[attributeName] = Script.Write<object>("true");
+                    componentProp[attributeName] = true.As<object>();
                     continue;
                 }
 
@@ -82,10 +78,9 @@ namespace Bridge.BOAIntegration
                     continue;
                 }
 
-                // ReSharper disable once UnusedVariable
                 var intValue = int.Parse(stringValue);
 
-                componentProp[attributeName] = Script.Write<object>("intValue");
+                componentProp[attributeName] = intValue.As<object>();
             }
         }
 
