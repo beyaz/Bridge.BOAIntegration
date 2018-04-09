@@ -53,6 +53,7 @@ namespace BOA.Common.Helpers
             sb.Append(Padding);
             sb.AppendLine(line);
         }
+        
 
         /// <summary>
         ///     Appends the with padding.

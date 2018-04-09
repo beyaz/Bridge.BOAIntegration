@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿using System;
+using System.Windows.Data;
 using System.Xml;
 using BOA.Common.Helpers;
 
@@ -51,6 +52,7 @@ namespace Bridge.BOAProjectCompiler
                         Output.AppendWithPadding($"attributes[\"{attribute.Name}\"] = ");
                         Write(bindingInfoContract);
                         Output.Append(";");
+                        Output.Append(Environment.NewLine);
                         continue;
                     }
 
@@ -86,12 +88,12 @@ namespace Bridge.BOAProjectCompiler
         void Write(BindingInfoContract contract)
         {
             
-            Output.AppendLine("new BindingInfoContract");
+            Output.AppendLine("new System.Windows.Data.BindingInfoContract");
             Output.AppendLine("{");
             Output.PaddingCount++;
 
-            Output.AppendLine($"BindingMode = BindingMode.{contract.BindingMode.ToString()},");
-            Output.AppendLine($"SourcePath  = {contract.SourcePath}");
+            Output.AppendLine($"BindingMode = System.Windows.Data.BindingMode.{contract.BindingMode.ToString()},");
+            Output.AppendLine($"SourcePath  = \"{contract.SourcePath}\"");
 
 
 
