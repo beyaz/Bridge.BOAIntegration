@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Windows.Data;
+using System.Xml;
 using BOA.Common.Helpers;
 
 namespace Bridge.BOAProjectCompiler
@@ -44,6 +45,15 @@ namespace Bridge.BOAProjectCompiler
                 foreach (XmlAttribute attribute in node.Attributes)
                 {
                     var attributeValue = attribute.Value;
+                    var bindingInfoContract = BindingExpressionParser.TryParse(attributeValue);
+                    if (bindingInfoContract != null)
+                    {
+                        Output.AppendWithPadding($"attributes[\"{attribute.Name}\"] = ");
+                        Write(bindingInfoContract);
+                        Output.Append(";");
+                        continue;
+                    }
+
                     // using System -> .As<object>()
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
                 }
@@ -71,6 +81,22 @@ namespace Bridge.BOAProjectCompiler
 
             Output.PaddingCount--;
             Output.AppendLine("builder.EndOf();");
+        }
+
+        void Write(BindingInfoContract contract)
+        {
+            
+            Output.AppendLine("new BindingInfoContract");
+            Output.AppendLine("{");
+            Output.PaddingCount++;
+
+            Output.AppendLine($"BindingMode = BindingMode.{contract.BindingMode.ToString()},");
+            Output.AppendLine($"SourcePath  = {contract.SourcePath}");
+
+
+
+            Output.PaddingCount--;
+            Output.AppendWithPadding("}");
         }
         #endregion
     }

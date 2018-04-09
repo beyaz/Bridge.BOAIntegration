@@ -38,12 +38,29 @@ namespace BOA.Common.Helpers
 
         #region Public Methods
         /// <summary>
+        ///     Appends the specified value.
+        /// </summary>
+        public void Append(string value)
+        {
+            sb.Append(value);
+        }
+
+        /// <summary>
         ///     Appends the line.
         /// </summary>
         public void AppendLine(string line)
         {
             sb.Append(Padding);
             sb.AppendLine(line);
+        }
+
+        /// <summary>
+        ///     Appends the with padding.
+        /// </summary>
+        public void AppendWithPadding(string value)
+        {
+            sb.Append(Padding);
+            sb.Append(value);
         }
 
         /// <summary>
