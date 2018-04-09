@@ -39,7 +39,7 @@ namespace Bridge.BOAProjectCompiler
 </a>";
             var generator = new UIBuilderCodeGenerator
             {
-                RootNode    = XmlHelper.GetRootNode(xml),
+                RootNode    = XmlHelper.GetRootNode( XmlHelper.ClearXml(xml)),
                 Caller      = "this",
                 DataContext = "this",
                 Output      = new PaddedStringBuilder()
