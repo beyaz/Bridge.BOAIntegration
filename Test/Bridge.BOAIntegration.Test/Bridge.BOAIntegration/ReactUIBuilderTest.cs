@@ -20,7 +20,7 @@ namespace Bridge.BOAIntegration
         #region Methods
         static void ShouldRenderSimpleOneDivInnerHTML(Assert assert)
         {
-            var xmlUI = "<div width4 ='{Width3}'>" +
+            var xml = "<div width4 ='{Width3}'>" +
                         "   <div>{name}</div>" +
                         "   <div x='{Inner.Name3}'>{Width3}</div>" +
                         "<Component_1 Name5='{Inner.Name3}' />" +
@@ -37,7 +37,7 @@ namespace Bridge.BOAIntegration
 
 }");
 
-            var element = BuildUI(xmlUI, prop);
+            var element = BuildUI(xml, prop);
 
             var container = new jQuery(Document.CreateElement("div"));
 
