@@ -29,14 +29,13 @@ namespace Bridge.BOAProjectCompiler
         [TestMethod]
         public void Generate()
         {
-            var xml =
-                @"<a y='g'>
-<b h='2' />
-<b h='3' /> 
-<b h='4'>
-    <c y='a1' />
-</b>
-</a>";
+            var xml = "<div width4 ='{Width3}'>" +
+                      "   <div>{name}</div>" +
+                      "   <div x='{Inner.Name3}'>{Width3}</div>" +
+                      "<Component_1 Name5='{Inner.Name3}' />" +
+                      "</div>";
+
+
             var generator = new UIBuilderCodeGenerator
             {
                 RootNode    = XmlHelper.GetRootNode( XmlHelper.ClearXml(xml)),

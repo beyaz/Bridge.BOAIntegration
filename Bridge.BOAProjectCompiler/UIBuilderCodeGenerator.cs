@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Data;
 using System.Xml;
 using BOA.Common.Helpers;
@@ -31,9 +32,34 @@ namespace Bridge.BOAProjectCompiler
 
             Output.AppendLine("");
 
+            RootNode.ForOwnAndChildNodes(NormalizeInnerHTML);
+
             WriteNode(RootNode);
         }
         #endregion
+
+        static void NormalizeInnerHTML(XmlNode node)
+        {
+            if (node.NodeType == XmlNodeType.Text)
+            {
+
+                if (node.Attributes == null)
+                {
+                    if (node.HasChildNodes == false)
+                    {
+                        var attribute = node.OwnerDocument?.CreateAttribute("innerHTML", string.Empty);
+
+                        Debug.Assert(attribute != null, nameof(attribute) + " != null");
+
+                        attribute.Value = node.Value;
+
+                        ((XmlElement) node.ParentNode)?.Attributes.Append(attribute);
+
+                        node.RemoveFromParent();
+                    }
+                }
+            }
+        }
 
         #region Methods
         void WriteNode(XmlNode node)

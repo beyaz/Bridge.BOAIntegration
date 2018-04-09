@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -34,6 +35,23 @@ namespace BOA.Common.Helpers
             }
 
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        ///     Fors the own and child nodes.
+        /// </summary>
+        public static void ForOwnAndChildNodes(this XmlNode node, Action<XmlNode> action)
+        {
+            if (!node.HasChildNodes)
+            {
+                action(node);
+                return;
+            }
+
+            foreach (XmlNode xmlNode in node.ChildNodes)
+            {
+                ForOwnAndChildNodes(xmlNode, action);
+            }
         }
 
         /// <summary>
@@ -99,6 +117,19 @@ namespace BOA.Common.Helpers
             }
 
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        ///     Removes from parent.
+        /// </summary>
+        public static void RemoveFromParent(this XmlNode node)
+        {
+            if (node.ParentNode == null)
+            {
+                throw new InvalidOperationException(nameof(node.ParentNode) + " is null.");
+            }
+
+            node.ParentNode.RemoveChild(node);
         }
 
         /// <summary>
