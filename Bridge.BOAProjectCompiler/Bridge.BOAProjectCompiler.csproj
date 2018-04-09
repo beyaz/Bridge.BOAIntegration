@@ -62,14 +62,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WhiteStone">
+      <HintPath>..\..\WhiteStone\bin\WhiteStone.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Bridge.BOAIntegration\.Net Override\System.Text.Tokenizers\Tokenizer.cs">
-      <Link>Tokenizer.cs</Link>
-    </Compile>
-    <Compile Include="..\Bridge.BOAIntegration\.Net Override\System.Windows.Data\BindingExpressionParser.cs">
-      <Link>BindingExpressionParser.cs</Link>
-    </Compile>
     <Compile Include="..\Bridge.BOAIntegration\.Net Override\System.Windows.Data\BindingInfoContract.cs">
       <Link>BindingInfoContract.cs</Link>
     </Compile>
@@ -79,10 +76,7 @@
     <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\MessagingResolver.cs">
       <Link>Bridge.BOAIntegration\MessagingResolver.cs</Link>
     </Compile>
-    <Compile Include="BOA.Common.Helpers\FileHelper.cs" />
-    <Compile Include="BOA.Common.Helpers\PaddedStringBuilder.cs" />
-    <Compile Include="BOA.Common.Helpers\StringHelper.cs" />
-    <Compile Include="BOA.Common.Helpers\XmlHelper.cs" />
+    <Compile Include="BindingExpressionParser.cs" />
     <Compile Include="BOAProjectCompiler.cs" />
     <Compile Include="BOAXamlHelper.cs" />
     <Compile Include="BoaXamlToBoaOneXmlConverter.cs" />
