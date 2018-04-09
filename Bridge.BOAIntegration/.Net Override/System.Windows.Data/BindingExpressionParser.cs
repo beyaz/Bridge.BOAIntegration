@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Tokenizers;
-using Bridge.Html5;
+using BOA.Common.Helpers;
 
 namespace System.Windows.Data
 {
@@ -44,7 +44,7 @@ namespace System.Windows.Data
             {
                 var token = tokens[i];
 
-                if (token.Value.ToUpperCase() == "BINDING" || token.Value == " ")
+                if (token.Value.ToUpper() == "BINDING" || token.Value == " ")
                 {
                     continue;
                 }
@@ -56,7 +56,7 @@ namespace System.Windows.Data
                     continue;
                 }
 
-                if (token.Value.ToUpperCase() == "MODE")
+                if (token.Value.ToUpper() == "MODE")
                 {
                     i++; // skip mode
 
@@ -66,7 +66,7 @@ namespace System.Windows.Data
                     continue;
                 }
 
-                if (token.Value.ToUpperCase() == "CONVERTERPARAMETER")
+                if (token.Value.ToUpper() == "CONVERTERPARAMETER")
                 {
                     i++; // skip converterparameter
                     SkipAssignmentAndSpace(tokens, ref i);
@@ -83,7 +83,7 @@ namespace System.Windows.Data
                     continue;
                 }
 
-                if (token.Value.ToUpperCase() == "CONVERTER")
+                if (token.Value.ToUpper() == "CONVERTER")
                 {
                     i++; // skip converter
 

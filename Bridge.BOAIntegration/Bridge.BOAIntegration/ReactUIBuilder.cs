@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
+using BOA.Common.Helpers;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
