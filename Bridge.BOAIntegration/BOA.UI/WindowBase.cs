@@ -16,7 +16,7 @@ namespace BOA.UI
     {
         public FormManager FormManager
         {
-            get { return Utils.FormManager.Instance; }
+            get { return FormManager.Instance; }
         }
 
         public void SetState<T>(T state) where T : BState
@@ -210,7 +210,6 @@ namespace BOA.UI
 
                 var resultHandler = (Func<ServiceCallExecuter, object>) (r => r._response);
 
-                // TODO: Error message management ? 
                 var errorHandler = (Func<ServiceCallExecuter, Exception>) (me => new ArgumentException(me.ToString()));
 
                 var task = Task.FromPromise<string>(promise, resultHandler, errorHandler);

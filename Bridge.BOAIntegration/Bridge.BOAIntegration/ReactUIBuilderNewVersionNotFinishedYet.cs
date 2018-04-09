@@ -21,6 +21,7 @@ namespace Bridge.BOAIntegration
         public object Caller      { get; set; }
         public object DataContext { get; set; }
         public object Result      { get; private set; }
+        public object TypeScriptWrittenJsObject;
         #endregion
 
         #region Public Methods
