@@ -6,8 +6,6 @@ namespace Bridge.BOAIntegration
 {
     class ReactUIBuilderBOAVersion : ReactUIBuilder
     {
-       
-
         #region Fields
         internal object TypeScriptWrittenJsObject;
         #endregion
