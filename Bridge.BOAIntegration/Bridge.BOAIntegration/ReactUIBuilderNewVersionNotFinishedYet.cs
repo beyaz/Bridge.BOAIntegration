@@ -2,9 +2,29 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Data;
+using BOA.Messaging;
 
 namespace Bridge.BOAIntegration
 {
+
+    class UIBuilderForBOA: UIBuilder
+    {
+        protected override void ProcessProperty(object elementProps, string propertyName)
+        {
+            var propertyValue = elementProps[propertyName] as string;
+
+            if (MessagingResolver.IsMessagingExpression(propertyValue))
+            {
+                var pair = MessagingResolver.GetMessagingExpressionValue(propertyValue);
+
+                elementProps[propertyName] =  MessagingHelper.GetMessage(pair.Key, pair.Value);
+                return;
+            }
+
+            base.ProcessProperty(elementProps,propertyName);
+
+        }
+    }
     class UIBuilder
     {
         #region Fields
@@ -27,42 +47,48 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Public Methods
-        public void Create(string tagName, object attributes)
+
+
+        protected virtual void ProcessProperty(object elementProps, string propertyName)
+        {
+            var propertyValue = elementProps[propertyName];
+
+            var bindingInfoContract = propertyValue as BindingInfoContract;
+            if (bindingInfoContract != null)
+            {
+                var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
+                propertyPath.Walk(DataContext);
+                propertyValue = Unbox(propertyPath.GetPropertyValue());
+
+                elementProps[propertyName] = propertyValue;
+            }
+        }
+
+        public void Create(string tagName, object elementProps)
         {
             var constructorFunction = GetComponentClassByTagName(tagName);
 
-            var propertyNames = GetOwnPropertyNames(attributes);
-            for (var i = 0; i < propertyNames.Length; i++)
+            var propertyNames = GetOwnPropertyNames(elementProps);
+            var len = propertyNames.Length;
+
+            for (var i = 0; i < len; i++)
             {
-                var propertyName  = propertyNames[i];
-                var propertyValue = attributes[propertyName];
-
-                var bindingInfoContract = propertyValue as BindingInfoContract;
-                if (bindingInfoContract != null)
-                {
-                    var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
-                    propertyPath.Walk(DataContext);
-                    propertyValue = Unbox(propertyPath.GetPropertyValue());
-
-                    attributes[propertyName] = propertyValue;
-                }
-
-                
+                ProcessProperty(elementProps, propertyNames[i]);
             }
 
             var componentInfo = new ComponentInfo
             {
                 ConstructorFunction = constructorFunction,
-                Properties          = attributes
+                Properties          = elementProps
             };
 
-            if (attributes.HasOwnProperty("innerHTML"))
+            if (elementProps.HasOwnProperty("innerHTML"))
             {
                 componentInfo.Children = new[]
                 {
                     new ComponentInfo
                     {
-                        PureString = attributes["innerHTML"]
+                        PureString = elementProps["innerHTML"]
                     }
                 };
 
