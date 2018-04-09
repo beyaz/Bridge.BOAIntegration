@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Data;
 
 namespace Bridge.BOAIntegration
 {
     class UIBuilder
     {
         #region Fields
-        readonly ComponentClassFinder ComponentClassFinder;
+        public   ComponentClassFinder ComponentClassFinder;
+        public   object               TypeScriptWrittenJsObject;
         readonly Stack<ComponentInfo> Stack = new Stack<ComponentInfo>();
         #endregion
 
@@ -21,7 +24,6 @@ namespace Bridge.BOAIntegration
         public object Caller      { get; set; }
         public object DataContext { get; set; }
         public object Result      { get; private set; }
-        public object TypeScriptWrittenJsObject;
         #endregion
 
         #region Public Methods
@@ -29,11 +31,43 @@ namespace Bridge.BOAIntegration
         {
             var constructorFunction = GetComponentClassByTagName(tagName);
 
+            var propertyNames = GetOwnPropertyNames(attributes);
+            for (var i = 0; i < propertyNames.Length; i++)
+            {
+                var propertyName  = propertyNames[i];
+                var propertyValue = attributes[propertyName];
+
+                var bindingInfoContract = propertyValue as BindingInfoContract;
+                if (bindingInfoContract != null)
+                {
+                    var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
+                    propertyPath.Walk(DataContext);
+                    propertyValue = Unbox(propertyPath.GetPropertyValue());
+
+                    attributes[propertyName] = propertyValue;
+                }
+
+                
+            }
+
             var componentInfo = new ComponentInfo
             {
                 ConstructorFunction = constructorFunction,
                 Properties          = attributes
             };
+
+            if (attributes.HasOwnProperty("innerHTML"))
+            {
+                componentInfo.Children = new[]
+                {
+                    new ComponentInfo
+                    {
+                        PureString = attributes["innerHTML"]
+                    }
+                };
+
+                Script.Write(" delete attributes['innerHTML']");
+            }
 
             Stack.Push(componentInfo);
         }
@@ -68,11 +102,19 @@ namespace Bridge.BOAIntegration
         #endregion
 
         #region Methods
+        [Template("Bridge.unbox({0},true)")]
+        protected static extern object Unbox(object o);
+
         ReactElement ConvertToReactElement(ComponentInfo componentInfo)
         {
             if (componentInfo == null)
             {
                 throw new ArgumentNullException(nameof(componentInfo));
+            }
+
+            if (componentInfo.PureString != null)
+            {
+                return componentInfo.PureString.As<ReactElement>();
             }
 
             var children = componentInfo.Children;
@@ -126,6 +168,7 @@ namespace Bridge.BOAIntegration
             internal ComponentInfo[] Children;
             internal object          ConstructorFunction;
             internal object          Properties;
+            internal object          PureString;
             #endregion
         }
     }

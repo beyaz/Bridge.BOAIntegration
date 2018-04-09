@@ -5,11 +5,11 @@
         #region Methods
         static dynamic BuildUI(string xmlUI, dynamic prop)
         {
-            var componentClassFinder = ComponentClassFinderMethod();
+        
 
             var builder = new ReactUIBuilder
             {
-                ComponentClassFinder = componentClassFinder,
+                ComponentClassFinder = ComponentClassFinderMethod,
 
                 XmlUI       = xmlUI,
                 DataContext = prop
@@ -19,17 +19,16 @@
             return element;
         }
 
-        static ComponentClassFinder ComponentClassFinderMethod()
+        static object ComponentClassFinderMethod(string tag)
         {
-            return tag =>
-            {
+           
                 if (tag == nameof(Component_1))
                 {
                     return typeof(Component_1);
                 }
 
                 return null;
-            };
+            
         }
         #endregion
     }

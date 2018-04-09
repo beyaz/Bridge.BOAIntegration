@@ -82,6 +82,11 @@ namespace Bridge.BOAProjectCompiler
                         continue;
                     }
 
+                    if (attribute.Name == "onClick")
+                    {
+                        attributeValue = Caller + "." + attributeValue;
+                    }
+
                     // using System -> .As<object>()
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
                 }

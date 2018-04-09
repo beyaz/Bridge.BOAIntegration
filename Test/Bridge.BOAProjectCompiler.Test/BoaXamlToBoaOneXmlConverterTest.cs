@@ -30,7 +30,7 @@ namespace Bridge.BOAProjectCompiler
         public void Generate()
         {
             var xml = "<div width4 ='{Width3}'>" +
-                      "   <div>{name}</div>" +
+                      "   <div onClick='HandleClick'>{name}</div>" +
                       "   <div x='{Inner.Name3}'>{Width3}</div>" +
                       "<Component_1 Name5='{Inner.Name3}' />" +
                       "</div>";
