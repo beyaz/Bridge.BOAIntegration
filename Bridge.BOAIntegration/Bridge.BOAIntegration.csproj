@@ -90,7 +90,6 @@
     <Compile Include=".Net Override\System.Text.Tokenizers\Tokenizer.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\BindingMode.cs" />
-    <Compile Include=".Net Override\System.Windows.Data\HTMLBindingInfo.cs" />
     <Compile Include=".Net Override\System.Windows.Data\IValueConverter.cs" />
     <Compile Include=".Net Override\System.Windows\PropertyPath.cs" />
   </ItemGroup>
