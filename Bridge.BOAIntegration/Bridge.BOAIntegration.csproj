@@ -43,6 +43,8 @@
       <Link>Bridge.BOAIntegration\DataGridColumnInfoContract.cs</Link>
     </Compile>
     <Compile Include=".Net Override\System.Windows.Data\BindingExpressionParser.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\BindingInfoContract.cs" />
+    <Compile Include=".Net Override\System.Windows.Data\Extensions.cs" />
     <Compile Include=".Net Override\System.Windows.Input\ICommand.cs" />
     <Compile Include=".Net Override\System\Cast.cs" />
     <Compile Include=".Net Override\System\Extensions.cs" />

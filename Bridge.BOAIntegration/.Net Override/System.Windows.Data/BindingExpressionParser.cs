@@ -14,7 +14,7 @@ namespace System.Windows.Data
         #endregion
 
         #region Public Methods
-        public static BindingInfo TryParse(string value)
+        public static BindingInfoContract TryParse(string value)
         {
             if (value == null)
             {
@@ -33,10 +33,10 @@ namespace System.Windows.Data
                 return null;
             }
 
-            string          sourcePath         = null;
-            var             bindingMode        = BindingMode.TwoWay;
-            IValueConverter valueConverter     = null;
-            string          converterParameter = null;
+            string sourcePath            = null;
+            var    bindingMode           = BindingMode.TwoWay;
+            string converterTypeFullName = null;
+            string converterParameter    = null;
 
             var tokens = BindingExpressionTokenizer.Tokenize(value);
             var len    = tokens.Count;
@@ -89,24 +89,16 @@ namespace System.Windows.Data
 
                     SkipAssignmentAndSpace(tokens, ref i);
 
-                    var converterTypeFullName = ReadPath(tokens, ref i);
-
-                    var converterType = Type.GetType(converterTypeFullName);
-                    if (converterType == null)
-                    {
-                        throw new MissingMemberException(converterTypeFullName);
-                    }
-
-                    valueConverter = (IValueConverter) Activator.CreateInstance(converterType);
+                    converterTypeFullName = ReadPath(tokens, ref i);
                 }
             }
 
-            return new BindingInfo
+            return new BindingInfoContract
             {
-                SourcePath         = sourcePath,
-                BindingMode        = bindingMode,
-                Converter          = valueConverter,
-                ConverterParameter = converterParameter
+                SourcePath            = sourcePath,
+                BindingMode           = bindingMode,
+                ConverterTypeFullName = converterTypeFullName,
+                ConverterParameter    = converterParameter
             };
         }
         #endregion

@@ -56,7 +56,7 @@ namespace Bridge.BOAIntegration
         #region Methods
         internal static object BuildNodeAsText(string innerText, object dataContext)
         {
-            var bindingInfo = BindingExpressionParser.TryParse(innerText);
+            var bindingInfo = BindingExpressionParser.TryParse(innerText).ToBindingInfo();
 
             if (bindingInfo == null)
             {
@@ -89,7 +89,7 @@ namespace Bridge.BOAIntegration
                 return Script.Write<object>(@"function(){ return caller[methodName].apply(caller,arguments);  } ");
             }
 
-            var bindingInfo = BindingExpressionParser.TryParse(attributeValue);
+            var bindingInfo = BindingExpressionParser.TryParse(attributeValue).ToBindingInfo();
 
             if (bindingInfo != null)
             {

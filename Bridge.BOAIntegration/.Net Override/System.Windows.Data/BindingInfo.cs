@@ -1,12 +1,7 @@
-
-
 namespace System.Windows.Data
 {
     public class BindingInfo
     {
-      
-  
-
         #region Public Properties
         public BindingMode     BindingMode        { get; set; }
         public IValueConverter Converter          { get; set; }
@@ -18,8 +13,6 @@ namespace System.Windows.Data
         #endregion
 
         #region Public Methods
- 
-
         public void Connect()
         {
             ConnectSourceToTarget();
@@ -79,10 +72,6 @@ namespace System.Windows.Data
         {
             return TargetPath.GetPropertyValue();
         }
-
-
-
-        
         #endregion
     }
 }
