@@ -19,9 +19,9 @@ namespace System.Windows.Data
         #endregion
 
         #region Public Methods
-        public new static HTMLBindingInfo TryParseExpression(string value)
+        public  static HTMLBindingInfo TryParseExpression(string value)
         {
-            var bindingInfo = BindingInfo.TryParseExpression(value);
+            var bindingInfo = BindingExpressionParser.TryParse(value);
             if (bindingInfo == null)
             {
                 return null;

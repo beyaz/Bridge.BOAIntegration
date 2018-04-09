@@ -197,7 +197,7 @@ namespace Bridge.BOAIntegration
 
             elementProps[CurrentAttributeName] = EvaluateAttributeValue(CurrentAttributeValue, prop);
 
-            var bindingInfo = BindingInfo.TryParseExpression(CurrentAttributeValue);
+            var bindingInfo = BindingExpressionParser.TryParse(CurrentAttributeValue);
 
             if (bindingInfo != null)
             {
