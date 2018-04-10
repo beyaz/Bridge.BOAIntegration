@@ -79,72 +79,140 @@ namespace Bridge.BOAProjectCompiler
             Output.AppendWithPadding("}");
         }
 
+        static bool TryToHandleAsMessagingAccess(AttributeData data)
+        {
+            var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.attributeValue);
+            if (isMessagingExpression)
+            {
+                var pair = MessagingResolver.GetMessagingExpressionValue(data.attributeValue);
+
+                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
+                return true;
+            }
+
+            return false;
+        }
+        bool TryToHandleAsBindingExpression(AttributeData data)
+        {
+            var bindingInfoContract = BindingExpressionParser.TryParse(data.attributeValue);
+            if (bindingInfoContract != null)
+            {
+                data.Output.AppendWithPadding($"attributes[\"{data.attributeName}\"] = ");
+                Write(bindingInfoContract);
+                data.Output.Append(";");
+                data.Output.Append(Environment.NewLine);
+                return  true;
+            }
+
+            return false;
+        }
+
+        static bool TryToHandleAsEvent(AttributeData data)
+        {
+            if (data.attributeName == "onClick")
+            {
+                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.Caller + "[\"" + data.attributeValue + "\"]"};");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        static bool TryToHandleAsBoolean(AttributeData data)
+        {
+            var booleanAttributes = MapHelper.GetBooleanAttributes(data.componentName);
+
+            var isBoolenAttribute = booleanAttributes?.Contains(data.attributeName) == true;
+            if (isBoolenAttribute)
+            {
+                if (data.attributeValue.ToUpperEN() == "FALSE")
+                {
+                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = false.As<object>();");
+                    return true;
+                }
+
+                if (data.attributeValue.ToUpperEN() == "TRUE")
+                {
+                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = true.As<object>();");
+                    return true; 
+                }
+
+                throw new ArgumentException($"{data.componentName} -> {data.attributeName} must be boolan (false/true)");
+            }
+
+            return false;
+        }
+
+        static bool TryToHandleAsNumber(AttributeData data)
+        {
+
+            var numberAttributes = MapHelper.GetNumberAttributes(data.componentName);
+            var isNumberProperty = numberAttributes?.Contains(data.attributeName) == true;
+            if (isNumberProperty)
+            {
+                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.attributeValue};");
+                return true;
+            }
+
+            return false;
+        }
+
+        static bool TryToHandleAsString(AttributeData data)
+        {
+
+            data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = \"{data.attributeValue}\";");
+
+            return true;
+        }
+
+        class AttributeData
+        {
+            public string attributeName { get;  set; }
+            public string attributeValue { get;  set; }
+            public string componentName { get;  set; }
+            public PaddedStringBuilder Output { get; set; }
+            public string Caller { get; set; }
+
+        }
+
         void WriteNode(XmlNode node)
         {
             var skipProcessChildNodes = false;
 
             var componentName = node.Name;
 
+            var pipe = new Func<AttributeData, bool>[]
+            {
+                TryToHandleAsMessagingAccess,
+                TryToHandleAsBindingExpression,
+                TryToHandleAsEvent,
+                TryToHandleAsBoolean,
+                TryToHandleAsNumber,
+                TryToHandleAsString
+            };
+
             if (node.Attributes != null)
             {
                 Output.AppendLine("attributes = Bridge.ObjectLiteral.Create<object>();");
                 foreach (XmlAttribute attribute in node.Attributes)
                 {
-                    var attributeValue = attribute.Value;
-
-                    var isMessagingExpression = MessagingResolver.IsMessagingExpression(attributeValue);
-                    if (isMessagingExpression)
+                    
+                    foreach (var handler in pipe)
                     {
-                        var pair = MessagingResolver.GetMessagingExpressionValue(attributeValue);
-
-                        Output.AppendLine($"attributes[\"{attribute.Name}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
-                        continue;
-                    }
-
-                    var bindingInfoContract = BindingExpressionParser.TryParse(attributeValue);
-                    if (bindingInfoContract != null)
-                    {
-                        Output.AppendWithPadding($"attributes[\"{attribute.Name}\"] = ");
-                        Write(bindingInfoContract);
-                        Output.Append(";");
-                        Output.Append(Environment.NewLine);
-                        continue;
-                    }
-
-                    if (attribute.Name == "onClick")
-                    {
-                        attributeValue = Caller + "." + attributeValue;
-                    }
-
-                    var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
-
-                    var isBoolenAttribute = booleanAttributes?.Contains(attribute.Name) == true;
-                    if (isBoolenAttribute)
-                    {
-                        if (attributeValue.ToUpperEN() == "FALSE")
+                        var isHandled = handler(new AttributeData
                         {
-                            Output.AppendLine($"attributes[\"{attribute.Name}\"] = false.As<object>();");
-                            continue;
-                        }
-
-                        if (attributeValue.ToUpperEN() == "TRUE")
+                            attributeValue = attribute.Value,
+                            attributeName = attribute.Name,
+                            componentName = componentName,
+                            Output = Output,
+                            Caller = Caller
+                        });
+                        if (isHandled)
                         {
-                            Output.AppendLine($"attributes[\"{attribute.Name}\"] = true.As<object>();");
-                            continue;
+                            break;
                         }
-
-                        throw new ArgumentException($"{componentName} -> {attribute.Name} must be boolan (false/true)");
                     }
-
-                    var numberAttributes = MapHelper.GetNumberAttributes(componentName);
-                    var isNumberProperty = numberAttributes?.Contains(attribute.Name) == true;
-                    if (isNumberProperty)
-                    {
-                        Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
-                        continue;
-                    }
-
-                    Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
 
                 if (componentName == "BComboBox")
@@ -158,9 +226,8 @@ namespace Bridge.BOAProjectCompiler
                         Output.AppendLine("attributes[\"columns\"] = new object[0];");
 
                         Output.AppendLine("temp = Bridge.ObjectLiteral.Create<object>();");
-                        for (var i = 0; i < columns.Count; i++)
+                        foreach (var columnNode in columns)
                         {
-                            var columnNode = columns[i];
                             Output.AppendLine("temp[\"key\"] = \"" + columnNode?.Attributes?["key"].Value + "\";");
 
                             var columnName          = columnNode?.Attributes?["Name"].Value;
@@ -173,7 +240,7 @@ namespace Bridge.BOAProjectCompiler
                                 continue;
                             }
 
-                            Output.AppendLine($"temp[\"name\"] = \"" + columnNode?.Attributes?["Name"] + "\";");
+                            Output.AppendLine("temp[\"name\"] = \"" + columnNode?.Attributes?["Name"] + "\";");
                             Output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
                         }
                     }
