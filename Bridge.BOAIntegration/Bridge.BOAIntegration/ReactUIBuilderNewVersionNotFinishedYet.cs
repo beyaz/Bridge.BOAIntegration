@@ -94,16 +94,6 @@ namespace Bridge.BOAIntegration
                 var propertyName  = propertyNames[i];
                 var propertyValue = componentProp[propertyName];
 
-                var propertyValueAsString = propertyValue as string;
-                if (MessagingResolver.IsMessagingExpression(propertyValueAsString))
-                {
-                    var pair = MessagingResolver.GetMessagingExpressionValue(propertyValueAsString);
-
-                    componentProp[propertyName] = MessagingHelper.GetMessage(pair.Key, pair.Value);
-                    continue;
-                }
-
-
                 var bindingInfoContract = propertyValue as BindingInfoContract;
                 if (bindingInfoContract != null)
                 {
