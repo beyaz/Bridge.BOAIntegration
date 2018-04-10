@@ -38,11 +38,36 @@ namespace Bridge.BOAProjectCompiler
                 sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key + ";");
             }
 
+
+
+            sb.AppendLine("protected override object Render()");
+            sb.AppendLine("{");
+            sb.PaddingCount++;
+
+            var generator = new UIBuilderCodeGenerator
+            {
+                RootNode    = XmlHelper.GetRootNode(Data.OutputXmlString),
+                Caller      = "this",
+                Output      = sb,
+                DataContext = "this"
+            };
+            generator.Generate();
+
+            sb.AppendLine("return builder.Result;");
+
+            sb.PaddingCount--;
+            sb.AppendLine("}");
+
+
+
             sb.AppendLine("void InitializeComponent()");
             sb.AppendLine("{");
             sb.PaddingCount++;
 
             sb.AppendLine("XmlUI = @" + '"' + Data.OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
+
+            
+
 
             sb.AppendLine("");
 

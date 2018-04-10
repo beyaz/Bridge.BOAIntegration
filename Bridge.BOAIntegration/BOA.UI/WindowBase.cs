@@ -75,6 +75,11 @@ namespace BOA.UI
 
             return BuildUI(XmlUI);
         }
+
+        protected virtual object Render()
+        {
+
+        }
         protected ReactElement BuildUI(string xmlUI)
         {
             var reactUiBuilder = new ReactUIBuilderBOAVersion
