@@ -9,26 +9,10 @@ namespace Bridge.BOAIntegration
 
     class UIBuilderForBOA: UIBuilder
     {
-
-        void  ProcessBindingInfo(BindingInfo bindingInfo,string nodeName, object prop, string currentAttributeName, object elementProps)
+        public UIBuilderForBOA()
         {
-            BindSourceToTarget(bindingInfo, nodeName, prop, currentAttributeName);
-
-            if (bindingInfo.BindingMode == BindingMode.TwoWay)
-            {
-                var targetToSourceBinder = new TargetToSourceBinder
-                {
-                    elementProps  = elementProps,
-                    bindingInfo   = bindingInfo,
-                    DataContext   = DataContext,
-                    attributeName = currentAttributeName,
-                    nodeName      = nodeName
-                };
-
-                targetToSourceBinder.TryBind();
-            }
+            ComponentClassFinder = NodeModules.FindComponent;
         }
-
 
         static bool ComponentPropNeedToUpdate(string nodeName, dynamic component, string propName, object value)
         {
@@ -97,35 +81,122 @@ namespace Bridge.BOAIntegration
 
         BState State => TypeScriptWrittenJsObject[AttributeName.state].As<BState>();
 
-        protected override void ProcessProperty(object elementProps, string propertyName)
+       
+
+         static void EvaluateNumberValues(string componentName, object componentProp)
         {
-            var propertyValue = elementProps[propertyName] as string;
+            var attributes = MapHelper.GetNumberAttributes(componentName);
 
-            if (MessagingResolver.IsMessagingExpression(propertyValue))
+            if (attributes == null)
             {
-                var pair = MessagingResolver.GetMessagingExpressionValue(propertyValue);
-
-                elementProps[propertyName] =  MessagingHelper.GetMessage(pair.Key, pair.Value);
                 return;
             }
 
-            var bindingInfo = BindingExpressionParser.TryParse(propertyValue).ToBindingInfo();
-            if (bindingInfo != null)
+            var length = attributes.Length;
+            for (var i = 0; i < length; i++)
             {
-                ProcessBindingInfo(bindingInfo,"?","?","?","?");
-                return;
+                var attributeName = attributes[i];
+                var stringValue   = componentProp[attributeName] as string;
+                if (stringValue == null)
+                {
+                    continue;
+                }
+
+                var intValue = int.Parse(stringValue);
+
+                componentProp[attributeName] = intValue.As<object>();
             }
-
-            base.ProcessProperty(elementProps,propertyName);
-
         }
 
-        protected override object OnPropsEvaluated(string componentName, object componentProp)
+         static void EvaluateBooleanValues(string componentName, object componentProp)
         {
-            
+            var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
+
+            if (booleanAttributes == null)
+            {
+                return;
+            }
+
+            var length = booleanAttributes.Length;
+            for (var i = 0; i < length; i++)
+            {
+                var attributeName = booleanAttributes[i];
+                var stringValue   = componentProp[attributeName] as string;
+                if (stringValue == null)
+                {
+                    continue;
+                }
+
+                if (stringValue.ToUpper() == "FALSE")
+                {
+                    componentProp[attributeName] = false.As<object>();
+                    continue;
+                }
+
+                if (stringValue.ToUpper() == "TRUE")
+                {
+                    componentProp[attributeName] = true.As<object>();
+                    continue;
+                }
+
+                throw new ArgumentException($"{componentName} -> {attributeName} must be boolan (false/true)");
+            }
+        }
+
+        protected override void OnComponentInfoCreated(ComponentInfo info)
+        {
+
+            var componentProp = info.Properties;
+
+            var propertyNames = GetOwnPropertyNames(componentProp);
+            var len           = propertyNames.Length;
+
+            for (var i = 0; i < len; i++)
+            {
+                var propertyName  = propertyNames[i];
+                var propertyValue = componentProp[propertyName];
+
+                var propertyValueAsString = propertyValue as string;
+                if (MessagingResolver.IsMessagingExpression(propertyValueAsString))
+                {
+                    var pair = MessagingResolver.GetMessagingExpressionValue(propertyValueAsString);
+
+                    componentProp[propertyName] = MessagingHelper.GetMessage(pair.Key, pair.Value);
+                    continue;
+                }
+
+
+                var bindingInfoContract = propertyValue as BindingInfoContract;
+                if (bindingInfoContract != null)
+                {
+                    var bindingInfo = bindingInfoContract.ToBindingInfo();
+
+                    BindSourceToTarget(bindingInfo, info.NodeName, DataContext, propertyName);
+
+                    if (bindingInfo.BindingMode == BindingMode.TwoWay)
+                    {
+                        var targetToSourceBinder = new TargetToSourceBinder
+                        {
+                            elementProps  = componentProp,
+                            bindingInfo   = bindingInfo,
+                            DataContext   = DataContext,
+                            attributeName = propertyName,
+                            nodeName      = info.NodeName
+                        };
+
+                        targetToSourceBinder.TryBind();
+                    }
+                }
+            }
+
 
             var pageParams = State.PageParams;
             var context = State.Context;
+
+
+
+            string componentName = info.NodeName;
+          
 
             var snapKey = componentProp[AttributeName.key].As<string>();
             if (snapKey == null)
@@ -139,7 +210,7 @@ namespace Bridge.BOAIntegration
             componentProp[AttributeName.snapshot] = State[AttributeName.snapshot][snapKey];
             var previousSnap = State[AttributeName.dynamicProps][snapKey];
 
-            componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
+            info.Properties = componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
 
             var me = this;
 
@@ -207,81 +278,11 @@ namespace Bridge.BOAIntegration
             EvaluateBooleanValues(componentName, componentProp);
             EvaluateNumberValues(componentName, componentProp);
 
-            return componentProp;
         }
-
-         static void EvaluateNumberValues(string componentName, object componentProp)
-        {
-            var attributes = MapHelper.GetNumberAttributes(componentName);
-
-            if (attributes == null)
-            {
-                return;
-            }
-
-            var length = attributes.Length;
-            for (var i = 0; i < length; i++)
-            {
-                var attributeName = attributes[i];
-                var stringValue   = componentProp[attributeName] as string;
-                if (stringValue == null)
-                {
-                    continue;
-                }
-
-                var intValue = int.Parse(stringValue);
-
-                componentProp[attributeName] = intValue.As<object>();
-            }
-        }
-
-         static void EvaluateBooleanValues(string componentName, object componentProp)
-        {
-            var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
-
-            if (booleanAttributes == null)
-            {
-                return;
-            }
-
-            var length = booleanAttributes.Length;
-            for (var i = 0; i < length; i++)
-            {
-                var attributeName = booleanAttributes[i];
-                var stringValue   = componentProp[attributeName] as string;
-                if (stringValue == null)
-                {
-                    continue;
-                }
-
-                if (stringValue.ToUpper() == "FALSE")
-                {
-                    componentProp[attributeName] = false.As<object>();
-                    continue;
-                }
-
-                if (stringValue.ToUpper() == "TRUE")
-                {
-                    componentProp[attributeName] = true.As<object>();
-                    continue;
-                }
-
-                throw new ArgumentException($"{componentName} -> {attributeName} must be boolan (false/true)");
-            }
-        }
-
-
-
-
-
     }
+
     class UIBuilder
     {
-        protected virtual object OnPropsEvaluated(string componentName, object componentProp)
-        {
-            return componentProp;
-        }
-
         public int RenderCount { get; set; }
         protected Action<object>[] RefHandlers;
 
@@ -301,8 +302,8 @@ namespace Bridge.BOAIntegration
         }
 
         #region Fields
-        public   ComponentClassFinder ComponentClassFinder;
-        public   object               TypeScriptWrittenJsObject;
+        public   ComponentClassFinder ComponentClassFinder{ get; set; }
+    public   object TypeScriptWrittenJsObject { get; set; }
         readonly Stack<ComponentInfo> Stack = new Stack<ComponentInfo>();
         #endregion
 
@@ -322,59 +323,67 @@ namespace Bridge.BOAIntegration
         #region Public Methods
 
 
-        protected virtual void ProcessProperty(object elementProps, string propertyName)
+        
+
+
+
+        void ResolveBindingValues(ComponentInfo info)
         {
-            var propertyValue = elementProps[propertyName];
-
-            var bindingInfoContract = propertyValue as BindingInfoContract;
-            if (bindingInfoContract != null)
-            {
-                var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
-                propertyPath.Walk(DataContext);
-                propertyValue = Unbox(propertyPath.GetPropertyValue());
-
-                elementProps[propertyName] = propertyValue;
-            }
-        }
-
-        public void Create(string tagName, object elementProps)
-        {
-            var constructorFunction = GetComponentClassByTagName(tagName);
+            var elementProps = info.Properties;
 
             var propertyNames = GetOwnPropertyNames(elementProps);
-            var len = propertyNames.Length;
+            var len           = propertyNames.Length;
 
             for (var i = 0; i < len; i++)
             {
-                ProcessProperty(elementProps, propertyNames[i]);
-            }
+                var propertyName = propertyNames[i];
+                var propertyValue = elementProps[propertyName];
 
-            if (elementProps[AttributeName.key] == Script.Undefined)
+
+                var bindingInfoContract = propertyValue as BindingInfoContract;
+                if (bindingInfoContract != null)
+                {
+                    var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
+                    propertyPath.Walk(DataContext);
+                    propertyValue = Unbox(propertyPath.GetPropertyValue());
+
+                    elementProps[propertyName] = propertyValue;
+                }
+            }
+        }
+
+        public void Create(string tagName, object componentProps)
+        {
+            var constructorFunction = GetComponentClassByTagName(tagName);
+
+            if (componentProps[AttributeName.key] == Script.Undefined)
             {
-                elementProps[AttributeName.key] = GetNextKey();
+                componentProps[AttributeName.key] = GetNextKey();
             }
-
-            elementProps = OnPropsEvaluated(tagName,elementProps);
-
 
             var componentInfo = new ComponentInfo
             {
                 ConstructorFunction = constructorFunction,
-                Properties          = elementProps
+                Properties          = componentProps,
+                NodeName = tagName
             };
 
-            if (elementProps.HasOwnProperty("innerHTML"))
+            OnComponentInfoCreated(componentInfo);
+
+            if (componentProps.HasOwnProperty("innerHTML"))
             {
                 componentInfo.Children = new[]
                 {
                     new ComponentInfo
                     {
-                        PureString = elementProps["innerHTML"]
+                        PureString = componentProps["innerHTML"]
                     }
                 };
 
-                Script.Write(" delete attributes['innerHTML']");
+                Script.Write(" delete componentProps['innerHTML']");
             }
+
+            RefHandlers = null;
 
             Stack.Push(componentInfo);
         }
@@ -477,14 +486,21 @@ namespace Bridge.BOAIntegration
         }
         #endregion
 
-        class ComponentInfo
+        
+
+        protected virtual void OnComponentInfoCreated(ComponentInfo info)
         {
-            #region Fields
-            internal ComponentInfo[] Children;
-            internal object          ConstructorFunction;
-            internal object          Properties;
-            internal object          PureString;
-            #endregion
+            ResolveBindingValues(info);
         }
+    }
+    class ComponentInfo
+    {
+        #region Fields
+        internal ComponentInfo[] Children;
+        internal object          ConstructorFunction;
+        internal object          Properties;
+        internal object          PureString;
+        internal string NodeName;
+        #endregion
     }
 }

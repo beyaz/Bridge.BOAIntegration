@@ -24,8 +24,12 @@ namespace Bridge.BOAProjectCompiler
             Output.AppendLine("{");
             Output.PaddingCount++;
 
-            Output.AppendLine("Caller      = " + Caller + ",");
-            Output.AppendLine("DataContext = " + DataContext);
+            Output.AppendLine("Caller                       = " + Caller + ",");
+            Output.AppendLine("DataContext                  = " + DataContext + ",");
+            Output.AppendLine("RenderCount                  = " + Caller+ ".RenderCount" + ",");
+            Output.AppendLine("TypeScriptWrittenJsObject    = " + Caller + ".TypeScriptWrittenJsObject");
+            
+                
 
             Output.PaddingCount--;
             Output.AppendLine("};");
