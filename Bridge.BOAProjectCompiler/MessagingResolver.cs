@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BOA.Common.Helpers;
 
-namespace Bridge.BOAIntegration
+namespace Bridge.BOAProjectCompiler
 {
     class MessagingResolver
     {
