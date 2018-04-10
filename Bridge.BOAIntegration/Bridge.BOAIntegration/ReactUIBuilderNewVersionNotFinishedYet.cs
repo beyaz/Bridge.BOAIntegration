@@ -9,6 +9,92 @@ namespace Bridge.BOAIntegration
 
     class UIBuilderForBOA: UIBuilder
     {
+
+        void  ProcessBindingInfo(BindingInfo bindingInfo,string nodeName, object prop, string currentAttributeName, object elementProps)
+        {
+            BindSourceToTarget(bindingInfo, nodeName, prop, currentAttributeName);
+
+            if (bindingInfo.BindingMode == BindingMode.TwoWay)
+            {
+                var targetToSourceBinder = new TargetToSourceBinder
+                {
+                    elementProps  = elementProps,
+                    bindingInfo   = bindingInfo,
+                    DataContext   = DataContext,
+                    attributeName = currentAttributeName,
+                    nodeName      = nodeName
+                };
+
+                targetToSourceBinder.TryBind();
+            }
+        }
+
+
+        static bool ComponentPropNeedToUpdate(string nodeName, dynamic component, string propName, object value)
+        {
+            if (nodeName == ComponentName.BInputMask.ToString() ||
+                nodeName == ComponentName.BInput.ToString())
+            {
+                if (propName == ComponentPropName.value.ToString())
+                {
+                    var existingValue = component.state[propName];
+                    if (existingValue == null || existingValue == string.Empty)
+                    {
+                        if (value == null || value as string == string.Empty)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        void BindSourceToTarget(BindingInfo bindingInfo, string nodeName, object source,string currentAttributeName)
+        {
+
+            Action<object> onRef = (dynamic componentt) =>
+            {
+                var component = componentt;
+                Action UpdateTarget = () =>
+                {
+                    var value = bindingInfo.SourcePath.GetPropertyValue();
+
+                    if (bindingInfo.Converter != null)
+                    {
+                        value = bindingInfo.Converter.Convert(value, null, bindingInfo.ConverterParameter, null);
+                    }
+
+                    var componentPropNeedToUpdate = ComponentPropNeedToUpdate(nodeName, component, currentAttributeName, value);
+                    if (!componentPropNeedToUpdate)
+                    {
+                        return;
+                    }
+
+                    // TODO: move to function
+                    if (nodeName == ComponentName.BInputMask.ToString() && currentAttributeName == ComponentPropName.value.ToString())
+                    {
+                        if (value == null)
+                        {
+                            value = "";
+                        }
+                    }
+
+                    var newState = ObjectLiteral.Create<object>();
+                    newState[currentAttributeName] = Unbox(value);
+                    component.setState(newState);
+                };
+
+                bindingInfo.Source = source;
+
+                bindingInfo.SourcePath.Listen(bindingInfo.Source, UpdateTarget);
+            };
+
+            AddToRefHandlers(onRef);
+        }
+
+
         BState State => TypeScriptWrittenJsObject[AttributeName.state].As<BState>();
 
         protected override void ProcessProperty(object elementProps, string propertyName)
@@ -20,6 +106,13 @@ namespace Bridge.BOAIntegration
                 var pair = MessagingResolver.GetMessagingExpressionValue(propertyValue);
 
                 elementProps[propertyName] =  MessagingHelper.GetMessage(pair.Key, pair.Value);
+                return;
+            }
+
+            var bindingInfo = BindingExpressionParser.TryParse(propertyValue).ToBindingInfo();
+            if (bindingInfo != null)
+            {
+                ProcessBindingInfo(bindingInfo,"?","?","?","?");
                 return;
             }
 
