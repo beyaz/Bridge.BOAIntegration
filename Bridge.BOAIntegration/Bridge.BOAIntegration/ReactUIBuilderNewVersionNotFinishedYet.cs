@@ -9,7 +9,7 @@ namespace Bridge.BOAIntegration
 
     class UIBuilderForBOA: UIBuilder
     {
-        
+        BState State => TypeScriptWrittenJsObject[AttributeName.state].As<BState>();
 
         protected override void ProcessProperty(object elementProps, string propertyName)
         {
@@ -26,9 +26,169 @@ namespace Bridge.BOAIntegration
             base.ProcessProperty(elementProps,propertyName);
 
         }
+
+        protected override object OnPropsEvaluated(string componentName, object componentProp)
+        {
+            
+
+            var pageParams = State.PageParams;
+            var context = State.Context;
+
+            var snapKey = componentProp[AttributeName.key].As<string>();
+            if (snapKey == null)
+            {
+                throw new InvalidOperationException(nameof(snapKey) + " not found.");
+            }
+
+            componentProp[AttributeName.snapKey] = snapKey;
+            componentProp[AttributeName.pageParams] = pageParams;
+            componentProp[AttributeName.context] = context;
+            componentProp[AttributeName.snapshot] = State[AttributeName.snapshot][snapKey];
+            var previousSnap = State[AttributeName.dynamicProps][snapKey];
+
+            componentProp = JsLocation._extend.Apply(null, componentProp, previousSnap);
+
+            var me = this;
+
+            string fieldName = null;
+
+            var hasNameAttribute = componentProp["x.Name"] != Script.Undefined;
+            if (hasNameAttribute)
+            {
+                fieldName = componentProp["x.Name"].As<string>();
+
+                Script.Write("delete componentProp['x.Name']");
+            }
+
+            var refHandlers = RefHandlers;
+            Action<object> onRef = r =>
+            {
+                if (r == null)
+                {
+                    return;
+                }
+
+                var snaps = me.TypeScriptWrittenJsObject["snaps"];
+
+                if (snaps == null)
+                {
+                    throw new InvalidOperationException("snaps not found");
+                }
+
+                snaps[snapKey] = r;
+                if (fieldName != null)
+                {
+                    me.Caller[fieldName] = r;
+                }
+
+                if (refHandlers != null)
+                {
+                    foreach (var refHandler in refHandlers)
+                    {
+                        refHandler(r);
+                    }
+                }
+            };
+
+            componentProp[AttributeName.Ref] = onRef;
+
+
+            if (componentName == ComponentName.BInputMask.ToString())
+            {
+                // TODO: bug fix value null olduğunda _isCorrectFormatText metodu patlıyor. düzeltileiblir
+                if (componentProp[AttributeName.value] == null)
+                {
+                    componentProp[AttributeName.value] = "";
+                }
+            }
+
+            if (componentName == ComponentName.BComboBox.ToString())
+            {
+                // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
+                if (componentProp[AttributeName.dataSource] == null)
+                {
+                    componentProp[AttributeName.dataSource] = new object[0];
+                }
+            }
+
+            EvaluateBooleanValues(componentName, componentProp);
+            EvaluateNumberValues(componentName, componentProp);
+
+            return componentProp;
+        }
+
+         static void EvaluateNumberValues(string componentName, object componentProp)
+        {
+            var attributes = MapHelper.GetNumberAttributes(componentName);
+
+            if (attributes == null)
+            {
+                return;
+            }
+
+            var length = attributes.Length;
+            for (var i = 0; i < length; i++)
+            {
+                var attributeName = attributes[i];
+                var stringValue   = componentProp[attributeName] as string;
+                if (stringValue == null)
+                {
+                    continue;
+                }
+
+                var intValue = int.Parse(stringValue);
+
+                componentProp[attributeName] = intValue.As<object>();
+            }
+        }
+
+         static void EvaluateBooleanValues(string componentName, object componentProp)
+        {
+            var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
+
+            if (booleanAttributes == null)
+            {
+                return;
+            }
+
+            var length = booleanAttributes.Length;
+            for (var i = 0; i < length; i++)
+            {
+                var attributeName = booleanAttributes[i];
+                var stringValue   = componentProp[attributeName] as string;
+                if (stringValue == null)
+                {
+                    continue;
+                }
+
+                if (stringValue.ToUpper() == "FALSE")
+                {
+                    componentProp[attributeName] = false.As<object>();
+                    continue;
+                }
+
+                if (stringValue.ToUpper() == "TRUE")
+                {
+                    componentProp[attributeName] = true.As<object>();
+                    continue;
+                }
+
+                throw new ArgumentException($"{componentName} -> {attributeName} must be boolan (false/true)");
+            }
+        }
+
+
+
+
+
     }
     class UIBuilder
     {
+        protected virtual object OnPropsEvaluated(string componentName, object componentProp)
+        {
+            return componentProp;
+        }
+
         public int RenderCount { get; set; }
         protected Action<object>[] RefHandlers;
 
@@ -100,6 +260,8 @@ namespace Bridge.BOAIntegration
             {
                 elementProps[AttributeName.key] = GetNextKey();
             }
+
+            elementProps = OnPropsEvaluated(tagName,elementProps);
 
 
             var componentInfo = new ComponentInfo
