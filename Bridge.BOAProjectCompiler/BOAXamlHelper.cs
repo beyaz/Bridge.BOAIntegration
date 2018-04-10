@@ -46,9 +46,9 @@ namespace Bridge.BOAProjectCompiler
 
                 if (MessagingResolver.IsMessagingExpression(label))
                 {
-                    var groupAndPropertyPair = MessagingResolver.GetMessagingExpressionValue(label);
+                    var messagingExpression = MessagingResolver.GetMessagingExpressionValue(label);
 
-                    label = $"BOA.Messaging.MessagingHelper.GetMessage(\"{groupAndPropertyPair.Key}\",\"{groupAndPropertyPair.Value}\")";
+                    label = $"BOA.Messaging.MessagingHelper.GetMessage(\"{messagingExpression.GroupName}\",\"{messagingExpression.PropertyName}\")";
                 }
                 else
                 {

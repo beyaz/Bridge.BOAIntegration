@@ -182,9 +182,9 @@ namespace Bridge.BOAProjectCompiler
                 var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.AttributeValue);
                 if (isMessagingExpression)
                 {
-                    var pair = MessagingResolver.GetMessagingExpressionValue(data.AttributeValue);
+                    var messagingExpression = MessagingResolver.GetMessagingExpressionValue(data.AttributeValue);
 
-                    data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
+                    data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{messagingExpression.GroupName}\",\"{messagingExpression.PropertyName}\");");
                     return true;
                 }
 
