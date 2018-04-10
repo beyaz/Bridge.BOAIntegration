@@ -56,41 +56,9 @@ namespace Bridge.BOAProjectCompiler
         #endregion
 
         #region Methods
-        static void AfterAttributesProcessed(AfterAttributesProcessedData data)
+        void AfterAttributesProcessed(AfterAttributesProcessedData data)
         {
-            var output  = data.Output;
-            var xmlNode = data.node;
-
-            if (xmlNode.Name == "BComboBox")
-            {
-                var columns = ((XmlElement) xmlNode).GetElementsByTagName("ComboBoxColumn").ToList();
-
-                if (columns.Count > 0)
-                {
-                    data.skipProcessChildNodes = true;
-
-                    output.AppendLine("attributes[\"columns\"] = new object[0];");
-
-                    output.AppendLine("temp = Bridge.ObjectLiteral.Create<object>();");
-                    foreach (var columnNode in columns)
-                    {
-                        output.AppendLine("temp[\"key\"] = \"" + columnNode?.Attributes?["key"].Value + "\";");
-
-                        var columnName          = columnNode?.Attributes?["Name"].Value;
-                        var bindingInfoContract = BindingExpressionParser.TryParse(columnName);
-                        if (bindingInfoContract != null)
-                        {
-                            output.AppendLine("temp[\"name\"] = " + bindingInfoContract.SourcePath.Replace(".", "?.") + ";");
-                            output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
-
-                            continue;
-                        }
-
-                        output.AppendLine("temp[\"name\"] = \"" + columnNode?.Attributes?["Name"] + "\";");
-                        output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
-                    }
-                }
-            }
+            Helper.HandleComboBoxColumns(data);
         }
 
         void WriteNode(XmlNode node)
@@ -99,8 +67,8 @@ namespace Bridge.BOAProjectCompiler
 
             var afterAttributesProcessedData = new AfterAttributesProcessedData
             {
-                node   = node,
-                Output = Output
+                XmlNode = node,
+                Output  = Output
             };
 
             if (node.Attributes != null)
@@ -112,9 +80,9 @@ namespace Bridge.BOAProjectCompiler
                     {
                         var attributeData = new AttributeData
                         {
-                            attributeValue = attribute.Value,
-                            attributeName  = attribute.Name,
-                            componentName  = componentName,
+                            AttributeValue = attribute.Value,
+                            AttributeName  = attribute.Name,
+                            ComponentName  = componentName,
                             Output         = Output,
                             Caller         = Caller
                         };
@@ -135,7 +103,7 @@ namespace Bridge.BOAProjectCompiler
 
             Output.AppendLine($"builder.Create(\"{componentName}\" , attributes);");
 
-            if (!node.HasChildNodes || afterAttributesProcessedData.skipProcessChildNodes)
+            if (!node.HasChildNodes || afterAttributesProcessedData.SkipProcessChildNodes)
             {
                 Output.AppendLine("builder.EndOf();");
                 return;
@@ -159,10 +127,10 @@ namespace Bridge.BOAProjectCompiler
             #region Public Methods
             public static bool TryToHandleAsBindingExpression(AttributeData data)
             {
-                var bindingInfoContract = BindingExpressionParser.TryParse(data.attributeValue);
+                var bindingInfoContract = BindingExpressionParser.TryParse(data.AttributeValue);
                 if (bindingInfoContract != null)
                 {
-                    data.Output.AppendWithPadding($"attributes[\"{data.attributeName}\"] = ");
+                    data.Output.AppendWithPadding($"attributes[\"{data.AttributeName}\"] = ");
                     Helper.Write(data.Output, bindingInfoContract);
                     data.Output.Append(";");
                     data.Output.Append(Environment.NewLine);
@@ -174,24 +142,24 @@ namespace Bridge.BOAProjectCompiler
 
             public static bool TryToHandleAsBoolean(AttributeData data)
             {
-                var booleanAttributes = MapHelper.GetBooleanAttributes(data.componentName);
+                var booleanAttributes = MapHelper.GetBooleanAttributes(data.ComponentName);
 
-                var isBoolenAttribute = booleanAttributes?.Contains(data.attributeName) == true;
+                var isBoolenAttribute = booleanAttributes?.Contains(data.AttributeName) == true;
                 if (isBoolenAttribute)
                 {
-                    if (data.attributeValue.ToUpperEN() == "FALSE")
+                    if (data.AttributeValue.ToUpperEN() == "FALSE")
                     {
-                        data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = false.As<object>();");
+                        data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = false.As<object>();");
                         return true;
                     }
 
-                    if (data.attributeValue.ToUpperEN() == "TRUE")
+                    if (data.AttributeValue.ToUpperEN() == "TRUE")
                     {
-                        data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = true.As<object>();");
+                        data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = true.As<object>();");
                         return true;
                     }
 
-                    throw new ArgumentException($"{data.componentName} -> {data.attributeName} must be boolan (false/true)");
+                    throw new ArgumentException($"{data.ComponentName} -> {data.AttributeName} must be boolan (false/true)");
                 }
 
                 return false;
@@ -199,9 +167,9 @@ namespace Bridge.BOAProjectCompiler
 
             public static bool TryToHandleAsEvent(AttributeData data)
             {
-                if (data.attributeName == "onClick")
+                if (data.AttributeName == "onClick")
                 {
-                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.Caller + "[\"" + data.attributeValue + "\"]"};");
+                    data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = {data.Caller + "[\"" + data.AttributeValue + "\"]"};");
 
                     return true;
                 }
@@ -211,12 +179,12 @@ namespace Bridge.BOAProjectCompiler
 
             public static bool TryToHandleAsMessagingAccess(AttributeData data)
             {
-                var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.attributeValue);
+                var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.AttributeValue);
                 if (isMessagingExpression)
                 {
-                    var pair = MessagingResolver.GetMessagingExpressionValue(data.attributeValue);
+                    var pair = MessagingResolver.GetMessagingExpressionValue(data.AttributeValue);
 
-                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
+                    data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
                     return true;
                 }
 
@@ -225,11 +193,11 @@ namespace Bridge.BOAProjectCompiler
 
             public static bool TryToHandleAsNumber(AttributeData data)
             {
-                var numberAttributes = MapHelper.GetNumberAttributes(data.componentName);
-                var isNumberProperty = numberAttributes?.Contains(data.attributeName) == true;
+                var numberAttributes = MapHelper.GetNumberAttributes(data.ComponentName);
+                var isNumberProperty = numberAttributes?.Contains(data.AttributeName) == true;
                 if (isNumberProperty)
                 {
-                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.attributeValue};");
+                    data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = {data.AttributeValue};");
                     return true;
                 }
 
@@ -238,7 +206,7 @@ namespace Bridge.BOAProjectCompiler
 
             public static bool TryToHandleAsString(AttributeData data)
             {
-                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = \"{data.attributeValue}\";");
+                data.Output.AppendLine($"attributes[\"{data.AttributeName}\"] = \"{data.AttributeValue}\";");
 
                 return true;
             }
@@ -248,19 +216,19 @@ namespace Bridge.BOAProjectCompiler
         class AfterAttributesProcessedData
         {
             #region Public Properties
-            public XmlNode             node                  { get; set; }
             public PaddedStringBuilder Output                { get; set; }
-            public bool                skipProcessChildNodes { get; set; }
+            public bool                SkipProcessChildNodes { get; set; }
+            public XmlNode             XmlNode               { get; set; }
             #endregion
         }
 
         class AttributeData
         {
             #region Public Properties
-            public string              attributeName  { get; set; }
-            public string              attributeValue { get; set; }
+            public string              AttributeName  { get; set; }
+            public string              AttributeValue { get; set; }
             public string              Caller         { get; set; }
-            public string              componentName  { get; set; }
+            public string              ComponentName  { get; set; }
             public PaddedStringBuilder Output         { get; set; }
             #endregion
         }
@@ -268,6 +236,43 @@ namespace Bridge.BOAProjectCompiler
         class Helper
         {
             #region Methods
+            internal static void HandleComboBoxColumns(AfterAttributesProcessedData data)
+            {
+                var output  = data.Output;
+                var xmlNode = data.XmlNode;
+
+                if (xmlNode.Name == "BComboBox")
+                {
+                    var columns = ((XmlElement) xmlNode).GetElementsByTagName("ComboBoxColumn").ToList();
+
+                    if (columns.Count > 0)
+                    {
+                        data.SkipProcessChildNodes = true;
+
+                        output.AppendLine("attributes[\"columns\"] = new object[0];");
+
+                        output.AppendLine("temp = Bridge.ObjectLiteral.Create<object>();");
+                        foreach (var columnNode in columns)
+                        {
+                            output.AppendLine("temp[\"key\"] = \"" + columnNode?.Attributes?["key"].Value + "\";");
+
+                            var columnName          = columnNode?.Attributes?["Name"].Value;
+                            var bindingInfoContract = BindingExpressionParser.TryParse(columnName);
+                            if (bindingInfoContract != null)
+                            {
+                                output.AppendLine("temp[\"name\"] = " + bindingInfoContract.SourcePath.Replace(".", "?.") + ";");
+                                output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
+
+                                continue;
+                            }
+
+                            output.AppendLine("temp[\"name\"] = \"" + columnNode?.Attributes?["Name"] + "\";");
+                            output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
+                        }
+                    }
+                }
+            }
+
             internal static void NormalizeInnerHTML(XmlNode node)
             {
                 if (node.NodeType != XmlNodeType.Text)
