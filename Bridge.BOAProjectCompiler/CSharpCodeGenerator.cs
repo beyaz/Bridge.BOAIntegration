@@ -39,7 +39,7 @@ namespace Bridge.BOAProjectCompiler
                 sb.AppendLine(fieldNameFieldTypePair.Value + " " + fieldNameFieldTypePair.Key + ";");
             }
 
-
+            sb.AppendLine("");
 
             sb.AppendLine("protected override object Render()");
             sb.AppendLine("{");
