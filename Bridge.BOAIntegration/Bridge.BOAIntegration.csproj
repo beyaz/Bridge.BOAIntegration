@@ -78,13 +78,10 @@
     <Compile Include="Bridge.BOAIntegration\ComboBoxColumn.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentName.cs" />
     <Compile Include="Bridge.BOAIntegration\ComponentPropName.cs" />
-    <Compile Include="Bridge.BOAIntegration\MapHelper.cs" />
     <Compile Include="Bridge.BOAIntegration\MessagingResolver.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactApi.cs" />
     <Compile Include="Bridge.BOAIntegration\GridColumnInfo.cs" />
     <Compile Include="Bridge.BOAIntegration\NodeModules.cs" />
-    <Compile Include="Bridge.BOAIntegration\ReactUIBuilder.cs" />
-    <Compile Include="Bridge.BOAIntegration\ReactUIBuilderBOAVersion.cs" />
     <Compile Include="Bridge.BOAIntegration\ReactUIBuilderNewVersionNotFinishedYet.cs" />
     <Compile Include="Bridge.BOAIntegration\TargetToSourceBinder.cs" />
     <Compile Include="Bridge.BOAIntegration\Utility.cs" />

@@ -79,9 +79,6 @@
     <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\ComponentPropName.cs">
       <Link>ComponentPropName.cs</Link>
     </Compile>
-    <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\MapHelper.cs">
-      <Link>MapHelper.cs</Link>
-    </Compile>
     <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\MessagingResolver.cs">
       <Link>Bridge.BOAIntegration\MessagingResolver.cs</Link>
     </Compile>
@@ -96,6 +93,7 @@
     <Compile Include="CsprojFileCreator.cs" />
     <Compile Include="CsprojFileCreatorData.cs" />
     <Compile Include="Directories.cs" />
+    <Compile Include="MapHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="BOAProjectConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

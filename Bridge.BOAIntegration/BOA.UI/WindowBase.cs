@@ -74,26 +74,13 @@ namespace BOA.UI
             RenderCount++;
 
             return Render().As<ReactElement>();
-            // return BuildUI(XmlUI);
         }
 
         protected virtual object Render()
         {
             throw new NotImplementedException();
         }
-        protected ReactElement BuildUI(string xmlUI)
-        {
-            var reactUiBuilder = new ReactUIBuilderBOAVersion
-            {
-                XmlUI                     = xmlUI,
-                DataContext               = this,
-                Caller                    = this,
-                TypeScriptWrittenJsObject = TypeScriptVersion,
-                RenderCount = RenderCount
-            };
-
-            return reactUiBuilder.Build();
-        }
+        
 
         #region Events
         internal event Action<string, object> OnProxyDidRespond;

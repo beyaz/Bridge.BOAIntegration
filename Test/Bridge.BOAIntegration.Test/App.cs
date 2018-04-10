@@ -12,7 +12,6 @@ namespace Bridge.BOAIntegration
             ReactUIBuilderTest.Register();
 
 
-            ReactUIBuilderBOAVersionTest.Register();
         }
         #endregion
     }

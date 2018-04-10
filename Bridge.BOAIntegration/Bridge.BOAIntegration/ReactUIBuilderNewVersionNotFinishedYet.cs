@@ -240,7 +240,7 @@ namespace Bridge.BOAIntegration
         }
 
         #region Fields
-        public   ComponentClassFinder ComponentClassFinder{ get; set; }
+        public   Func<string, object> ComponentClassFinder{ get; set; }
     public   object TypeScriptWrittenJsObject { get; set; }
         readonly Stack<ComponentInfo> Stack = new Stack<ComponentInfo>();
         #endregion
