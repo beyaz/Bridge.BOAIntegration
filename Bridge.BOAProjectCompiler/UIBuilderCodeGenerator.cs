@@ -29,10 +29,8 @@ namespace Bridge.BOAProjectCompiler
 
             Output.AppendLine("Caller                       = " + Caller + ",");
             Output.AppendLine("DataContext                  = " + DataContext + ",");
-            Output.AppendLine("RenderCount                  = " + Caller+ ".RenderCount" + ",");
+            Output.AppendLine("RenderCount                  = " + Caller + ".RenderCount" + ",");
             Output.AppendLine("TypeScriptWrittenJsObject    = " + Caller + ".TypeScriptVersion");
-            
-                
 
             Output.PaddingCount--;
             Output.AppendLine("};");
@@ -45,11 +43,11 @@ namespace Bridge.BOAProjectCompiler
         }
         #endregion
 
+        #region Methods
         static void NormalizeInnerHTML(XmlNode node)
         {
             if (node.NodeType == XmlNodeType.Text)
             {
-
                 if (node.Attributes == null)
                 {
                     if (node.HasChildNodes == false)
@@ -68,10 +66,21 @@ namespace Bridge.BOAProjectCompiler
             }
         }
 
-        #region Methods
+        void Write(BindingInfoContract contract)
+        {
+            Output.Append("new System.Windows.Data.BindingInfoContract" + Environment.NewLine);
+            Output.AppendLine("{");
+            Output.PaddingCount++;
+
+            Output.AppendLine($"BindingMode = System.Windows.Data.BindingMode.{contract.BindingMode.ToString()},");
+            Output.AppendLine($"SourcePath  = \"{contract.SourcePath}\"");
+
+            Output.PaddingCount--;
+            Output.AppendWithPadding("}");
+        }
+
         void WriteNode(XmlNode node)
         {
-
             var skipProcessChildNodes = false;
 
             var componentName = node.Name;
@@ -87,7 +96,7 @@ namespace Bridge.BOAProjectCompiler
                     if (isMessagingExpression)
                     {
                         var pair = MessagingResolver.GetMessagingExpressionValue(attributeValue);
-                        
+
                         Output.AppendLine($"attributes[\"{attribute.Name}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
                         continue;
                     }
@@ -117,11 +126,13 @@ namespace Bridge.BOAProjectCompiler
                             Output.AppendLine($"attributes[\"{attribute.Name}\"] = false.As<object>();");
                             continue;
                         }
+
                         if (attributeValue.ToUpperEN() == "TRUE")
                         {
                             Output.AppendLine($"attributes[\"{attribute.Name}\"] = true.As<object>();");
                             continue;
                         }
+
                         throw new ArgumentException($"{componentName} -> {attribute.Name} must be boolan (false/true)");
                     }
 
@@ -133,16 +144,12 @@ namespace Bridge.BOAProjectCompiler
                         continue;
                     }
 
-
-
-
-
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
 
                 if (componentName == "BComboBox")
                 {
-                    var columns = ((XmlElement)node).GetElementsByTagName("ComboBoxColumn").ToList();
+                    var columns = ((XmlElement) node).GetElementsByTagName("ComboBoxColumn").ToList();
 
                     if (columns.Count > 0)
                     {
@@ -150,19 +157,17 @@ namespace Bridge.BOAProjectCompiler
 
                         Output.AppendLine("attributes[\"columns\"] = new object[0];");
 
-
                         Output.AppendLine("temp = Bridge.ObjectLiteral.Create<object>();");
                         for (var i = 0; i < columns.Count; i++)
                         {
                             var columnNode = columns[i];
                             Output.AppendLine("temp[\"key\"] = \"" + columnNode?.Attributes?["key"].Value + "\";");
 
-
                             var columnName          = columnNode?.Attributes?["Name"].Value;
                             var bindingInfoContract = BindingExpressionParser.TryParse(columnName);
                             if (bindingInfoContract != null)
                             {
-                                Output.AppendLine("temp[\"name\"] = " + bindingInfoContract.SourcePath.Replace(".","?.") + ";");
+                                Output.AppendLine("temp[\"name\"] = " + bindingInfoContract.SourcePath.Replace(".", "?.") + ";");
                                 Output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
 
                                 continue;
@@ -172,9 +177,7 @@ namespace Bridge.BOAProjectCompiler
                             Output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
                         }
                     }
-
                 }
-
             }
             else
             {
@@ -189,9 +192,6 @@ namespace Bridge.BOAProjectCompiler
                 return;
             }
 
-            
-                
-            
             Output.PaddingCount++;
             foreach (XmlNode childNode in node.ChildNodes)
             {
@@ -202,22 +202,6 @@ namespace Bridge.BOAProjectCompiler
 
             Output.PaddingCount--;
             Output.AppendLine("builder.EndOf();");
-        }
-
-        void Write(BindingInfoContract contract)
-        {
-            
-            Output.Append(" new System.Windows.Data.BindingInfoContract"+Environment.NewLine);
-            Output.AppendLine("{");
-            Output.PaddingCount++;
-
-            Output.AppendLine($"BindingMode = System.Windows.Data.BindingMode.{contract.BindingMode.ToString()},");
-            Output.AppendLine($"SourcePath  = \"{contract.SourcePath}\"");
-
-
-
-            Output.PaddingCount--;
-            Output.AppendWithPadding("}");
         }
         #endregion
     }
