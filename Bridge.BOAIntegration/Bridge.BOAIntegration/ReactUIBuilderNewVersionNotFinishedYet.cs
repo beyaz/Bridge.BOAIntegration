@@ -9,6 +9,8 @@ namespace Bridge.BOAIntegration
 
     class UIBuilderForBOA: UIBuilder
     {
+        
+
         protected override void ProcessProperty(object elementProps, string propertyName)
         {
             var propertyValue = elementProps[propertyName] as string;
@@ -27,6 +29,24 @@ namespace Bridge.BOAIntegration
     }
     class UIBuilder
     {
+        public int RenderCount { get; set; }
+        protected Action<object>[] RefHandlers;
+
+        protected void AddToRefHandlers(Action<object> item)
+        {
+            if (RenderCount > 1)
+            {
+                return;
+            }
+
+            if (RefHandlers == null)
+            {
+                RefHandlers = new Action<object>[0];
+            }
+
+            RefHandlers.Push(item);
+        }
+
         #region Fields
         public   ComponentClassFinder ComponentClassFinder;
         public   object               TypeScriptWrittenJsObject;
