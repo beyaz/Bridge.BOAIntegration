@@ -66,17 +66,17 @@ namespace Bridge.BOAProjectCompiler
             }
         }
 
-        void Write(BindingInfoContract contract)
+        static void Write(PaddedStringBuilder output, BindingInfoContract contract)
         {
-            Output.Append("new System.Windows.Data.BindingInfoContract" + Environment.NewLine);
-            Output.AppendLine("{");
-            Output.PaddingCount++;
+            output.Append("new System.Windows.Data.BindingInfoContract" + Environment.NewLine);
+            output.AppendLine("{");
+            output.PaddingCount++;
 
-            Output.AppendLine($"BindingMode = System.Windows.Data.BindingMode.{contract.BindingMode.ToString()},");
-            Output.AppendLine($"SourcePath  = \"{contract.SourcePath}\"");
+            output.AppendLine($"BindingMode = System.Windows.Data.BindingMode.{contract.BindingMode.ToString()},");
+            output.AppendLine($"SourcePath  = \"{contract.SourcePath}\"");
 
-            Output.PaddingCount--;
-            Output.AppendWithPadding("}");
+            output.PaddingCount--;
+            output.AppendWithPadding("}");
         }
 
         static bool TryToHandleAsMessagingAccess(AttributeData data)
@@ -92,13 +92,14 @@ namespace Bridge.BOAProjectCompiler
 
             return false;
         }
-        bool TryToHandleAsBindingExpression(AttributeData data)
+
+        static bool TryToHandleAsBindingExpression(AttributeData data)
         {
             var bindingInfoContract = BindingExpressionParser.TryParse(data.attributeValue);
             if (bindingInfoContract != null)
             {
                 data.Output.AppendWithPadding($"attributes[\"{data.attributeName}\"] = ");
-                Write(bindingInfoContract);
+                Write(data.Output, bindingInfoContract);
                 data.Output.Append(";");
                 data.Output.Append(Environment.NewLine);
                 return  true;
@@ -173,7 +174,6 @@ namespace Bridge.BOAProjectCompiler
             public string componentName { get;  set; }
             public PaddedStringBuilder Output { get; set; }
             public string Caller { get; set; }
-
         }
 
         void WriteNode(XmlNode node)
