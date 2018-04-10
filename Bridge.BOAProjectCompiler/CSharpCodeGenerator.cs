@@ -65,10 +65,6 @@ namespace Bridge.BOAProjectCompiler
             sb.AppendLine("{");
             sb.PaddingCount++;
 
-            sb.AppendLine("XmlUI = @" + '"' + Data.OutputXmlString.Replace("\"", "\"\"") + '"' + ";");
-
-            
-
 
             sb.AppendLine("");
 

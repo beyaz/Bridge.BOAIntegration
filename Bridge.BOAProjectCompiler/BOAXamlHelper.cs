@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Xml;
 using BOA.Common.Helpers;
-using Bridge.BOAIntegration;
 
 namespace Bridge.BOAProjectCompiler
 {

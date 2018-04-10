@@ -55,7 +55,7 @@ namespace BOA.UI
 
 
         public event EventHandler LoadCompleted;
-        protected string XmlUI { get; set; }
+        
         public virtual void LoadData() 
         {
         }
@@ -78,7 +78,7 @@ namespace BOA.UI
 
         protected virtual object Render()
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Render method must be generate automatically.");
         }
         
 
