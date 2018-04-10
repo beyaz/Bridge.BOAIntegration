@@ -206,14 +206,15 @@ namespace Bridge.BOAProjectCompiler
                     
                     foreach (var handler in pipe)
                     {
-                        var isHandled = handler(new AttributeData
+                        var attributeData = new AttributeData
                         {
                             attributeValue = attribute.Value,
-                            attributeName = attribute.Name,
-                            componentName = componentName,
-                            Output = Output,
-                            Caller = Caller
-                        });
+                            attributeName  = attribute.Name,
+                            componentName  = componentName,
+                            Output         = Output,
+                            Caller         = Caller
+                        };
+                        var isHandled = handler(attributeData);
                         if (isHandled)
                         {
                             break;
