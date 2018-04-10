@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Data;
 using System.Xml;
 using BOA.Common.Helpers;
+using Bridge.BOAIntegration;
 
 namespace Bridge.BOAProjectCompiler
 {
@@ -76,6 +77,16 @@ namespace Bridge.BOAProjectCompiler
                 foreach (XmlAttribute attribute in node.Attributes)
                 {
                     var attributeValue = attribute.Value;
+
+                    var isMessagingExpression = MessagingResolver.IsMessagingExpression(attributeValue);
+                    if (isMessagingExpression)
+                    {
+                        var pair = MessagingResolver.GetMessagingExpressionValue(attributeValue);
+                        
+                        Output.AppendLine($"attributes[\"{attribute.Name}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
+                        continue;
+                    }
+
                     var bindingInfoContract = BindingExpressionParser.TryParse(attributeValue);
                     if (bindingInfoContract != null)
                     {
@@ -91,7 +102,6 @@ namespace Bridge.BOAProjectCompiler
                         attributeValue = Caller + "." + attributeValue;
                     }
 
-                    // using System -> .As<object>()
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
             }
