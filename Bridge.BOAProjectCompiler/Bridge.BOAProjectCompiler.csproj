@@ -73,6 +73,15 @@
     <Compile Include="..\Bridge.BOAIntegration\.Net Override\System.Windows.Data\BindingMode.cs">
       <Link>BindingMode.cs</Link>
     </Compile>
+    <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\ComponentName.cs">
+      <Link>ComponentName.cs</Link>
+    </Compile>
+    <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\ComponentPropName.cs">
+      <Link>ComponentPropName.cs</Link>
+    </Compile>
+    <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\MapHelper.cs">
+      <Link>MapHelper.cs</Link>
+    </Compile>
     <Compile Include="..\Bridge.BOAIntegration\Bridge.BOAIntegration\MessagingResolver.cs">
       <Link>Bridge.BOAIntegration\MessagingResolver.cs</Link>
     </Compile>

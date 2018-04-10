@@ -81,68 +81,6 @@ namespace Bridge.BOAIntegration
 
         BState State => TypeScriptWrittenJsObject[AttributeName.state].As<BState>();
 
-       
-
-         static void EvaluateNumberValues(string componentName, object componentProp)
-        {
-            var attributes = MapHelper.GetNumberAttributes(componentName);
-
-            if (attributes == null)
-            {
-                return;
-            }
-
-            var length = attributes.Length;
-            for (var i = 0; i < length; i++)
-            {
-                var attributeName = attributes[i];
-                var stringValue   = componentProp[attributeName] as string;
-                if (stringValue == null)
-                {
-                    continue;
-                }
-
-                var intValue = int.Parse(stringValue);
-
-                componentProp[attributeName] = intValue.As<object>();
-            }
-        }
-
-         static void EvaluateBooleanValues(string componentName, object componentProp)
-        {
-            var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
-
-            if (booleanAttributes == null)
-            {
-                return;
-            }
-
-            var length = booleanAttributes.Length;
-            for (var i = 0; i < length; i++)
-            {
-                var attributeName = booleanAttributes[i];
-                var stringValue   = componentProp[attributeName] as string;
-                if (stringValue == null)
-                {
-                    continue;
-                }
-
-                if (stringValue.ToUpper() == "FALSE")
-                {
-                    componentProp[attributeName] = false.As<object>();
-                    continue;
-                }
-
-                if (stringValue.ToUpper() == "TRUE")
-                {
-                    componentProp[attributeName] = true.As<object>();
-                    continue;
-                }
-
-                throw new ArgumentException($"{componentName} -> {attributeName} must be boolan (false/true)");
-            }
-        }
-
         protected override void OnComponentInfoCreated(ComponentInfo info)
         {
 
@@ -277,8 +215,6 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-            EvaluateBooleanValues(componentName, componentProp);
-            EvaluateNumberValues(componentName, componentProp);
 
         }
     }

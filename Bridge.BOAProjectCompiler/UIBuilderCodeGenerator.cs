@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Data;
 using System.Xml;
 using BOA.Common.Helpers;
@@ -73,7 +74,7 @@ namespace Bridge.BOAProjectCompiler
 
             var skipProcessChildNodes = false;
 
-            var nodeName = node.Name;
+            var componentName = node.Name;
 
             if (node.Attributes != null)
             {
@@ -106,10 +107,40 @@ namespace Bridge.BOAProjectCompiler
                         attributeValue = Caller + "." + attributeValue;
                     }
 
+                    var booleanAttributes = MapHelper.GetBooleanAttributes(componentName);
+
+                    var isBoolenAttribute = booleanAttributes?.Contains(attribute.Name) == true;
+                    if (isBoolenAttribute)
+                    {
+                        if (attributeValue.ToUpperEN() == "FALSE")
+                        {
+                            Output.AppendLine($"attributes[\"{attribute.Name}\"] = false.As<object>();");
+                            continue;
+                        }
+                        if (attributeValue.ToUpperEN() == "TRUE")
+                        {
+                            Output.AppendLine($"attributes[\"{attribute.Name}\"] = true.As<object>();");
+                            continue;
+                        }
+                        throw new ArgumentException($"{componentName} -> {attribute.Name} must be boolan (false/true)");
+                    }
+
+                    var numberAttributes = MapHelper.GetNumberAttributes(componentName);
+                    var isNumberProperty = numberAttributes?.Contains(attribute.Name) == true;
+                    if (isNumberProperty)
+                    {
+                        Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
+                        continue;
+                    }
+
+
+
+
+
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
 
-                if (nodeName == "BComboBox")
+                if (componentName == "BComboBox")
                 {
                     var columns = ((XmlElement)node).GetElementsByTagName("ComboBoxColumn").ToList();
 
@@ -150,7 +181,7 @@ namespace Bridge.BOAProjectCompiler
                 Output.AppendLine("attributes = null;");
             }
 
-            Output.AppendLine($"builder.Create(\"{nodeName}\" , attributes);");
+            Output.AppendLine($"builder.Create(\"{componentName}\" , attributes);");
 
             if (!node.HasChildNodes || skipProcessChildNodes)
             {
