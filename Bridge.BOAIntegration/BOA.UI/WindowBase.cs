@@ -73,7 +73,8 @@ namespace BOA.UI
 
             RenderCount++;
 
-            return BuildUI(XmlUI);
+            return Render().As<ReactElement>();
+            // return BuildUI(XmlUI);
         }
 
         protected virtual object Render()

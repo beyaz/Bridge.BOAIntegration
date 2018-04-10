@@ -36,7 +36,7 @@ namespace Bridge.BOAProjectCompiler
             {
                 var token = tokens[i];
 
-                if (token.TokenValue.ToUpper() == "BINDING" || token.TokenValue == " ")
+                if (token.TokenValue.ToUpperEN() == "BINDING" || token.TokenValue == " ")
                 {
                     continue;
                 }
@@ -48,7 +48,7 @@ namespace Bridge.BOAProjectCompiler
                     continue;
                 }
 
-                if (token.TokenValue.ToUpper() == "MODE")
+                if (token.TokenValue.ToUpperEN() == "MODE")
                 {
                     i++; // skip mode
 
@@ -56,7 +56,7 @@ namespace Bridge.BOAProjectCompiler
                     continue;
                 }
 
-                if (token.TokenValue.ToUpper() == "CONVERTERPARAMETER")
+                if (token.TokenValue.ToUpperEN() == "CONVERTERPARAMETER")
                 {
                     i++; // skip converterparameter
 
@@ -72,7 +72,7 @@ namespace Bridge.BOAProjectCompiler
                     continue;
                 }
 
-                if (token.TokenValue.ToUpper() == "CONVERTER")
+                if (token.TokenValue.ToUpperEN() == "CONVERTER")
                 {
                     i++; // skip converter
 

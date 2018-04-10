@@ -20,6 +20,7 @@ namespace Bridge.BOAProjectCompiler
         public void Generate()
         {
             Output.AppendLine("object attributes = null;");
+            Output.AppendLine("object temp       = null;");
 
             Output.AppendLine("var builder = new Bridge.BOAIntegration.UIBuilderForBOA");
             Output.AppendLine("{");
@@ -69,6 +70,9 @@ namespace Bridge.BOAProjectCompiler
         #region Methods
         void WriteNode(XmlNode node)
         {
+
+            var skipProcessChildNodes = false;
+
             var nodeName = node.Name;
 
             if (node.Attributes != null)
@@ -104,6 +108,42 @@ namespace Bridge.BOAProjectCompiler
 
                     Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
+
+                if (nodeName == "BComboBox")
+                {
+                    var columns = ((XmlElement)node).GetElementsByTagName("ComboBoxColumn").ToList();
+
+                    if (columns.Count > 0)
+                    {
+                        skipProcessChildNodes = true;
+
+                        Output.AppendLine("attributes[\"columns\"] = new object[0];");
+
+
+                        Output.AppendLine("temp = Bridge.ObjectLiteral.Create<object>();");
+                        for (var i = 0; i < columns.Count; i++)
+                        {
+                            var columnNode = columns[i];
+                            Output.AppendLine("temp[\"key\"] = \"" + columnNode?.Attributes?["key"].Value + "\";");
+
+
+                            var columnName          = columnNode?.Attributes?["Name"].Value;
+                            var bindingInfoContract = BindingExpressionParser.TryParse(columnName);
+                            if (bindingInfoContract != null)
+                            {
+                                Output.AppendLine("temp[\"name\"] = " + bindingInfoContract.SourcePath.Replace(".","?.") + ";");
+                                Output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
+
+                                continue;
+                            }
+
+                            Output.AppendLine($"temp[\"name\"] = \"" + columnNode?.Attributes?["Name"] + "\";");
+                            Output.AppendLine("attributes[\"columns\"].As<object[]>().Push(temp);");
+                        }
+                    }
+
+                }
+
             }
             else
             {
@@ -112,12 +152,15 @@ namespace Bridge.BOAProjectCompiler
 
             Output.AppendLine($"builder.Create(\"{nodeName}\" , attributes);");
 
-            if (!node.HasChildNodes)
+            if (!node.HasChildNodes || skipProcessChildNodes)
             {
                 Output.AppendLine("builder.EndOf();");
                 return;
             }
 
+            
+                
+            
             Output.PaddingCount++;
             foreach (XmlNode childNode in node.ChildNodes)
             {

@@ -15,6 +15,7 @@ namespace Bridge.BOAProjectCompiler
         {
             var sb = new PaddedStringBuilder();
 
+            sb.AppendLine("using System;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using BOA.Common.Helpers;");
             sb.AppendLine("using Bridge.BOAIntegration;");

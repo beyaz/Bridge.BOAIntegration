@@ -186,6 +186,8 @@ namespace Bridge.BOAIntegration
 
                         targetToSourceBinder.TryBind();
                     }
+
+                    componentProp[propertyName] = ReadValue(DataContext, bindingInfoContract.SourcePath);
                 }
             }
 
@@ -195,7 +197,7 @@ namespace Bridge.BOAIntegration
 
 
 
-            string componentName = info.NodeName;
+            var componentName = info.NodeName;
           
 
             var snapKey = componentProp[AttributeName.key].As<string>();
@@ -323,7 +325,12 @@ namespace Bridge.BOAIntegration
         #region Public Methods
 
 
-        
+        protected static object ReadValue(object dataContext, string propertyPath)
+        {
+            var path = new PropertyPath(propertyPath);
+            path.Walk(dataContext);
+            return Unbox(path.GetPropertyValue());
+        }
 
 
 
@@ -343,11 +350,7 @@ namespace Bridge.BOAIntegration
                 var bindingInfoContract = propertyValue as BindingInfoContract;
                 if (bindingInfoContract != null)
                 {
-                    var propertyPath = new PropertyPath(bindingInfoContract.SourcePath);
-                    propertyPath.Walk(DataContext);
-                    propertyValue = Unbox(propertyPath.GetPropertyValue());
-
-                    elementProps[propertyName] = propertyValue;
+                    elementProps[propertyName] = ReadValue(DataContext, bindingInfoContract.SourcePath);
                 }
             }
         }

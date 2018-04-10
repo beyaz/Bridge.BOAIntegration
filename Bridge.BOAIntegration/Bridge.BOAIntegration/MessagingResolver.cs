@@ -20,7 +20,7 @@ namespace Bridge.BOAIntegration
 
         public static bool IsMessagingExpression(string attributeValue)
         {
-            return attributeValue.Trim().StartsWith("{m:Messaging ");
+            return attributeValue?.Trim().StartsWith("{m:Messaging ") == true;
         }
         #endregion
     }
