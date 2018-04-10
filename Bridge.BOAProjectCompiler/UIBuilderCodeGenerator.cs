@@ -20,7 +20,7 @@ namespace Bridge.BOAProjectCompiler
         {
             Output.AppendLine("object attributes = null;");
 
-            Output.AppendLine("var builder = new UIBuilder");
+            Output.AppendLine("var builder = new Bridge.BOAIntegration.UIBuilderForBOA");
             Output.AppendLine("{");
             Output.PaddingCount++;
 

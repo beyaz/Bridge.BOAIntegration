@@ -7,7 +7,7 @@ using BOA.Messaging;
 namespace Bridge.BOAIntegration
 {
 
-    class UIBuilderForBOA: UIBuilder
+    public  class UIBuilderForBOA : UIBuilder
     {
         public UIBuilderForBOA()
         {
@@ -281,7 +281,7 @@ namespace Bridge.BOAIntegration
         }
     }
 
-    class UIBuilder
+    public class UIBuilder
     {
         public int RenderCount { get; set; }
         protected Action<object>[] RefHandlers;
@@ -493,7 +493,7 @@ namespace Bridge.BOAIntegration
             ResolveBindingValues(info);
         }
     }
-    class ComponentInfo
+    public class ComponentInfo
     {
         #region Fields
         internal ComponentInfo[] Children;
