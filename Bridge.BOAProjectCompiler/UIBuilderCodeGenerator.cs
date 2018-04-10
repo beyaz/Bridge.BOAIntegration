@@ -79,93 +79,98 @@ namespace Bridge.BOAProjectCompiler
             output.AppendWithPadding("}");
         }
 
-        static bool TryToHandleAsMessagingAccess(AttributeData data)
+        static class PropertyResolvers
         {
-            var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.attributeValue);
-            if (isMessagingExpression)
+            public static bool TryToHandleAsMessagingAccess(AttributeData data)
             {
-                var pair = MessagingResolver.GetMessagingExpressionValue(data.attributeValue);
-
-                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
-                return true;
-            }
-
-            return false;
-        }
-
-        static bool TryToHandleAsBindingExpression(AttributeData data)
-        {
-            var bindingInfoContract = BindingExpressionParser.TryParse(data.attributeValue);
-            if (bindingInfoContract != null)
-            {
-                data.Output.AppendWithPadding($"attributes[\"{data.attributeName}\"] = ");
-                Write(data.Output, bindingInfoContract);
-                data.Output.Append(";");
-                data.Output.Append(Environment.NewLine);
-                return  true;
-            }
-
-            return false;
-        }
-
-        static bool TryToHandleAsEvent(AttributeData data)
-        {
-            if (data.attributeName == "onClick")
-            {
-                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.Caller + "[\"" + data.attributeValue + "\"]"};");
-
-                return true;
-            }
-
-            return false;
-        }
-
-        static bool TryToHandleAsBoolean(AttributeData data)
-        {
-            var booleanAttributes = MapHelper.GetBooleanAttributes(data.componentName);
-
-            var isBoolenAttribute = booleanAttributes?.Contains(data.attributeName) == true;
-            if (isBoolenAttribute)
-            {
-                if (data.attributeValue.ToUpperEN() == "FALSE")
+                var isMessagingExpression = MessagingResolver.IsMessagingExpression(data.attributeValue);
+                if (isMessagingExpression)
                 {
-                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = false.As<object>();");
+                    var pair = MessagingResolver.GetMessagingExpressionValue(data.attributeValue);
+
+                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = BOA.Messaging.MessagingHelper.GetMessage(\"{pair.Key}\",\"{pair.Value}\");");
                     return true;
                 }
 
-                if (data.attributeValue.ToUpperEN() == "TRUE")
-                {
-                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = true.As<object>();");
-                    return true; 
-                }
-
-                throw new ArgumentException($"{data.componentName} -> {data.attributeName} must be boolan (false/true)");
+                return false;
             }
 
-            return false;
-        }
-
-        static bool TryToHandleAsNumber(AttributeData data)
-        {
-
-            var numberAttributes = MapHelper.GetNumberAttributes(data.componentName);
-            var isNumberProperty = numberAttributes?.Contains(data.attributeName) == true;
-            if (isNumberProperty)
+            public static bool TryToHandleAsBindingExpression(AttributeData data)
             {
-                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.attributeValue};");
+                var bindingInfoContract = BindingExpressionParser.TryParse(data.attributeValue);
+                if (bindingInfoContract != null)
+                {
+                    data.Output.AppendWithPadding($"attributes[\"{data.attributeName}\"] = ");
+                    Write(data.Output, bindingInfoContract);
+                    data.Output.Append(";");
+                    data.Output.Append(Environment.NewLine);
+                    return true;
+                }
+
+                return false;
+            }
+
+            public static bool TryToHandleAsEvent(AttributeData data)
+            {
+                if (data.attributeName == "onClick")
+                {
+                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.Caller + "[\"" + data.attributeValue + "\"]"};");
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            public static bool TryToHandleAsBoolean(AttributeData data)
+            {
+                var booleanAttributes = MapHelper.GetBooleanAttributes(data.componentName);
+
+                var isBoolenAttribute = booleanAttributes?.Contains(data.attributeName) == true;
+                if (isBoolenAttribute)
+                {
+                    if (data.attributeValue.ToUpperEN() == "FALSE")
+                    {
+                        data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = false.As<object>();");
+                        return true;
+                    }
+
+                    if (data.attributeValue.ToUpperEN() == "TRUE")
+                    {
+                        data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = true.As<object>();");
+                        return true;
+                    }
+
+                    throw new ArgumentException($"{data.componentName} -> {data.attributeName} must be boolan (false/true)");
+                }
+
+                return false;
+            }
+
+            public static bool TryToHandleAsNumber(AttributeData data)
+            {
+
+                var numberAttributes = MapHelper.GetNumberAttributes(data.componentName);
+                var isNumberProperty = numberAttributes?.Contains(data.attributeName) == true;
+                if (isNumberProperty)
+                {
+                    data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = {data.attributeValue};");
+                    return true;
+                }
+
+                return false;
+            }
+
+            public static bool TryToHandleAsString(AttributeData data)
+            {
+
+                data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = \"{data.attributeValue}\";");
+
                 return true;
             }
 
-            return false;
         }
-
-        static bool TryToHandleAsString(AttributeData data)
-        {
-
-            data.Output.AppendLine($"attributes[\"{data.attributeName}\"] = \"{data.attributeValue}\";");
-
-            return true;
-        }
+      
 
         class AttributeData
         {
@@ -182,14 +187,15 @@ namespace Bridge.BOAProjectCompiler
 
             var componentName = node.Name;
 
+            
             var pipe = new Func<AttributeData, bool>[]
             {
-                TryToHandleAsMessagingAccess,
-                TryToHandleAsBindingExpression,
-                TryToHandleAsEvent,
-                TryToHandleAsBoolean,
-                TryToHandleAsNumber,
-                TryToHandleAsString
+                PropertyResolvers.TryToHandleAsMessagingAccess,
+                PropertyResolvers.TryToHandleAsBindingExpression,
+                PropertyResolvers.TryToHandleAsEvent,
+                PropertyResolvers.TryToHandleAsBoolean,
+                PropertyResolvers.TryToHandleAsNumber,
+                PropertyResolvers.TryToHandleAsString
             };
 
             if (node.Attributes != null)
