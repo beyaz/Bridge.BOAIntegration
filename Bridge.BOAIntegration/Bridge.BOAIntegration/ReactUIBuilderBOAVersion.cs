@@ -102,9 +102,10 @@ namespace Bridge.BOAIntegration
             CurrentAttributeName = CurrentAttributeName[0].ToString().ToLower() + CurrentAttributeName.Substring(1);
         }
 
-        protected override void OnPropsEvaluated(PropsEvaluatedEventArgs data)
+        protected override void OnPropsEvaluated( PropsEvaluatedEventArgs data)
         {
             var componentProp = data.CurrentComponentProp;
+            var componentName = data.CurrentComponentName;
 
             var pageParams = State.PageParams;
             var context    = State.Context;
@@ -167,7 +168,8 @@ namespace Bridge.BOAIntegration
 
             componentProp[AttributeName.Ref] = onRef;
 
-            if (data.CurrentComponentName == ComponentName.BInputMask.ToString())
+            
+            if (componentName == ComponentName.BInputMask.ToString())
             {
                 // TODO: bug fix value null olduğunda _isCorrectFormatText metodu patlıyor. düzeltileiblir
                 if (componentProp[AttributeName.value] == null)
@@ -176,7 +178,7 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-            if (data.CurrentComponentName == ComponentName.BComboBox.ToString())
+            if (componentName == ComponentName.BComboBox.ToString())
             {
                 // TODO: bug fix value null olduğunda organizeState metodu patlıyor. düzeltileiblir
                 if (componentProp[AttributeName.dataSource] == null)
@@ -185,8 +187,8 @@ namespace Bridge.BOAIntegration
                 }
             }
 
-            EvaluateBooleanValues(data.CurrentComponentName, data.CurrentComponentProp);
-            EvaluateNumberValues(data.CurrentComponentName, data.CurrentComponentProp);
+            EvaluateBooleanValues(componentName, componentProp);
+            EvaluateNumberValues(componentName, componentProp);
         }
 
         protected override void ProcessAttribute(string nodeName, string attributeName, string attributeValue, object prop, object elementProps)

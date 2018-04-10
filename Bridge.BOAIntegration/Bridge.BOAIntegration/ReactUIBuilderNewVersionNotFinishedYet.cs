@@ -76,6 +76,12 @@ namespace Bridge.BOAIntegration
                 ProcessProperty(elementProps, propertyNames[i]);
             }
 
+            if (elementProps[AttributeName.key] == Script.Undefined)
+            {
+                elementProps[AttributeName.key] = GetNextKey();
+            }
+
+
             var componentInfo = new ComponentInfo
             {
                 ConstructorFunction = constructorFunction,
@@ -97,6 +103,14 @@ namespace Bridge.BOAIntegration
 
             Stack.Push(componentInfo);
         }
+
+        int _key;
+        string GetNextKey()
+        {
+            _key++;
+            return "cmp"+_key;
+        }
+
 
         public void EndOf()
         {
