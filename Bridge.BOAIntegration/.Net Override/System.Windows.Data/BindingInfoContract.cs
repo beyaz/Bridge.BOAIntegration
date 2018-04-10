@@ -1,6 +1,6 @@
 namespace System.Windows.Data
 {
-    class BindingInfoContract
+    public class BindingInfoContract
     {
         #region Public Properties
         public BindingMode BindingMode           { get; set; }

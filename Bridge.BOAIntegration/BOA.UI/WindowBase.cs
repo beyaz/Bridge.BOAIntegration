@@ -78,7 +78,7 @@ namespace BOA.UI
 
         protected virtual object Render()
         {
-
+            throw new NotImplementedException();
         }
         protected ReactElement BuildUI(string xmlUI)
         {

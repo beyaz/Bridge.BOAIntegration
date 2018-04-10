@@ -27,7 +27,7 @@ namespace Bridge.BOAProjectCompiler
             Output.AppendLine("Caller                       = " + Caller + ",");
             Output.AppendLine("DataContext                  = " + DataContext + ",");
             Output.AppendLine("RenderCount                  = " + Caller+ ".RenderCount" + ",");
-            Output.AppendLine("TypeScriptWrittenJsObject    = " + Caller + ".TypeScriptWrittenJsObject");
+            Output.AppendLine("TypeScriptWrittenJsObject    = " + Caller + ".TypeScriptVersion");
             
                 
 
@@ -72,7 +72,7 @@ namespace Bridge.BOAProjectCompiler
 
             if (node.Attributes != null)
             {
-                Output.AppendLine("attributes = ObjectLiteral.Create<object>();");
+                Output.AppendLine("attributes = Bridge.ObjectLiteral.Create<object>();");
                 foreach (XmlAttribute attribute in node.Attributes)
                 {
                     var attributeValue = attribute.Value;
@@ -92,7 +92,7 @@ namespace Bridge.BOAProjectCompiler
                     }
 
                     // using System -> .As<object>()
-                    Output.AppendLine($"attributes[\"{attribute.Name}\"] = {attributeValue};");
+                    Output.AppendLine($"attributes[\"{attribute.Name}\"] = \"{attributeValue}\";");
                 }
             }
             else
@@ -123,7 +123,7 @@ namespace Bridge.BOAProjectCompiler
         void Write(BindingInfoContract contract)
         {
             
-            Output.AppendLine("new System.Windows.Data.BindingInfoContract");
+            Output.Append(" new System.Windows.Data.BindingInfoContract"+Environment.NewLine);
             Output.AppendLine("{");
             Output.PaddingCount++;
 
